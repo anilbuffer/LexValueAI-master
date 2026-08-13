@@ -48,6 +48,17 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
       if (!trimmed) return <div key={index} className="h-2"></div>;
 
       hasRenderedContent = true;
+      
+      // Render as a bullet list item if it starts with a dash or bullet
+      if (trimmed.startsWith('- ') || trimmed.startsWith('• ')) {
+        return (
+          <div key={index} className="flex items-start mb-1">
+            <span className="text-slate-400 mr-2 mt-0.5">•</span>
+            <span>{trimmed.substring(2)}</span>
+          </div>
+        );
+      }
+
       return <div key={index} className="mb-2">{trimmed}</div>
     });
   }

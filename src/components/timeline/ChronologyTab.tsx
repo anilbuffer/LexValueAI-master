@@ -102,7 +102,13 @@ export function ChronologyTab({ caseData }: { caseData?: any }) {
                   <div className="hidden md:flex relative flex-col items-center shrink-0 w-10">
                     <div className="absolute top-10 bottom-0 w-[2px] bg-slate-100 group-last:hidden"></div>
                     <div className="w-10 h-10 rounded-full bg-white border-[3px] border-slate-100 flex items-center justify-center z-10 group-hover:border-teal-500 group-hover:bg-teal-50 transition-all duration-300 shadow-sm relative">
-                      <Activity className="w-4 h-4 text-slate-400 group-hover:text-teal-600 transition-colors" />
+                      {event.title.toLowerCase().includes('evaluation') ? (
+                        <Stethoscope className="w-4 h-4 text-slate-400 group-hover:text-teal-600 transition-colors" />
+                      ) : event.title.toLowerCase().includes('mri') || event.title.toLowerCase().includes('emg') ? (
+                        <FileText className="w-4 h-4 text-slate-400 group-hover:text-teal-600 transition-colors" />
+                      ) : (
+                        <Activity className="w-4 h-4 text-slate-400 group-hover:text-teal-600 transition-colors" />
+                      )}
                     </div>
                   </div>
                   <div className="flex-1 min-w-0 pb-0 md:pb-2">
