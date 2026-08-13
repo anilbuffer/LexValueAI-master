@@ -1,3 +1,4 @@
+export const mockFirm = {
   id: "firm-1",
   name: "Smith & Associates LLP",
   email: "contact@smithassociates.com",
@@ -463,4 +464,3 @@ export const getMockNotifications = () => mockNotifications;
 export const getMockAuditLogs = () => mockAuditLogs;
 export const getMockUsers = () => mockUsers;
 export const getMockFirm = () => mockFirm;
-'''

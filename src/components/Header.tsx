@@ -347,7 +347,7 @@ export default function Header({ role, user }: { role: string, user: { firstName
         </div>
 
         {/* Quick Action Button (Login Button Style) */}
-        {(role === 'PARALEGAL' || role === 'MANAGING_PARTNER') && (
+        {(role === 'ADMIN' || role === 'MANAGING_PARTNER') && (
           <Link href="/cases/new" className="h-12 flex justify-center items-center px-5 border border-transparent rounded-lg text-sm font-medium text-white bg-teal-900 hover:bg-teal-950 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-900 transition-all cursor-pointer group">
             New Case
             <Plus className="ml-2 h-4 w-4 group-hover:rotate-90 transition-transform" />

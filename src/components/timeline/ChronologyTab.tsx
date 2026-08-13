@@ -33,7 +33,8 @@ export function ChronologyTab({ caseData }: { caseData?: any }) {
               let rawDate = undefined
               const d = new Date(event.date)
               const isDateValid = !isNaN(d.getTime()) && d.getTime() > 0
-              let month = isDateValid ? d.toLocaleString('default', { month: 'short', timeZone: 'UTC' }).toUpperCase() : ''
+              const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+              let month = isDateValid ? monthNames[d.getUTCMonth()] : ''
               let day = isDateValid ? d.getUTCDate().toString().padStart(2, '0') : ''
               let year = isDateValid ? d.getUTCFullYear() : ''
 
