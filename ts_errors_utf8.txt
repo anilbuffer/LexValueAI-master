@@ -1,0 +1,31 @@
+﻿src/app/(dashboard)/settings/page.tsx(206,19): error TS2339: Property 'error' does not exist on type '{ success: boolean; }'.
+src/app/(dashboard)/settings/page.tsx(207,28): error TS2339: Property 'error' does not exist on type '{ success: boolean; }'.
+src/app/api/audit-logs/route.ts(108,36): error TS7006: Parameter 'log' implicitly has an 'any' type.
+src/app/api/cases/[id]/rescan/route.ts(4,10): error TS2305: Module '"@prisma/client"' has no exported member 'Prisma'.
+src/app/api/cases/[id]/route.ts(37,67): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/app/api/cases/[id]/route.ts(41,67): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/app/api/cases/[id]/route.ts(45,56): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/app/api/cases/[id]/route.ts(86,34): error TS7006: Parameter 'd' implicitly has an 'any' type.
+src/app/api/cases/approve/route.ts(48,61): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/app/api/cases/approve/route.ts(86,22): error TS7006: Parameter 'admin' implicitly has an 'any' type.
+src/app/api/cases/assign/route.ts(35,41): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/app/api/cases/assign/route.ts(37,43): error TS7006: Parameter 'caseId' implicitly has an 'any' type.
+src/app/api/cases/assign/route.ts(57,22): error TS7006: Parameter 'admin' implicitly has an 'any' type.
+src/app/api/cases/assign/route.ts(58,26): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/app/api/cases/assign/route.ts(64,28): error TS7006: Parameter 'caseId' implicitly has an 'any' type.
+src/app/api/cases/close/route.ts(70,36): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/app/api/cron/data-retention/route.ts(48,45): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/app/api/cron/data-retention/route.ts(55,40): error TS7006: Parameter 'd' implicitly has an 'any' type.
+src/app/api/reports/route.ts(140,52): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+src/app/api/reports/route.ts(140,57): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/app/api/reports/route.ts(158,34): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/app/api/reports/route.ts(190,26): error TS7006: Parameter 'log' implicitly has an 'any' type.
+src/app/api/reports/route.ts(209,26): error TS7006: Parameter 'log' implicitly has an 'any' type.
+src/app/api/reports/route.ts(228,24): error TS7006: Parameter 'log' implicitly has an 'any' type.
+src/app/api/reports/route.ts(264,45): error TS7006: Parameter 'log' implicitly has an 'any' type.
+src/app/api/reports/route.ts(329,59): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/api/reports/route.ts(332,42): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/app/api/users/route.ts(5,10): error TS2305: Module '"@prisma/client"' has no exported member 'Role'.
+src/app/api/users/subordinates/route.ts(36,44): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/lib/prisma.ts(1,10): error TS2305: Module '"@prisma/client"' has no exported member 'PrismaClient'.
+src/lib/workers/documentProcessor.ts(396,41): error TS7006: Parameter 'u' implicitly has an 'any' type.

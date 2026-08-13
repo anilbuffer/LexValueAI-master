@@ -1,0 +1,2 @@
+﻿src/app/(dashboard)/settings/page.tsx(206,19): error TS2339: Property 'error' does not exist on type '{ success: boolean; }'.
+src/app/(dashboard)/settings/page.tsx(207,28): error TS2339: Property 'error' does not exist on type '{ success: boolean; }'.

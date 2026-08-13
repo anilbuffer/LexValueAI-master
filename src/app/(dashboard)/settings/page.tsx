@@ -203,8 +203,8 @@ export default function SettingsPage() {
     setIsChangingPassword(true);
     try {
       const result = await changePassword(passwordData.currentPassword, passwordData.newPassword);
-      if (result?.error) {
-        toast.error(result.error);
+      if ((result as any)?.error) {
+        toast.error((result as any).error);
         return;
       }
       toast.success("Password changed successfully.");
