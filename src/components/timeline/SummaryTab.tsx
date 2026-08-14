@@ -121,6 +121,78 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
       sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 68)",
       details: "Documentation states 'The patient has not been wearing the cervical orthosis brace.'",
       eventId: "event-11"
+    },
+    {
+      term: "cervical and lumbar sprain/strain",
+      date: "Jun 08, 2018",
+      provider: "NYU Langone Emergency Dept",
+      symptoms: "Neck and back pain, radiating symptoms.",
+      sourceDocument: "NYU_ER_Discharge_Summary.pdf",
+      details: "Initial diagnosis at ER following the accident. Prescribed muscle relaxants and advised follow-up.",
+      eventId: "event-1"
+    },
+    {
+      term: "Cervical Spine MRI",
+      date: "Jul 12, 2018",
+      provider: "Dr. Alan Smith (Radiology)",
+      symptoms: "Persistent neck pain radiating to left arm",
+      sourceDocument: "MRI_Cervical_Spine_Report.pdf",
+      details: "Findings: Severe spondylosis, broad-based disc herniations at C5-C6 and C6-C7 compressing the thecal sac and bilateral nerve roots.",
+      eventId: "event-2"
+    },
+    {
+      term: "rear-ended",
+      date: "Jun 08, 2018",
+      provider: "NYPD / EMS",
+      symptoms: "Neck and back pain",
+      sourceDocument: "NYPD_Police_Report_MV104.pdf",
+      details: "Rear-ended at steady red light by commercial driver at ~35 MPH.",
+      eventId: "event-1"
+    },
+    {
+      term: "neck and back pain",
+      date: "Jun 08, 2018",
+      provider: "Patient Self-Report",
+      symptoms: "Immediate onset post-collision",
+      sourceDocument: "NYU_ER_Discharge_Summary.pdf",
+      details: "Patient reported immediate onset of neck and back pain, which subsequently radiated to her left arm and right leg.",
+      eventId: "event-1"
+    },
+    {
+      term: "emergency room",
+      date: "Jun 08, 2018",
+      provider: "NYU Langone",
+      symptoms: "Post-accident trauma evaluation",
+      sourceDocument: "NYU_ER_Discharge_Summary.pdf",
+      details: "Patient was evaluated in the emergency room on the day of the accident. X-rays were taken, diagnosed with sprain/strain.",
+      eventId: "event-1"
+    },
+    {
+      term: "Motor vehicle accident",
+      date: "Jun 08, 2018",
+      provider: "NYPD / EMS",
+      symptoms: "Neck and back pain",
+      sourceDocument: "NYPD_Police_Report_MV104.pdf",
+      details: "Rear-ended at steady red light by commercial driver at ~35 MPH.",
+      eventId: "event-1"
+    },
+    {
+      term: "mild, occasional lower back pain",
+      date: "Prior to Jun 08, 2018",
+      provider: "Dr. Christopher Cline",
+      symptoms: "Mild, occasional lower back pain",
+      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15)",
+      details: "Patient reported a history of mild, occasional lower back pain prior to the MVA.",
+      eventId: "event-1"
+    },
+    {
+      term: "denied any prior neck pain",
+      date: "Prior to Jun 08, 2018",
+      provider: "Patient Self-Report",
+      symptoms: "Denies prior neck pain",
+      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15)",
+      details: "Initial Orthopedic Evaluation notes patient denied any prior neck pain or upper extremity symptoms.",
+      eventId: "event-1"
     }
   ];
 
@@ -264,34 +336,11 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                 <div key={section.id} className="group relative bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-[12px] font-bold text-slate-700 uppercase tracking-widest m-0">{section.title}</h3>
-                    {editingSection !== section.id ? (
-                      <button
-                        onClick={() => handleEditClick(section.id, section.content)}
-                        className="text-teal-600 hover:text-teal-700 text-[13px] font-medium transition-colors"
-                      >
-                        Edit
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleSaveClick(section.id)}
-                        className="text-teal-600 hover:text-teal-700 text-[13px] font-medium transition-colors"
-                      >
-                        Done
-                      </button>
-                    )}
                   </div>
 
-                  {editingSection === section.id ? (
-                    <textarea
-                      value={editContent}
-                      onChange={(e) => setEditContent(e.target.value)}
-                      className="w-full min-h-[120px] p-4 bg-white border-2 border-teal-500 rounded-xl outline-none focus:ring-0 text-slate-800 resize-y leading-relaxed text-[14px] shadow-inner"
-                    />
-                  ) : (
-                    <div className="text-slate-700 text-[14px] leading-relaxed">
-                      <AnnotatedText text={section.content} />
-                    </div>
-                  )}
+                  <div className="text-slate-700 text-[14px] leading-relaxed">
+                    <AnnotatedText text={section.content} />
+                  </div>
                 </div>
               ))}
             </div>
