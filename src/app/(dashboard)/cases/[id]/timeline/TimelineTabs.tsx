@@ -193,7 +193,7 @@ export function TimelineTabs({ caseData }: { caseData: any }) {
           {activeTab === 'bills' && <MedicalBillsTab caseData={caseData} />}
           {activeTab === 'negotiation' && <NegotiationTab caseData={caseData} />}
           {activeTab === 'documents' && <CaseDocumentsTab caseData={caseData} />}
-          {activeTab === 'demand_letter' && <DemandLetterTab caseData={caseData} />}
+          {activeTab === 'demand_letter' && <DemandLetterTab caseData={caseData} role={role} />}
           {activeTab === 'deposition_outline' && <DepositionOutlineTab caseData={caseData} />}
 
           {activeTab === 'valuation' && <CaseValuationTab caseData={caseData} />}

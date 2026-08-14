@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Sparkles, Edit3, Copy, Download, Save } from "lucide-react"
+import { Sparkles, Edit3, Copy, Download, Save, UserCheck } from "lucide-react"
 import toast from "react-hot-toast"
-import { getMockFirm, getMockMedicalBills } from '@/lib/mock-data'
+import { getMockFirm, getMockMedicalBills, mockUsers } from '@/lib/mock-data'
 
-export function DemandLetterTab({ caseData }: { caseData: any }) {
+export function DemandLetterTab({ caseData, role }: { caseData: any, role?: string | null }) {
   const firm = getMockFirm();
   const bills = getMockMedicalBills(caseData?.firmId, caseData?.id);
   const totalSpecials = bills.reduce((acc, b) => acc + (b.billed || 0), 0);
@@ -80,12 +80,34 @@ We look forward to your prompt response.`)
           >
             <Copy className="w-3.5 h-3.5" /> Copy
           </button>
-          <button 
-            onClick={() => toast.success("Demand letter saved")}
-            className="flex items-center gap-2 px-2.5 py-1 bg-slate-800 border border-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors text-xs font-semibold shadow-sm"
-          >
-            <Save className="w-3.5 h-3.5" /> Save
-          </button>
+          {(role === 'ADMIN' || role === 'MANAGING_PARTNER') ? (
+            <select
+              onChange={(e) => toast.success(`Assigned to ${e.target.value}`)}
+              className="flex items-center gap-2 px-2.5 py-1.5 bg-slate-800 border border-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors text-xs font-semibold shadow-sm outline-none cursor-pointer"
+              defaultValue=""
+            >
+              <option value="" disabled>Assign</option>
+              {mockUsers.filter(u => u.role === 'ATTORNEY' && (!caseData?.firmId || u.firmId === caseData.firmId)).map(attorney => (
+                <option key={attorney.id} value={`${attorney.firstName} ${attorney.lastName}`}>
+                  {attorney.firstName} {attorney.lastName}
+                </option>
+              ))}
+            </select>
+          ) : (role === 'PARALEGAL' || role === 'CASE_MANAGER') ? (
+            <button 
+              onClick={() => toast.success("Assigned to Attorney")}
+              className="flex items-center gap-2 px-2.5 py-1 bg-slate-800 border border-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors text-xs font-semibold shadow-sm"
+            >
+              <UserCheck className="w-3.5 h-3.5" /> Assign to Attorney
+            </button>
+          ) : (
+            <button 
+              onClick={() => toast.success("Demand letter saved")}
+              className="flex items-center gap-2 px-2.5 py-1 bg-slate-800 border border-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors text-xs font-semibold shadow-sm"
+            >
+              <Save className="w-3.5 h-3.5" /> Save
+            </button>
+          )}
         </div>
       </div>
 
