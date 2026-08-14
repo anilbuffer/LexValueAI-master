@@ -45,14 +45,14 @@ export async function GET(request: Request) {
         });
 
         if (casesToDelete.length > 0) {
-          const caseIds = casesToDelete.map(c => c.id);
+          const caseIds = casesToDelete.map((c: any) => c.id);
 
           // Fetch all S3 keys for all documents in all these cases to delete from AWS S3
           const documents = await prisma.document.findMany({
             where: { caseId: { in: caseIds } },
             select: { s3Key: true }
           });
-          const s3Keys = documents.map(d => d.s3Key).filter(Boolean);
+          const s3Keys = documents.map((d: any) => d.s3Key).filter(Boolean);
 
           // AWS S3 DeleteObjects max limit is 1000 keys per request. Process in chunks.
           for (let i = 0; i < s3Keys.length; i += 1000) {

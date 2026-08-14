@@ -11,7 +11,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const { id: caseId } = await params
     const targetCase = await prisma.case.findUnique({
       where: { id: caseId },
-      select: { 
+      select: {
         id: true, scanProgress: true, scanStage: true, firmId: true, status: true,
         createdByUserId: true,
         createdByUser: { select: { managingPartnerId: true, attorneyId: true } },
@@ -83,7 +83,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
     // Delete from S3 first to avoid orphaned files
     const documents = await prisma.document.findMany({ where: { caseId }, select: { s3Key: true } })
-    const s3Keys = documents.map(d => d.s3Key).filter(Boolean)
+    const s3Keys = documents.map((d: any) => d.s3Key).filter(Boolean)
     if (s3Keys.length > 0) {
       await deleteS3Objects(s3Keys)
     }
