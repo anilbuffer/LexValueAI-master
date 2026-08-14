@@ -45,7 +45,7 @@ export async function POST(request: Request) {
 
     // Role-based hierarchy check for Attorney
     const isCreatorSubordinate = dbCase.createdByUserId === session.id || dbCase.createdByUser?.attorneyId === session.id;
-    const isAssignedSubordinate = dbCase.assignedUsers.some(u => u.id === session.id || u.attorneyId === session.id);
+    const isAssignedSubordinate = dbCase.assignedUsers.some((u: any) => u.id === session.id || u.attorneyId === session.id);
     if (!isCreatorSubordinate && !isAssignedSubordinate) {
       return NextResponse.json({ error: 'Forbidden. You do not have access to approve this case.' }, { status: 403 })
     }

@@ -130,7 +130,7 @@ export function UserFormModal({
                   const val = e.target.value;
                   setNewUser({ ...newUser, email: val });
                   
-                  if (val.trim() && modalMode === 'add' && allUsersList.some(u => u.email.toLowerCase() === val.trim().toLowerCase())) {
+                  if (val.trim() && modalMode === 'add' && allUsersList.some((u: any) => u.email.toLowerCase() === val.trim().toLowerCase())) {
                     setFormErrors({ ...formErrors, email: "This email already exists" });
                   } else {
                     if (formErrors.email) setFormErrors({ ...formErrors, email: null });

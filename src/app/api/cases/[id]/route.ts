@@ -34,15 +34,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     // RBAC check
     if (session.role === 'MANAGING_PARTNER') {
       const isCreatorSubordinate = targetCase.createdByUserId === session.id || targetCase.createdByUser?.managingPartnerId === session.id;
-      const isAssignedSubordinate = targetCase.assignedUsers.some(u => u.id === session.id || u.managingPartnerId === session.id);
+      const isAssignedSubordinate = targetCase.assignedUsers.some((u: any) => u.id === session.id || u.managingPartnerId === session.id);
       if (!isCreatorSubordinate && !isAssignedSubordinate) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     } else if (session.role === 'ATTORNEY') {
       const isCreatorSubordinate = targetCase.createdByUserId === session.id || targetCase.createdByUser?.attorneyId === session.id;
-      const isAssignedSubordinate = targetCase.assignedUsers.some(u => u.id === session.id || u.attorneyId === session.id);
+      const isAssignedSubordinate = targetCase.assignedUsers.some((u: any) => u.id === session.id || u.attorneyId === session.id);
       if (!isCreatorSubordinate && !isAssignedSubordinate) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     } else if (session.role === 'PARALEGAL') {
       const isCreator = targetCase.createdByUserId === session.id;
-      const isAssigned = targetCase.assignedUsers.some(u => u.id === session.id);
+      const isAssigned = targetCase.assignedUsers.some((u: any) => u.id === session.id);
       if (!isCreator && !isAssigned) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
