@@ -14,7 +14,8 @@ import {
   ChevronRight,
   LogOut,
   Scale,
-  Activity
+  Activity,
+  FileText
 } from "lucide-react";
 import { logoutUser } from "@/app/actions/auth";
 
@@ -51,11 +52,14 @@ export default function Sidebar({ role, user }: SidebarProps) {
   const getNavItems = () => {
     const items = [
       { name: "Overview", href: "/", icon: LayoutDashboard, roles: ['ADMIN', 'MANAGING_PARTNER', 'ATTORNEY', 'PARALEGAL'] },
+      { name: "Dashboard", href: "/portal", icon: LayoutDashboard, roles: ['PLAINTIFF'] },
+      { name: "My Cases", href: "/portal/cases", icon: FolderOpen, roles: ['PLAINTIFF'] },
+      { name: "Documents", href: "/portal/documents", icon: FileText, roles: ['PLAINTIFF'] },
       { name: "Cases & AI Analysis", href: "/cases", icon: FolderOpen, roles: ['ADMIN', 'MANAGING_PARTNER', 'ATTORNEY', 'PARALEGAL'] },
       { name: "Users", href: "/users", icon: Users, roles: ['ADMIN', 'MANAGING_PARTNER', 'ATTORNEY'] },
       { name: "Audit Log", href: "/audit", icon: Activity, roles: ['ADMIN', 'MANAGING_PARTNER'] },
       { name: "Billing", href: "/billing", icon: CreditCard, roles: ['ADMIN', 'MANAGING_PARTNER'] },
-      { name: "Settings", href: "/settings", icon: Settings, roles: ['ADMIN', 'MANAGING_PARTNER', 'ATTORNEY', 'PARALEGAL'] },
+      { name: "Settings", href: "/settings", icon: Settings, roles: ['ADMIN', 'MANAGING_PARTNER', 'ATTORNEY', 'PARALEGAL', 'PLAINTIFF'] },
     ];
     return items.filter(item => item.roles.includes(role));
   };

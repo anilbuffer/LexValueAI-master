@@ -129,7 +129,7 @@ export default function Header({ role, user }: { role: string, user: { firstName
       </button>
 
       {/* Center: Search Bar (Login Input Style) */}
-      <div className="flex-1 max-w-lg flex justify-center max-[1100px]:justify-start relative max-[767px]:hidden" ref={searchContainerRef}>
+      <div className={`flex-1 max-w-lg flex justify-center max-[1100px]:justify-start relative max-[767px]:hidden ${role === 'PLAINTIFF' ? 'invisible' : ''}`} ref={searchContainerRef}>
         <div className="relative w-full">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-slate-400" />

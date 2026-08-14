@@ -19,6 +19,7 @@ const demoRoles: Role[] = [
   { id: 'attorney', title: 'Attorney', subtitle: 'Legal Desk', icon: Scale, email: 'mike@smithassociates.com' },
   { id: 'managing_partner', title: 'Managing Partner', subtitle: 'Firm Overview', icon: Handshake, email: 'harvey@smithassociates.com' },
   { id: 'admin', title: 'Super Admin', subtitle: 'System Control', icon: ShieldCheck, email: 'admin@lexvalue.com' },
+  { id: 'client', title: 'Client Portal', subtitle: 'Plaintiff View', icon: User, email: 'client@example.com' },
 ];
 
 export default function LoginPage() {
@@ -57,7 +58,11 @@ export default function LoginPage() {
       } else {
         localStorage.removeItem('lexvalue-remembered-email');
       }
-      router.push("/");
+      if (email === 'client@example.com') {
+        router.push("/portal");
+      } else {
+        router.push("/");
+      }
     }
   }, [state, router, remember, email]);
 

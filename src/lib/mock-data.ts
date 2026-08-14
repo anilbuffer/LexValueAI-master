@@ -60,6 +60,21 @@ export let mockUsers = [
     createdAt: new Date("2022-03-10T00:00:00Z"),
     updatedAt: new Date("2026-08-01T00:00:00Z"),
   },
+  {
+    id: "client-1",
+    firstName: "Debra",
+    lastName: "Espinoza",
+    email: "client@example.com",
+    phone: "555-0123",
+    passwordHash: "mocked-hash",
+    role: "PLAINTIFF",
+    isActive: true,
+    firmId: mockFirm.id,
+    managingPartnerId: null,
+    attorneyId: null,
+    createdAt: new Date("2026-01-10T10:00:00Z"),
+    updatedAt: new Date("2026-08-01T00:00:00Z"),
+  }
 ];
 
 export let mockCases = [
