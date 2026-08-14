@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { UserCheck, FileQuestion, AlertTriangle, BookOpen, Download } from 'lucide-react'
+import { UserCheck, FileQuestion, AlertTriangle, BookOpen } from 'lucide-react'
 import { getMockDepositionOutlines } from '@/lib/mock-data'
 import toast from 'react-hot-toast'
 
@@ -39,12 +39,6 @@ export function DepositionOutlineTab({ caseData }: { caseData: any }) {
           <h2 className="text-lg font-bold text-slate-800">Deposition Outline</h2>
           <p className="text-xs text-slate-500 mt-0.5">Targeting: <span className="font-bold text-slate-700">{outline.deponentType}</span></p>
         </div>
-        <button
-          onClick={() => toast.success("Deposition outline exported")}
-          className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-semibold transition-all shadow-sm"
-        >
-          <Download className="w-4 h-4" /> Export Outline
-        </button>
       </div>
 
       <div className="p-4 flex-1 overflow-y-auto">

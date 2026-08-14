@@ -18,19 +18,24 @@ import { Receipt, Handshake, FolderOpen, Mail, UserCheck, Car, Target } from "lu
 
 type TabType = 'flags' | 'chronology' | 'summary' | 'gaps' | 'bills' | 'negotiation' | 'documents' | 'demand_letter' | 'deposition_outline' | 'valuation'
 
+import { useSearchParams } from "next/navigation"
+
 export function TimelineTabs({ caseData }: { caseData: any }) {
+  const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState<TabType>('chronology')
   const [role, setRole] = useState<string | null>(null)
   const [highlightedFlag, setHighlightedFlag] = useState<number | null>(null)
 
   useEffect(() => {
     getUserRole().then(setRole)
-    const params = new URLSearchParams(window.location.search)
-    const tabParam = params.get('tab') as TabType
+  }, [])
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab') as TabType
     if (tabParam && ['flags', 'chronology', 'summary', 'gaps', 'bills', 'negotiation', 'documents', 'demand_letter', 'deposition_outline', 'valuation'].includes(tabParam)) {
       setActiveTab(tabParam)
     }
-  }, [])
+  }, [searchParams])
 
   // Function to guess severity based on text content
   function guessSeverity(text: string): string {

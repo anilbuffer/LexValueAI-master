@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Calendar, User, Activity, FileText, Info, ExternalLink } from 'lucide-react'
 import { updateMockDocument } from '@/lib/mock-data'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
-type NarrativePerspective = 'Structured' | 'Plaintiff view' | 'Defense view'
+type NarrativePerspective = 'Structured' | 'Plaintiff Narrative' | 'Defense Narrative'
 
 export function SummaryTab({ caseData }: { caseData?: any }) {
   const [perspective, setPerspective] = useState<NarrativePerspective>('Structured')
@@ -199,6 +199,7 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
   // Hover Annotation Component
   const AnnotatedText = ({ text }: { text: string }) => {
     const router = useRouter();
+    const pathname = usePathname();
 
     // Sort annotations by length (longest first) to prevent partial matching issues
     const sortedAnnotations = [...annotations].sort((a, b) => b.term.length - a.term.length);
@@ -230,7 +231,7 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
       e.preventDefault();
       e.stopPropagation();
       // Navigate to chronology tab and pass eventId in query params
-      router.push(`?tab=chronology&eventId=${eventId}`);
+      router.push(`${pathname}?tab=chronology&eventId=${eventId}`);
     };
 
     return (
@@ -302,7 +303,7 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
       <div className="p-4 md:p-6 pb-0 shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Inner Tabs */}
         <div className="flex items-center bg-slate-100 p-1 rounded-xl w-fit">
-          {['Structured', 'Plaintiff Summary', 'Defense Summary'].map((tab) => (
+          {['Structured', 'Plaintiff Narrative', 'Defense Narrative'].map((tab) => (
             <button
               key={tab}
               onClick={() => setPerspective(tab as NarrativePerspective)}
@@ -346,7 +347,7 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
             </div>
           )}
 
-          {perspective === 'Plaintiff view' && doc?.plaintiffNarrative && (
+          {perspective === 'Plaintiff Narrative' && doc?.plaintiffNarrative && (
             <div className="group relative bg-white border border-slate-200 rounded-xl p-5 shadow-sm animate-in fade-in duration-300">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-[12px] font-bold text-slate-700 uppercase tracking-widest m-0">Plaintiff narrative</h3>
@@ -381,7 +382,7 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
             </div>
           )}
 
-          {perspective === 'Defense view' && doc?.defenseNarrative && (
+          {perspective === 'Defense Narrative' && doc?.defenseNarrative && (
             <div className="group relative bg-white border border-slate-200 rounded-xl p-5 shadow-sm animate-in fade-in duration-300">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-[12px] font-bold text-slate-700 uppercase tracking-widest m-0">Defense narrative (anticipated counterarguments)</h3>

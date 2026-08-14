@@ -81,10 +81,10 @@ We look forward to your prompt response.`)
             <Copy className="w-3.5 h-3.5" /> Copy
           </button>
           <button 
-            onClick={() => toast.success("Demand letter exported as PDF")}
+            onClick={() => toast.success("Demand letter saved")}
             className="flex items-center gap-2 px-2.5 py-1 bg-slate-800 border border-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors text-xs font-semibold shadow-sm"
           >
-            <Download className="w-3.5 h-3.5" /> Export
+            <Save className="w-3.5 h-3.5" /> Save
           </button>
         </div>
       </div>
