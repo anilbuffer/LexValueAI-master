@@ -155,6 +155,16 @@ QUESTIONING LIST
 - Did the patient wear the prescribed cervical orthosis after the ACDF surgery?
 - Were there any complications during the left knee arthroscopy?
 - Has the patient been compliant with physical therapy recommendations?`,
+    summarySections: [
+      { id: "sec-1", title: "PATIENT OVERVIEW", content: "Robin Johnson (also documented interchangeably as Lori Guidi) is a 45-year-old female.\nDate of Birth: Jan 01, 1958.\nGender: Female.\nOccupation: Not specified.\nDate of Incident: Jun 08, 2018.\nSummary: Patient is a 45-year-old female who was involved in a motor vehicle accident (MVA) on Jun 08, 2018. She was a restrained driver in a vehicle that was rear-ended. She reported immediate onset of neck and back pain, which subsequently radiated to her left arm and right leg. She sought medical attention at the emergency room on the day of the accident. She was diagnosed with cervical and lumbar sprain/strain." },
+      { id: "sec-2", title: "MECHANISM OF INJURY", content: "Motor vehicle accident on Jun 08, 2018. Patient was the driver of a vehicle that was rear-ended. She was wearing a seatbelt. She stated that her vehicle was pushed forward and she felt a sudden \"jolt\" in her neck and back." },
+      { id: "sec-3", title: "MEDICAL HISTORY", content: "Prior to the MVA, patient reported a history of mild, occasional lower back pain. She denied any prior neck pain, upper extremity symptoms, or significant medical conditions. She also denied any prior surgeries or hospitalizations." },
+      { id: "sec-4", title: "SURGERIES", content: "- 10/15/2018: Anterior Cervical Discectomy and Fusion (ACDF) C5-C6 and C6-C7.\n- 11/12/2018: Right shoulder arthroscopy with extensive debridement and SLAP repair.\n- 06/15/2018: Left knee arthroscopy with partial medial meniscectomy." },
+      { id: "sec-5", title: "FUNCTIONAL LIMITATIONS", content: "- Difficulty turning head to the left/right.\n- Pain with lifting objects overhead.\n- Difficulty bending to tie shoes.\n- Pain when sitting for prolonged periods.\n- Trouble sleeping due to pain." },
+      { id: "sec-6", title: "QUESTIONING LIST", content: "- Did the patient wear the prescribed cervical orthosis after the ACDF surgery?\n- Were there any complications during the left knee arthroscopy?\n- Has the patient been compliant with physical therapy recommendations?" }
+    ],
+    plaintiffNarrative: "The plaintiff sustained significant, life-altering injuries as a direct result of the rear-end collision. Prior to the accident, she had no history of neck pain. The impact caused severe trauma requiring a complex C5-C7 ACDF surgery and multiple arthroscopic procedures, leading to permanent functional limitations.",
+    defenseNarrative: "The defense notes that the plaintiff had pre-existing lower back complaints. Furthermore, there is a documented failure to comply with post-operative care instructions (e.g., not wearing the cervical orthosis), which likely exacerbated her symptoms and compromised surgical outcomes.",
     aiAnalysis: {
       flags: [
         {
@@ -284,6 +294,33 @@ QUESTIONING LIST
     firmId: mockFirm.id,
     createdAt: new Date("2026-01-12T11:00:00Z"),
     updatedAt: new Date("2026-01-12T11:05:00Z"),
+  },
+  {
+    id: "doc-2",
+    fileName: "NYPD_Police_Report_MV104.pdf",
+    s3Key: "mock-s3-key-2.pdf",
+    size: 450000,
+    mimeType: "application/pdf",
+    status: "READY",
+    summary: `POLICE REPORT SUMMARY
+Date of Accident: Jun 08, 2018 at 08:15 AM
+Location: Intersection of Atlantic Ave and Flatbush Ave, Brooklyn NY.
+Vehicles Involved: Vehicle 1 (Driven by Robin Johnson, stopped at red light). Vehicle 2 (Driven by Commercial Driver, failed to stop).
+Narrative: V1 was stopped at a steady red light. V2 rear-ended V1 at approximately 35 MPH. Driver of V1 complained of neck and back pain at the scene and was transported via EMS to City General Hospital. Driver of V2 cited for following too closely.`,
+    summarySections: [
+      { id: "sec-2-1", title: "COLLISION NARRATIVE", content: "V1 was stopped at a steady red light. V2 rear-ended V1 at approximately 35 MPH. Driver of V1 complained of neck and back pain at the scene and was transported via EMS to City General Hospital. Driver of V2 cited for following too closely." },
+      { id: "sec-2-2", title: "INJURIES REPORTED", content: "Driver V1 (Johnson): Neck pain, back pain. Transported by ambulance." }
+    ],
+    plaintiffNarrative: "The police report clearly establishes 100% liability on the defendant commercial driver who failed to stop and rear-ended the plaintiff at a high rate of speed.",
+    defenseNarrative: "Liability is generally conceded, however, the severity of the impact is contested. Speed estimates are unverified.",
+    aiAnalysis: {
+      flags: [],
+      gaps: []
+    },
+    caseId: "case-1",
+    firmId: mockFirm.id,
+    createdAt: new Date("2026-01-13T11:00:00Z"),
+    updatedAt: new Date("2026-01-13T11:05:00Z"),
   }
 ];
 
@@ -455,6 +492,208 @@ export let mockAuditLogs = [
   }
 ];
 
+export let mockCaseNotes = [
+  {
+    id: "note-1",
+    caseId: "case-1",
+    firmId: "firm-1",
+    author: "Navneet Kaur",
+    role: "Paralegal",
+    type: "Follow-up",
+    content: "Requested PT discharge summary from Coastal on 3 occasions. Escalating to records subpoena if not received this week.",
+    isRestricted: false,
+    createdAt: new Date("2026-08-10T10:00:00Z"),
+  },
+  {
+    id: "note-2",
+    caseId: "case-1",
+    firmId: "firm-1",
+    author: "Alexandra Guidi",
+    role: "Attorney",
+    type: "Strategy",
+    content: "Do not submit demand until the radiology addendum is in hand — the degenerative language is the single biggest exposure here.",
+    isRestricted: true,
+    createdAt: new Date("2026-08-11T14:30:00Z"),
+  }
+];
+
+export let mockPropertyDamage = [
+  {
+    id: "pd-1",
+    caseId: "case-2",
+    firmId: "firm-1",
+    photos: ["/pd-example.jpg"],
+    description: "Rear-end collision resulting in severe damage to the rear bumper and trunk. Frame damage suspected.",
+    repairEstimate: 8500.00,
+    vehicleInfo: "2023 Toyota Camry",
+    createdAt: new Date("2026-08-12T10:00:00Z"),
+  }
+];
+
+export let mockNegotiationLogs = [
+  {
+    id: "neg-4",
+    caseId: "case-1",
+    firmId: "firm-1",
+    demandAmount: 325000.00,
+    counterOffer: 175000.00,
+    party: "Defense Counsel",
+    responseDays: 5,
+    date: new Date("2026-08-10T14:00:00Z")
+  },
+  {
+    id: "neg-3",
+    caseId: "case-1",
+    firmId: "firm-1",
+    demandAmount: 375000.00,
+    counterOffer: 125000.00,
+    party: "Plaintiff Counsel",
+    responseDays: 10,
+    date: new Date("2026-07-25T11:00:00Z")
+  },
+  {
+    id: "neg-2",
+    caseId: "case-1",
+    firmId: "firm-1",
+    demandAmount: 450000.00,
+    counterOffer: 85000.00,
+    party: "Defense Counsel",
+    responseDays: 21,
+    date: new Date("2026-06-15T09:30:00Z")
+  },
+  {
+    id: "neg-1",
+    caseId: "case-1",
+    firmId: "firm-1",
+    demandAmount: 500000.00,
+    counterOffer: 45000.00,
+    party: "Defense Counsel",
+    responseDays: 14,
+    date: new Date("2026-05-10T10:00:00Z")
+  }
+];
+
+export let mockMedicalBills = [
+  {
+    id: "bill-1",
+    caseId: "case-1",
+    firmId: "firm-1",
+    provider: "City General Hospital - ER",
+    datesOfService: "06/08/2018",
+    billed: 4500.00,
+    adjusted: 1200.00,
+    paid: 3300.00,
+    balance: 0,
+  },
+  {
+    id: "bill-2",
+    caseId: "case-1",
+    firmId: "firm-1",
+    provider: "South Shore MRI",
+    datesOfService: "06/04/2018 - 07/10/2018",
+    billed: 3200.00,
+    adjusted: 500.00,
+    paid: 2700.00,
+    balance: 0,
+  },
+  {
+    id: "bill-3",
+    caseId: "case-1",
+    firmId: "firm-1",
+    provider: "Long Island Spine",
+    datesOfService: "06/08/2018 - 12/01/2018",
+    billed: 45000.00,
+    adjusted: 15000.00,
+    paid: 10000.00,
+    balance: 20000.00,
+  },
+  {
+    id: "bill-4",
+    caseId: "case-1",
+    firmId: "firm-1",
+    provider: "Empire City Medical Center",
+    datesOfService: "10/15/2018",
+    billed: 85000.00,
+    adjusted: 35000.00,
+    paid: 0,
+    balance: 50000.00,
+  },
+  {
+    id: "bill-5",
+    caseId: "case-1",
+    firmId: "firm-1",
+    provider: "Peak Performance Physical Therapy",
+    datesOfService: "09/01/2018 - 02/10/2019",
+    billed: 12500.00,
+    adjusted: 4500.00,
+    paid: 8000.00,
+    balance: 0,
+  }
+];
+
+export let mockDepositionOutlines = [
+  {
+    id: "depo-1",
+    caseId: "case-1",
+    firmId: "firm-1",
+    deponentType: "Defense Medical Examiner",
+    gaps: ["Missing physical therapy progress notes.", "Missing lumbar MRI."],
+    inconsistencies: ["Conflicting dates on right shoulder arthroscopy.", "Inconsistent patient names (Johnson vs Guidi)."],
+    questionLines: [
+      { topic: "Causation & MVA", suggestedQuestion: "Doctor, isn't it true that a rear-end collision of this magnitude is a well-documented mechanism of injury for a C5-C6 disc herniation?", citation: "Page 85, ACDF Operative Report" },
+      { topic: "Pre-existing Conditions", suggestedQuestion: "You emphasize the patient's prior lower back pain, yet you acknowledge in your report that she had zero documented complaints of cervical or radicular pain prior to June 8, 2018, correct?", citation: "Page 15, Initial Ortho Eval" },
+      { topic: "Treatment Necessity", suggestedQuestion: "Do you dispute Dr. Grossman's surgical opinion that conservative therapy had failed and ACDF was medically necessary to prevent permanent nerve damage?", citation: "Page 55, Neurosurgery Clearance" },
+      { topic: "Surgical Efficacy", suggestedQuestion: "Even if you argue the shoulder surgery wasn't strictly related to the MVA, you agree the cervical fusion is a permanent structural alteration of her spine?", citation: "Page 85" }
+    ]
+  },
+  {
+    id: "depo-2",
+    caseId: "case-1",
+    firmId: "firm-1",
+    deponentType: "Treating Physician (Dr. Cline)",
+    gaps: ["Missing right shoulder MRI findings.", "Missing left knee operative report."],
+    inconsistencies: ["Notes state patient refused injection, but billing shows injection administered."],
+    questionLines: [
+      { topic: "Diagnosis Justification", suggestedQuestion: "Dr. Cline, can you walk us through the specific objective findings on the June 15th MRI that led you to recommend arthroscopic surgery?", citation: "Page 35" },
+      { topic: "Future Prognosis", suggestedQuestion: "In your expert opinion, what is the likelihood this patient will require a revision surgery or adjacent segment fusion within the next 10 years?", citation: "Page 155, Re-Evaluation" }
+    ]
+  }
+];
+
+export let mockCaseValuations = [
+  {
+    id: "val-1",
+    caseId: "case-1",
+    firmId: "firm-1",
+    minEstimate: 225000,
+    maxEstimate: 375000,
+    confidence: 92,
+    factorsUp: [
+      "Objective surgical intervention (ACDF C5-C7)", 
+      "Clear liability (Rear-end collision, restrained driver)",
+      "Uncomplicated recovery indicating clear treatment path",
+      "Substantial medical specials exceeding $120k"
+    ],
+    factorsDown: [
+      "Documented non-compliance (Did not wear cervical orthosis)",
+      "Fragmented care history with multiple providers",
+      "Minor pre-existing lower back pain claims"
+    ]
+  }
+];
+
+export let mockChatHistory = [
+  {
+    id: "chat-1",
+    caseId: "case-1",
+    firmId: "firm-1",
+    sender: "ai",
+    content: "Ask me anything about this medical record — I answer with page citations from the chronology.",
+    citation: null,
+    createdAt: new Date("2026-08-14T10:00:00Z"),
+  }
+];
+
 export const getMockUser = () => mockUser;
 export const getMockCases = () => mockCases;
 export const getMockCaseById = (id: string) => mockCases.find((c: any) => c.id === id);
@@ -464,6 +703,15 @@ export const getMockNotifications = () => mockNotifications;
 export const getMockAuditLogs = () => mockAuditLogs;
 export const getMockUsers = () => mockUsers;
 export const getMockFirm = () => mockFirm;
+
+// Phase 2 Getters with strict firmId filtering
+export const getMockCaseNotes = (firmId: string, caseId: string) => mockCaseNotes.filter((n: any) => n.firmId === firmId && n.caseId === caseId);
+export const getMockPropertyDamage = (firmId: string, caseId: string) => mockPropertyDamage.filter((p: any) => p.firmId === firmId && p.caseId === caseId);
+export const getMockNegotiationLogs = (firmId: string, caseId: string) => mockNegotiationLogs.filter((n: any) => n.firmId === firmId && n.caseId === caseId);
+export const getMockMedicalBills = (firmId: string, caseId: string) => mockMedicalBills.filter((b: any) => b.firmId === firmId && b.caseId === caseId);
+export const getMockDepositionOutlines = (firmId: string, caseId: string) => mockDepositionOutlines.filter((d: any) => d.firmId === firmId && d.caseId === caseId);
+export const getMockCaseValuations = (firmId: string, caseId: string) => mockCaseValuations.filter((v: any) => v.firmId === firmId && v.caseId === caseId);
+export const getMockChatHistory = (firmId: string, caseId: string) => mockChatHistory.filter((c: any) => c.firmId === firmId && c.caseId === caseId);
 
 // Mutators
 export const createMockCase = (newCase: any) => { mockCases.push(newCase); return newCase; }
@@ -492,3 +740,16 @@ export const deleteMockDocument = (id: string) => { mockDocuments = mockDocument
 
 export const createMockNotification = (newNotif: any) => { mockNotifications.push(newNotif); return newNotif; }
 export const createMockAuditLog = (newLog: any) => { mockAuditLogs.push(newLog); return newLog; }
+
+// Phase 2 Mutators
+export const createMockCaseNote = (note: any) => { mockCaseNotes.unshift(note); return note; }
+export const createMockPropertyDamage = (pd: any) => { mockPropertyDamage.unshift(pd); return pd; }
+export const createMockNegotiationLog = (log: any) => { mockNegotiationLogs.unshift(log); return log; }
+export const createMockMedicalBill = (bill: any) => { mockMedicalBills.unshift(bill); return bill; }
+export const updateMockMedicalBill = (id: string, data: any) => {
+  const index = mockMedicalBills.findIndex(b => b.id === id);
+  if (index > -1) { mockMedicalBills[index] = { ...mockMedicalBills[index], ...data }; return mockMedicalBills[index]; }
+  return null;
+}
+export const deleteMockMedicalBill = (id: string) => { mockMedicalBills = mockMedicalBills.filter(b => b.id !== id); }
+export const createMockChatHistory = (chat: any) => { mockChatHistory.push(chat); return chat; }
