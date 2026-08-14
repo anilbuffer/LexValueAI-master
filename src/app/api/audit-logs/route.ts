@@ -105,7 +105,7 @@ export async function GET(request: Request) {
       take: limit,
     })
 
-    const formattedLogs = logs.map(log => ({
+    const formattedLogs = logs.map((log: any) => ({
       id: log.id,
       action: log.action,
       details: log.details,
