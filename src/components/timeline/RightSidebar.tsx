@@ -122,30 +122,30 @@ export function RightSidebar({ caseData }: { caseData: any }) {
   }
 
   return (
-    <div className="w-full xl:w-[380px] shrink-0 flex flex-col gap-[15px] xl:sticky xl:top-[120px] self-start">
+    <div className="w-full xl:w-[350px] shrink-0 flex flex-col gap-2 xl:sticky xl:top-[120px] self-start">
 
       {/* Case Notes */}
-      <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-100px)] max-h-[800px]">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 shrink-0">
-          <div className="flex items-center gap-2">
-            <FileText className="w-4 h-4 text-teal-600" />
-            <h2 className="text-[15px] font-bold text-slate-900">Case Notes</h2>
-            <span className="text-[11px] font-bold text-slate-400 ml-1">{notes.length}</span>
+      <div className="bg-white rounded-xl border border-slate-200/50 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-100px)] max-h-[800px]">
+        <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100 shrink-0">
+          <div className="flex items-center gap-1.5">
+            <FileText className="w-3.5 h-3.5 text-teal-600" />
+            <h2 className="text-[13px] font-bold text-slate-900">Case Notes</h2>
+            <span className="text-[10px] font-bold text-slate-400 ml-1">{notes.length}</span>
           </div>
         </div>
 
-        <div className="p-4 flex flex-col gap-3 border-b border-slate-100 shrink-0 bg-slate-50/50">
+        <div className="p-3 flex flex-col gap-2 border-b border-slate-100 shrink-0 bg-slate-50/50">
           <textarea
             value={noteText}
             onChange={(e) => setNoteText(e.target.value)}
             placeholder="Internal note — never shared outside the firm."
-            className="w-full h-20 text-[13px] border border-slate-200 rounded-lg p-3 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 resize-none transition-all placeholder:text-slate-400 font-medium text-slate-700 bg-white"
+            className="w-full h-16 text-[12px] border border-slate-200 rounded-lg p-2.5 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 resize-none transition-all placeholder:text-slate-400 font-medium text-slate-700 bg-white"
           />
           <div className="flex items-center gap-2">
             <select
               value={noteType}
               onChange={(e) => setNoteType(e.target.value)}
-              className="flex-1 text-[13px] border border-slate-200 rounded-lg px-3 py-2 outline-none focus:border-teal-500 bg-white text-slate-700 font-medium cursor-pointer"
+              className="flex-1 text-[12px] border border-slate-200 rounded-lg px-2.5 py-1.5 outline-none focus:border-teal-500 bg-white text-slate-700 font-medium cursor-pointer"
             >
               <option>General</option>
               <option>Follow-up</option>
@@ -155,48 +155,48 @@ export function RightSidebar({ caseData }: { caseData: any }) {
             <button
               onClick={handleAddNote}
               disabled={!noteText.trim()}
-              className="flex items-center justify-center gap-1.5 px-4 py-2 bg-teal-600 text-white rounded-lg text-[13px] font-bold hover:bg-teal-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center justify-center gap-1 px-3 py-1.5 bg-teal-600 text-white rounded-lg text-[12px] font-bold hover:bg-teal-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Plus className="w-4 h-4" /> Add
+              <Plus className="w-3.5 h-3.5" /> Add
             </button>
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 p-4 overflow-y-auto flex-1 bg-slate-50/50">
+        <div className="flex flex-col gap-2 p-3 overflow-y-auto flex-1 bg-slate-50/50">
           {notes.map((note) => (
             <div
               key={note.id}
               onClick={() => setSelectedNote(note)}
-              className="p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-teal-300 transition-all cursor-pointer group"
+              className="p-3 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-teal-300 transition-all cursor-pointer group"
             >
-              <div className="flex items-center flex-wrap gap-2 mb-2">
-                <span className="text-[13px] font-bold text-slate-800">{note.author}</span>
-                <span className="text-[12px] text-slate-500">{note.role}</span>
+              <div className="flex items-center flex-wrap gap-1.5 mb-1.5">
+                <span className="text-[12px] font-bold text-slate-800">{note.author}</span>
+                <span className="text-[11px] text-slate-500">{note.role}</span>
 
                 {note.type === 'Strategy' ? (
-                  <span className="bg-emerald-50 text-emerald-700 text-[11px] font-bold px-2 py-0.5 rounded-md ml-auto">{note.type}</span>
+                  <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-1.5 py-0.5 rounded-md ml-auto">{note.type}</span>
                 ) : note.type === 'Follow-up' ? (
-                  <span className="bg-teal-50 text-teal-700 text-[11px] font-bold px-2 py-0.5 rounded-md ml-auto">{note.type}</span>
+                  <span className="bg-teal-50 text-teal-700 text-[10px] font-bold px-1.5 py-0.5 rounded-md ml-auto">{note.type}</span>
                 ) : note.type === 'Restricted' ? (
-                  <span className="bg-rose-50 text-rose-700 text-[11px] font-bold px-2 py-0.5 rounded-md ml-auto">{note.type}</span>
+                  <span className="bg-rose-50 text-rose-700 text-[10px] font-bold px-1.5 py-0.5 rounded-md ml-auto">{note.type}</span>
                 ) : (
-                  <span className="bg-slate-100 text-slate-700 text-[11px] font-bold px-2 py-0.5 rounded-md ml-auto">{note.type}</span>
+                  <span className="bg-slate-100 text-slate-700 text-[10px] font-bold px-1.5 py-0.5 rounded-md ml-auto">{note.type}</span>
                 )}
               </div>
 
-              <p className="text-[14px] text-slate-700 font-medium leading-relaxed mb-3 break-words group-hover:text-slate-900 transition-colors">
+              <p className="text-[12px] text-slate-700 font-medium leading-relaxed mb-2 break-words group-hover:text-slate-900 transition-colors">
                 {note.content}
               </p>
 
               <div className="flex items-center justify-between">
-                <p className="text-[12px] text-slate-400 font-medium">
+                <p className="text-[10px] text-slate-400 font-medium">
                   {note.createdAt && new Date(note.createdAt).toLocaleString('en-US', {
                     month: 'short', day: 'numeric', year: 'numeric',
                     hour: 'numeric', minute: '2-digit', hour12: true
                   })}
                 </p>
                 {note.isRestricted && note.type !== 'Restricted' && (
-                  <span className="bg-rose-50 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-md">Restricted</span>
+                  <span className="bg-rose-50 text-rose-700 text-[9px] font-bold px-1.5 py-0.5 rounded-md">Restricted</span>
                 )}
               </div>
             </div>
