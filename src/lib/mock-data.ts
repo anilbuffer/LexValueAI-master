@@ -805,15 +805,14 @@ export let mockCaseValuations = [
     maxEstimate: 375000,
     confidence: 92,
     factorsUp: [
-      "Objective surgical intervention (ACDF C5-C7)", 
-      "Clear liability (Rear-end collision, restrained driver)",
-      "Uncomplicated recovery indicating clear treatment path",
-      "Substantial medical specials exceeding $120k"
+      "Future surgical recommendation (Lumbar Fusion)",
+      "Strong causation language documented by treating physician",
+      "Permanency finding indicating lifelong limitations"
     ],
     factorsDown: [
+      "Significant treatment gap of 3 months post-accident",
       "Documented non-compliance (Did not wear cervical orthosis)",
-      "Fragmented care history with multiple providers",
-      "Minor pre-existing lower back pain claims"
+      "Pre-existing lower back pain claims"
     ]
   }
 ];

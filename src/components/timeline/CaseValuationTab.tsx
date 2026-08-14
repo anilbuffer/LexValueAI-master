@@ -64,7 +64,7 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
       <div className="bg-slate-50 p-5 border-b border-slate-200 shrink-0 flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-800">Predictive Case Valuation</h2>
-          <p className="text-sm text-slate-500 mt-1">AI-driven settlement range forecasting backed by defense actuarial modeling</p>
+          <p className="text-sm text-slate-500 mt-1">Using the structured case data, AI flags, verdict dataset, and attorney correction history, the platform generates a predicted settlement range for each case.</p>
         </div>
         <div className="bg-teal-100 text-teal-800 px-3 py-1.5 rounded-md font-bold text-sm flex items-center gap-1.5 shadow-sm">
           <Shield className="w-4 h-4" /> 
@@ -92,7 +92,7 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
               </span>
             </div>
             <p className="text-slate-400 mt-4 text-sm max-w-xl leading-relaxed">
-              Based on historical firm data, jurisdiction trends, and case-specific medical findings including surgical interventions and documented causation.
+              The prediction is presented with a confidence level and a breakdown of the key factors driving the estimate upward or downward such as surgical recommendation, permanency finding, treatment gap, or strong causation language. This is the EvenUp-level intelligence layer that transforms LexValue AI from a documentation tool into a true strategic platform.
             </p>
           </div>
 
