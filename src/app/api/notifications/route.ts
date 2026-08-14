@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
+import { getMockUsers, mockNotifications } from '@/lib/mock-data'
 
 export async function GET(request: Request) {
   try {
@@ -18,53 +18,46 @@ export async function GET(request: Request) {
     const dateTo = searchParams.get('dateTo')
 
     // Fetch user to ensure firmId and role
-    const currentUser = await prisma.user.findUnique({ where: { id: session.id } })
+    const currentUser = getMockUsers().find(u => u.id === session.id)
     if (!currentUser || !currentUser.firmId) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    const whereClause: Record<string, any> = {
-      firmId: currentUser.firmId,
-      userId: currentUser.id
-    }
+    let filtered = mockNotifications.filter(n => n.firmId === currentUser.firmId && n.userId === currentUser.id)
 
     if (isReadFilter === 'true') {
-      whereClause.isRead = true
+      filtered = filtered.filter(n => n.isRead === true)
     } else if (isReadFilter === 'false') {
-      whereClause.isRead = false
+      filtered = filtered.filter(n => n.isRead === false)
     }
 
     if (search) {
-      whereClause.message = { contains: search, mode: 'insensitive' }
+      filtered = filtered.filter(n => n.message.toLowerCase().includes(search.toLowerCase()))
     }
 
     if (dateFrom || dateTo) {
-      whereClause.createdAt = {}
       if (dateFrom) {
-        whereClause.createdAt.gte = new Date(dateFrom)
+        const fromD = new Date(dateFrom)
+        filtered = filtered.filter(n => new Date(n.createdAt) >= fromD)
       }
       if (dateTo) {
-        const endOfDay = new Date(dateTo)
-        endOfDay.setUTCHours(23, 59, 59, 999)
-        whereClause.createdAt.lte = endOfDay
+        const toD = new Date(dateTo)
+        toD.setUTCHours(23, 59, 59, 999)
+        filtered = filtered.filter(n => new Date(n.createdAt) <= toD)
       }
     }
 
-    const total = await prisma.notification.count({ where: whereClause })
+    filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-    const notifications = await prisma.notification.findMany({
-      where: whereClause,
-      orderBy: { createdAt: 'desc' },
-      skip: (page - 1) * limit,
-      take: limit,
-    })
+    const total = filtered.length;
+    const notifications = filtered.slice((page - 1) * limit, page * limit);
 
     return NextResponse.json({
       success: true,
       notifications,
       total,
       page,
-      totalPages: Math.ceil(total / limit)
+      totalPages: Math.ceil(total / limit) || 1
     }, { status: 200 })
 
   } catch (error) {

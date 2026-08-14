@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
+import { mockCases, mockUsers, mockNotifications, mockAuditLogs } from '@/lib/mock-data'
 
 export async function GET(request: Request) {
   try {
@@ -18,120 +18,60 @@ export async function GET(request: Request) {
 
     const firmId = session.firmId
     const role = session.role
+    const lowerQuery = query.toLowerCase()
 
-    // ==========================================
-    // 1. CASES QUERY BUILDER
-    // ==========================================
-    let caseRoleOr: any[] = []
-    if (role === 'ADMIN') {
-      // Admin sees everything in the firm
-    } else if (role === 'MANAGING_PARTNER') {
-      caseRoleOr = [
-        { createdByUserId: session.id },
-        { createdByUser: { managingPartnerId: session.id } },
-        { assignedUsers: { some: { managingPartnerId: session.id } } },
-        { assignedUsers: { some: { id: session.id } } }
-      ]
+    let cases = mockCases.filter(c => c.firmId === firmId && (
+      c.title.toLowerCase().includes(lowerQuery) ||
+      (c.client && c.client.toLowerCase().includes(lowerQuery)) ||
+      (c.referenceId && c.referenceId.toLowerCase().includes(lowerQuery))
+    ));
+
+    // Very simplified role check for search
+    if (role === 'MANAGING_PARTNER') {
+      const currentUser = mockUsers.find(u => u.id === session.id)
+      const subIds = mockUsers.filter(u => u.managingPartnerId === session.id).map(u => u.id)
+      cases = cases.filter(c => c.createdByUserId === session.id || (c.createdByUserId && subIds.includes(c.createdByUserId)) || c.assignedUsers?.some((u:any) => u.id === session.id || subIds.includes(u.id)))
     } else if (role === 'ATTORNEY') {
-      caseRoleOr = [
-        { createdByUserId: session.id },
-        { createdByUser: { attorneyId: session.id } },
-        { assignedUsers: { some: { attorneyId: session.id } } },
-        { assignedUsers: { some: { id: session.id } } }
-      ]
-    } else {
-      caseRoleOr = [
-        { createdByUserId: session.id },
-        { assignedUsers: { some: { id: session.id } } }
-      ]
+      const subIds = mockUsers.filter(u => u.attorneyId === session.id).map(u => u.id)
+      cases = cases.filter(c => c.createdByUserId === session.id || (c.createdByUserId && subIds.includes(c.createdByUserId)) || c.assignedUsers?.some((u:any) => u.id === session.id || subIds.includes(u.id)))
+    } else if (role === 'PARALEGAL') {
+      cases = cases.filter(c => c.createdByUserId === session.id || c.assignedUsers?.some((u:any) => u.id === session.id))
     }
 
-    const caseWhere: any = {
-      firmId,
-      OR: [
-        { title: { contains: query, mode: 'insensitive' } },
-        { client: { contains: query, mode: 'insensitive' } },
-        { referenceId: { contains: query, mode: 'insensitive' } }
-      ]
-    }
-    if (caseRoleOr.length > 0) {
-      caseWhere.AND = [{ OR: caseRoleOr }]
-    }
-
-    // ==========================================
-    // 2. USERS QUERY BUILDER
-    // ==========================================
-    let userWhere: any = null
+    let users: any[] = []
     if (role !== 'PARALEGAL') {
-      userWhere = {
-        firmId,
-        OR: [
-          { firstName: { contains: query, mode: 'insensitive' } },
-          { lastName: { contains: query, mode: 'insensitive' } },
-          { email: { contains: query, mode: 'insensitive' } }
-        ]
-      }
+      users = mockUsers.filter(u => u.firmId === firmId && (
+        u.firstName.toLowerCase().includes(lowerQuery) ||
+        u.lastName.toLowerCase().includes(lowerQuery) ||
+        u.email.toLowerCase().includes(lowerQuery)
+      ));
       if (role === 'ADMIN') {
-        userWhere.id = { not: session.id }
+        users = users.filter(u => u.id !== session.id)
       } else if (role === 'MANAGING_PARTNER') {
-        userWhere.managingPartnerId = session.id
+        users = users.filter(u => u.managingPartnerId === session.id)
       } else if (role === 'ATTORNEY') {
-        userWhere.attorneyId = session.id
+        users = users.filter(u => u.attorneyId === session.id)
       }
     }
 
-    // ==========================================
-    // 3. NOTIFICATIONS QUERY BUILDER
-    // ==========================================
-    const notifWhere: any = {
-      firmId,
-      userId: session.id,
-      message: { contains: query, mode: 'insensitive' }
-    }
+    let notifications = mockNotifications.filter(n => n.firmId === firmId && n.userId === session.id && n.message.toLowerCase().includes(lowerQuery));
 
-    // ==========================================
-    // 4. AUDIT LOGS QUERY BUILDER
-    // ==========================================
-    let auditWhere: any = null
+    let auditLogs: any[] = []
     if (role === 'ADMIN' || role === 'MANAGING_PARTNER') {
-      auditWhere = {
-        firmId,
-        OR: [
-          { action: { contains: query, mode: 'insensitive' } },
-          { details: { contains: query, mode: 'insensitive' } }
-        ]
-      }
+      auditLogs = mockAuditLogs.filter(a => a.firmId === firmId && (
+        a.action.toLowerCase().includes(lowerQuery) ||
+        a.details.toLowerCase().includes(lowerQuery)
+      ));
     }
-
-    // ==========================================
-    // PARALLEL EXECUTION
-    // ==========================================
-    const [cases, users, notifications, auditLogs] = await Promise.all([
-      prisma.case.findMany({
-        where: caseWhere,
-        take: 5,
-        select: { id: true, title: true, type: true }
-      }),
-      userWhere ? prisma.user.findMany({
-        where: userWhere,
-        take: 3,
-        select: { id: true, firstName: true, lastName: true, role: true, email: true }
-      }) : Promise.resolve([]),
-      prisma.notification.findMany({
-        where: notifWhere,
-        take: 3,
-        select: { id: true, message: true, isRead: true }
-      }),
-      auditWhere ? prisma.auditLog.findMany({
-        where: auditWhere,
-        take: 3,
-        select: { id: true, action: true, details: true }
-      }) : Promise.resolve([])
-    ])
 
     return NextResponse.json({
       success: true,
-      results: { cases, users, notifications, auditLogs }
+      results: { 
+        cases: cases.slice(0, 5).map(c => ({ id: c.id, title: c.title, type: c.type })),
+        users: users.slice(0, 3).map(u => ({ id: u.id, firstName: u.firstName, lastName: u.lastName, role: u.role, email: u.email })),
+        notifications: notifications.slice(0, 3).map(n => ({ id: n.id, message: n.message, isRead: n.isRead })),
+        auditLogs: auditLogs.slice(0, 3).map(a => ({ id: a.id, action: a.action, details: a.details }))
+      }
     })
   } catch (error) {
     console.error("Global search error:", error)

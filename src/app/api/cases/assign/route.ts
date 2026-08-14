@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
+import { getMockCases, updateMockCase, getMockUsers, createMockNotification } from '@/lib/mock-data'
 
 export async function POST(request: Request) {
   try {
@@ -25,57 +25,46 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    const connectArr = userIds.map(id => ({ id }))
+    const validCases = getMockCases().filter(c => caseIds.includes(c.id) && c.firmId === session.firmId)
+    const validCaseIds = validCases.map(c => c.id)
 
-    // First, verify that all cases belong to the current firm and get creators
-    const validCases = await prisma.case.findMany({
-      where: { id: { in: caseIds }, firmId: session.firmId },
-      select: { id: true, createdByUserId: true, title: true }
-    })
-    const validCaseIds = validCases.map((c: any) => c.id)
+    const allUsers = getMockUsers()
+    const assignedUsersObj = allUsers.filter(u => userIds.includes(u.id))
 
-    const transactions = validCaseIds.map((caseId: any) => {
-      return prisma.case.update({
-        where: { id: caseId },
-        data: {
-          assignedUsers: {
-            connect: connectArr
-          }
-        }
+    validCaseIds.forEach(caseId => {
+      updateMockCase(caseId, {
+        assignedUsers: assignedUsersObj,
+        updatedAt: new Date()
       })
     })
 
-    await prisma.$transaction(transactions)
-
     try {
-      const assigner = await prisma.user.findUnique({ where: { id: session.id } })
-      const admins = await prisma.user.findMany({ where: { firmId: session.firmId, role: 'ADMIN' } })
+      const assigner = allUsers.find(u => u.id === session.id)
+      const admins = allUsers.filter(u => u.firmId === session.firmId && u.role === 'ADMIN')
 
       const targetUserIds = new Set<string>()
       userIds.forEach((id: string) => targetUserIds.add(id))
       if (assigner?.managingPartnerId) targetUserIds.add(assigner.managingPartnerId)
-      admins.forEach((admin: any) => targetUserIds.add(admin.id))
-      validCases.forEach((c: any) => {
+      admins.forEach(admin => targetUserIds.add(admin.id))
+      validCases.forEach(c => {
         if (c.createdByUserId) targetUserIds.add(c.createdByUserId)
       })
       targetUserIds.delete(session.id)
 
-      const notifications: { message: string; type: string; userId: string; firmId: string; caseId?: string }[] = []
-      validCaseIds.forEach((caseId: any) => {
-        Array.from(targetUserIds).forEach((userId: any) => {
-          notifications.push({
+      validCaseIds.forEach(caseId => {
+        Array.from(targetUserIds).forEach(userId => {
+          createMockNotification({
+            id: `notif-${Date.now()}-${userId}-${caseId}`,
             message: `A case assignment was updated (Case ID: ${caseId}) by ${assigner?.firstName} ${assigner?.lastName}`,
             type: 'CASE_ASSIGNED',
             userId,
             firmId: session.firmId!,
-            caseId: caseId
+            caseId: caseId,
+            isRead: false,
+            createdAt: new Date()
           })
         })
       })
-
-      if (notifications.length > 0) {
-        await prisma.notification.createMany({ data: notifications })
-      }
     } catch (e) {
       console.error('Failed to create notifications for case assignment:', e)
     }
@@ -86,4 +75,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
-// Force Next.js HMR (v2)

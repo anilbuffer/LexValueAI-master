@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
+import { mockNotifications } from '@/lib/mock-data'
 
 export async function PUT(request: Request) {
   try {
@@ -14,10 +14,11 @@ export async function PUT(request: Request) {
 
     if (markAll) {
       // Mark all as read for this user
-      await prisma.notification.updateMany({
-        where: { userId: session.id, isRead: false },
-        data: { isRead: true }
-      })
+      mockNotifications.forEach(n => {
+        if (n.userId === session.id && !n.isRead) {
+          n.isRead = true;
+        }
+      });
       return NextResponse.json({ success: true, message: 'All notifications marked as read' })
     }
 
@@ -26,15 +27,12 @@ export async function PUT(request: Request) {
     }
 
     // Verify ownership
-    const notification = await prisma.notification.findUnique({ where: { id: notificationId } })
+    const notification = mockNotifications.find(n => n.id === notificationId)
     if (!notification || notification.userId !== session.id) {
       return NextResponse.json({ error: 'Notification not found or unauthorized' }, { status: 403 })
     }
 
-    await prisma.notification.update({
-      where: { id: notificationId },
-      data: { isRead: true }
-    })
+    notification.isRead = true;
 
     return NextResponse.json({ success: true })
   } catch (error) {

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
 import { processDocumentInBackground } from '@/lib/workers/documentProcessor'
+import { mockDocuments, getMockUsers, updateMockDocument } from '@/lib/mock-data'
 
 export async function POST(request: Request) {
   try {
@@ -17,10 +17,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing documentId' }, { status: 400 })
     }
 
-    const document = await prisma.document.findUnique({
-      where: { id: documentId },
-      include: { case: true }
-    })
+    const document = mockDocuments.find(d => d.id === documentId)
 
     if (!document) {
       return NextResponse.json({ error: 'Document not found' }, { status: 404 })
@@ -29,7 +26,7 @@ export async function POST(request: Request) {
     // Security: Check if user has access to this firm's data (HIPAA/Multi-tenant)
     let firmId: string | undefined | null = session.firmId
     if (!firmId) {
-      const user = await prisma.user.findUnique({ where: { id: session.id } })
+      const user = getMockUsers().find(u => u.id === session.id)
       firmId = user?.firmId
     }
 
@@ -42,10 +39,7 @@ export async function POST(request: Request) {
     }
 
     // Step 1: Update status to PROCESSING
-    await prisma.document.update({
-      where: { id: documentId },
-      data: { status: 'PROCESSING' }
-    })
+    updateMockDocument(documentId, { status: 'PROCESSING', updatedAt: new Date() })
 
     // Step 2: Trigger the background worker (DO NOT AWAIT)
     // This allows the API to return immediately while the heavy Textract/pgvector job runs in the background.

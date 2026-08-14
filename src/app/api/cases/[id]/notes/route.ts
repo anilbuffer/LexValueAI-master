@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
+import { getMockCaseById, getMockUsers } from '@/lib/mock-data'
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -13,16 +13,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     }
 
     const { id: caseId } = await params
-    const targetCase = await prisma.case.findUnique({
-      where: { id: caseId },
-      select: { firmId: true }
-    })
+    const targetCase = getMockCaseById(caseId)
 
     if (!targetCase) return NextResponse.json({ error: 'Case not found' }, { status: 404 })
 
     let firmId: string | undefined | null = session.firmId
     if (!firmId) {
-      const user = await prisma.user.findUnique({ where: { id: session.id } })
+      const user = getMockUsers().find(u => u.id === session.id)
       firmId = user?.firmId
     }
 
@@ -64,16 +61,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
 
     const { id: caseId } = await params
-    const targetCase = await prisma.case.findUnique({
-      where: { id: caseId },
-      select: { firmId: true }
-    })
+    const targetCase = getMockCaseById(caseId)
 
     if (!targetCase) return NextResponse.json({ error: 'Case not found' }, { status: 404 })
 
     let firmId: string | undefined | null = session.firmId
     if (!firmId) {
-      const user = await prisma.user.findUnique({ where: { id: session.id } })
+      const user = getMockUsers().find(u => u.id === session.id)
       firmId = user?.firmId
     }
 

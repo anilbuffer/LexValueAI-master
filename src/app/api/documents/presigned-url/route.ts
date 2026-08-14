@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
 import { generatePresignedUploadUrl } from '@/lib/s3'
+import { getMockUsers, getMockCaseById, mockDocuments, createMockDocument } from '@/lib/mock-data'
 
 export async function POST(request: Request) {
   try {
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
     let firmId = session.firmId
     if (!firmId) {
-      const user = await prisma.user.findUnique({ where: { id: session.id } })
+      const user = getMockUsers().find(u => u.id === session.id)
       firmId = user?.firmId || ''
     }
 
@@ -38,9 +38,7 @@ export async function POST(request: Request) {
     }
 
     // Verify user has access to this case
-    const dbCase = await prisma.case.findUnique({
-      where: { id: caseId }
-    })
+    const dbCase = getMockCaseById(caseId)
 
     if (!dbCase) {
       return NextResponse.json({ error: 'Case not found' }, { status: 404 })
@@ -55,13 +53,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Case is currently processing a document. Please wait.' }, { status: 409 })
     }
     // Duplicate check
-    const existingDoc = await prisma.document.findFirst({
-      where: {
-        caseId: caseId,
-        fileName: fileName,
-        size: size
-      }
-    });
+    const existingDoc = mockDocuments.find(d => 
+      d.caseId === caseId && d.fileName === fileName && d.size === size
+    );
 
     if (existingDoc) {
       return NextResponse.json({ error: 'A document with this exact name and size already exists in this case.' }, { status: 409 })
@@ -79,16 +73,17 @@ export async function POST(request: Request) {
     }
 
     // Create Document record in DB
-    const document = await prisma.document.create({
-      data: {
-        fileName,
-        s3Key,
-        mimeType,
-        size,
-        status: 'PENDING_UPLOAD', // Will be updated to PROCESSING once confirmed
-        caseId,
-        firmId
-      }
+    const document = createMockDocument({
+      id: `doc-${Date.now()}`,
+      fileName,
+      s3Key,
+      mimeType,
+      size,
+      status: 'PENDING_UPLOAD', // Will be updated to PROCESSING once confirmed
+      caseId,
+      firmId,
+      createdAt: new Date(),
+      updatedAt: new Date()
     })
 
     return NextResponse.json({ success: true, presignedUrl, documentId: document.id }, { status: 201 })

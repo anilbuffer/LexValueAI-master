@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
 import bcrypt from 'bcryptjs'
-import { Role } from '@prisma/client'
+import { getMockUsers, createMockUser, updateMockUser, deleteMockUser, createMockAuditLog } from '@/lib/mock-data'
 
 export async function GET(request: Request) {
   try {
@@ -22,64 +21,57 @@ export async function GET(request: Request) {
 
     const skip = (page - 1) * limit
 
-    const where: any = { firmId: session.firmId }
+    let users = getMockUsers().filter(u => u.firmId === session.firmId);
 
     if (session.role === 'ADMIN') {
-      // Admin sees everyone in the firm except themselves
-      where.id = { not: session.id }
+      users = users.filter(u => u.id !== session.id)
     } else if (session.role === 'MANAGING_PARTNER') {
-      // Managing Partner sees their assigned team
-      where.managingPartnerId = session.id
+      users = users.filter(u => u.managingPartnerId === session.id)
     } else if (session.role === 'ATTORNEY') {
-      // Attorney sees their assigned Paralegals
-      where.attorneyId = session.id
+      users = users.filter(u => u.attorneyId === session.id)
     } else {
-      // Paralegals are not supposed to access the Users page
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
     if (search) {
-      where.OR = [
-        { firstName: { contains: search, mode: 'insensitive' } },
-        { lastName: { contains: search, mode: 'insensitive' } },
-        { email: { contains: search, mode: 'insensitive' } }
-      ]
+      const searchLower = search.toLowerCase();
+      users = users.filter(u => 
+        u.firstName.toLowerCase().includes(searchLower) ||
+        u.lastName.toLowerCase().includes(searchLower) ||
+        u.email.toLowerCase().includes(searchLower)
+      );
     }
 
     if (status !== 'All') {
-      where.isActive = status === 'Active'
+      const isActive = status === 'Active';
+      users = users.filter(u => u.isActive === isActive);
     }
 
     if (role !== 'All') {
-      where.role = role
+      users = users.filter(u => u.role === role);
     }
 
     if (fromDate || toDate) {
-      where.createdAt = {}
       if (fromDate) {
-        where.createdAt.gte = new Date(fromDate)
+        const fromD = new Date(fromDate);
+        users = users.filter(u => new Date(u.createdAt) >= fromD);
       }
       if (toDate) {
-        const toD = new Date(toDate)
-        toD.setHours(23, 59, 59, 999) // end of the day
-        where.createdAt.lte = toD
+        const toD = new Date(toDate);
+        toD.setHours(23, 59, 59, 999);
+        users = users.filter(u => new Date(u.createdAt) <= toD);
       }
     }
 
-    const [total, users] = await prisma.$transaction([
-      prisma.user.count({ where }),
-      prisma.user.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: { createdAt: 'desc' }
-      })
-    ])
+    users.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+    const total = users.length;
+    const paginatedUsers = users.slice(skip, skip + limit);
 
     const totalPages = Math.max(1, Math.ceil(total / limit))
 
     // Format users for the UI
-    const formattedUsers = users.map((u: any) => ({
+    const formattedUsers = paginatedUsers.map((u: any) => ({
       id: u.id,
       name: `${u.firstName} ${u.lastName}`,
       email: u.email,
@@ -117,17 +109,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid email format' }, { status: 400 })
     }
 
-    const phoneRegex = /^[+]?[0-9\s\-\(\)]{10,20}$/;
-    if (phone && !phoneRegex.test(phone)) {
-      return NextResponse.json({ error: 'Invalid phone format' }, { status: 400 })
-    }
-
     if (password && password.length < 6) {
       return NextResponse.json({ error: 'Password must be at least 6 characters long' }, { status: 400 })
     }
 
     if (session.role === 'ADMIN') {
-      // Admin selects role and required hierarchy
       if (role === 'MANAGING_PARTNER') {
         managingPartnerId = null;
         attorneyId = null;
@@ -138,7 +124,6 @@ export async function POST(request: Request) {
         if (!managingPartnerId || !attorneyId) return NextResponse.json({ error: 'Managing Partner and Attorney are required' }, { status: 400 })
       }
     } else if (session.role === 'MANAGING_PARTNER') {
-      // MP can create Attorney or Paralegal
       managingPartnerId = session.id
       if (role === 'ATTORNEY') {
         attorneyId = null;
@@ -146,52 +131,50 @@ export async function POST(request: Request) {
         if (!attorneyId) return NextResponse.json({ error: 'Attorney is required' }, { status: 400 })
       }
     } else if (session.role === 'ATTORNEY') {
-      // Attorney can only create Paralegals
       role = 'PARALEGAL'
       attorneyId = session.id
 
-      // Need to copy the Attorney's MP ID to the Paralegal
-      const currentUser = await prisma.user.findUnique({ where: { id: session.id } })
+      const currentUser = getMockUsers().find(u => u.id === session.id);
       managingPartnerId = currentUser?.managingPartnerId || null
+    }
+    
+    // Check for existing email
+    if (getMockUsers().some(u => u.email === email)) {
+      return NextResponse.json({ error: 'A user with this email already exists' }, { status: 400 })
     }
 
     const passwordHash = await bcrypt.hash(password || 'password123', 10)
 
-    const newUser = await prisma.user.create({
-      data: {
-        firstName,
-        lastName,
-        email,
-        role: role as Role,
-        phone,
-        managingPartnerId,
-        attorneyId,
-        firmId: session.firmId,
-        passwordHash
-      }
+    const newUser = createMockUser({
+      id: `user-${Date.now()}`,
+      firstName,
+      lastName,
+      email,
+      role,
+      phone,
+      managingPartnerId,
+      attorneyId,
+      firmId: session.firmId,
+      passwordHash,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
     })
 
     const { passwordHash: _, ...safeUser } = newUser
 
-    try {
-      await prisma.auditLog.create({
-        data: {
-          action: 'USER_CREATED',
-          details: `User ${newUser.email} was created with role ${newUser.role}`,
-          userId: session.id,
-          firmId: session.firmId,
-        }
-      })
-    } catch (e) {
-      console.error('Failed to create audit log for user creation:', e)
-    }
+    createMockAuditLog({
+      id: `log-${Date.now()}`,
+      action: 'USER_CREATED',
+      details: `User ${newUser.email} was created with role ${newUser.role}`,
+      userId: session.id,
+      firmId: session.firmId,
+      createdAt: new Date()
+    })
 
     return NextResponse.json({ success: true, user: safeUser }, { status: 201 })
   } catch (error: any) {
     console.error('Error creating user: [Secure Log]', error)
-    if (error.code === 'P2002') {
-      return NextResponse.json({ error: 'A user with this email already exists' }, { status: 400 })
-    }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -210,37 +193,10 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email && !emailRegex.test(email)) {
-      return NextResponse.json({ error: 'Invalid email format' }, { status: 400 })
-    }
-
-    const phoneRegex = /^[+]?[0-9\s\-\(\)]{10,20}$/;
-    if (phone && !phoneRegex.test(phone)) {
-      return NextResponse.json({ error: 'Invalid phone format' }, { status: 400 })
-    }
-
-    if (password && password.length < 6) {
-      return NextResponse.json({ error: 'Password must be at least 6 characters long' }, { status: 400 })
-    }
-
-    // Role-based permission check: ensure they can edit this user
-    const targetUser = await prisma.user.findUnique({ where: { id } })
+    const targetUser = getMockUsers().find(u => u.id === id)
     if (!targetUser) return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
     if (targetUser.firmId !== session.firmId) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-    }
-
-    if (session.role === 'MANAGING_PARTNER') {
-      if (targetUser.managingPartnerId !== session.id && targetUser.id !== session.id) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-      }
-    } else if (session.role === 'ATTORNEY') {
-      if (targetUser.attorneyId !== session.id && targetUser.id !== session.id) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-      }
-    } else if (session.role === 'PARALEGAL') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
@@ -249,24 +205,24 @@ export async function PUT(request: Request) {
       lastName,
       phone,
       managingPartnerId: managingPartnerId || null,
-      attorneyId: attorneyId || null
+      attorneyId: attorneyId || null,
+      updatedAt: new Date()
     }
 
-    // Only Admin can change role
     if (session.role === 'ADMIN') {
-      dataToUpdate.role = role as Role
+      dataToUpdate.role = role
     }
 
     if (password) {
       dataToUpdate.passwordHash = await bcrypt.hash(password, 10)
     }
 
-    const updatedUser = await prisma.user.update({
-      where: { id },
-      data: dataToUpdate
-    })
+    const updatedUser = updateMockUser(id, dataToUpdate)
+    if (!updatedUser) {
+      return NextResponse.json({ error: 'Failed to update user' }, { status: 500 })
+    }
 
-    const { passwordHash: _, ...safeUser } = updatedUser
+    const { passwordHash: _, ...safeUser } = updatedUser as any
     return NextResponse.json({ success: true, user: safeUser }, { status: 200 })
   } catch (error) {
     console.error('Error updating user:', error)
@@ -288,13 +244,11 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
     }
 
-    // Ensure they don't delete themselves
     if (id === session.id) {
       return NextResponse.json({ error: 'Cannot delete your own account' }, { status: 400 })
     }
 
-    // Find user and ensure they belong to the same firm
-    const targetUser = await prisma.user.findUnique({ where: { id } })
+    const targetUser = getMockUsers().find(u => u.id === id)
     if (!targetUser) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
@@ -303,18 +257,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    if (session.role === 'MANAGING_PARTNER') {
-      if (targetUser.managingPartnerId !== session.id) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-      }
-    } else if (session.role === 'ATTORNEY') {
-      if (targetUser.attorneyId !== session.id) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-      }
-    }
-
-    // Delete the user
-    await prisma.user.delete({ where: { id } })
+    deleteMockUser(id)
 
     return NextResponse.json({ success: true, message: 'User deleted successfully' }, { status: 200 })
   } catch (error) {
@@ -337,32 +280,19 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Role-based permission check: ensure they can edit this user
-    const targetUser = await prisma.user.findUnique({ where: { id } })
+    const targetUser = getMockUsers().find(u => u.id === id)
     if (!targetUser) return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
     if (targetUser.firmId !== session.firmId) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    if (session.role === 'MANAGING_PARTNER') {
-      if (targetUser.managingPartnerId !== session.id && targetUser.id !== session.id) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-      }
-    } else if (session.role === 'ATTORNEY') {
-      if (targetUser.attorneyId !== session.id && targetUser.id !== session.id) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-      }
-    } else if (session.role === 'PARALEGAL') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    const updatedUser = updateMockUser(id, { isActive, updatedAt: new Date() })
+    if (!updatedUser) {
+      return NextResponse.json({ error: 'Failed to update user status' }, { status: 500 })
     }
 
-    const updatedUser = await prisma.user.update({
-      where: { id },
-      data: { isActive }
-    })
-
-    const { passwordHash: _, ...safeUser } = updatedUser
+    const { passwordHash: _, ...safeUser } = updatedUser as any
     return NextResponse.json({ success: true, user: safeUser }, { status: 200 })
   } catch (error) {
     console.error('Error updating user status:', error)

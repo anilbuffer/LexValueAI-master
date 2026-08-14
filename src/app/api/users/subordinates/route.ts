@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
+import { getMockUsers } from '@/lib/mock-data'
 
 export async function GET(request: Request) {
   try {
@@ -12,50 +12,31 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const roleParam = searchParams.get('role')
 
-    if (session.role === 'ADMIN') {
-        const whereArgs: any = { 
-            firmId: session.firmId,
-            isActive: true,
-            role: { in: ['MANAGING_PARTNER', 'ATTORNEY', 'PARALEGAL'] }
-        }
-        if (roleParam) whereArgs.role = roleParam
+    const allUsers = getMockUsers().filter(u => u.firmId === session.firmId && u.isActive)
 
-        const users = await prisma.user.findMany({
-            where: whereArgs,
-            select: { id: true, firstName: true, lastName: true, role: true, attorneyId: true }
-        })
-        return NextResponse.json({ success: true, users })
+    if (session.role === 'ADMIN') {
+        let users = allUsers.filter(u => ['MANAGING_PARTNER', 'ATTORNEY', 'PARALEGAL'].includes(u.role))
+        if (roleParam) {
+            users = users.filter(u => u.role === roleParam)
+        }
+        const formattedUsers = users.map(u => ({ id: u.id, firstName: u.firstName, lastName: u.lastName, role: u.role, attorneyId: u.attorneyId }))
+        return NextResponse.json({ success: true, users: formattedUsers })
     }
 
     if (session.role === 'MANAGING_PARTNER') {
         let users: any[] = []
-        const attorneysForMp = await prisma.user.findMany({
-            where: { firmId: session.firmId, managingPartnerId: session.id, role: 'ATTORNEY' },
-            select: { id: true }
-        })
+        const attorneysForMp = allUsers.filter(u => u.managingPartnerId === session.id && u.role === 'ATTORNEY')
         const attyIds = attorneysForMp.map((a: any) => a.id)
 
         if (!roleParam || roleParam === 'ATTORNEY') {
-            const attorneys = await prisma.user.findMany({
-                where: { firmId: session.firmId, managingPartnerId: session.id, isActive: true, role: 'ATTORNEY' },
-                select: { id: true, firstName: true, lastName: true, role: true }
-            })
+            const attorneys = attorneysForMp.map(u => ({ id: u.id, firstName: u.firstName, lastName: u.lastName, role: u.role }))
             users = [...users, ...attorneys]
         }
 
         if (!roleParam || roleParam === 'PARALEGAL') {
-            const paralegals = await prisma.user.findMany({
-                where: { 
-                    firmId: session.firmId, 
-                    isActive: true, 
-                    role: 'PARALEGAL',
-                    OR: [
-                        { managingPartnerId: session.id },
-                        { attorneyId: { in: attyIds } }
-                    ]
-                },
-                select: { id: true, firstName: true, lastName: true, role: true, attorneyId: true }
-            })
+            const paralegals = allUsers
+              .filter(u => u.role === 'PARALEGAL' && (u.managingPartnerId === session.id || attyIds.includes(u.attorneyId)))
+              .map(u => ({ id: u.id, firstName: u.firstName, lastName: u.lastName, role: u.role, attorneyId: u.attorneyId }))
             users = [...users, ...paralegals]
         }
 
@@ -67,10 +48,9 @@ export async function GET(request: Request) {
             return NextResponse.json({ success: true, users: [] })
         }
 
-        const paralegals = await prisma.user.findMany({
-            where: { firmId: session.firmId, attorneyId: session.id, isActive: true, role: 'PARALEGAL' },
-            select: { id: true, firstName: true, lastName: true, role: true, attorneyId: true }
-        })
+        const paralegals = allUsers
+          .filter(u => u.attorneyId === session.id && u.role === 'PARALEGAL')
+          .map(u => ({ id: u.id, firstName: u.firstName, lastName: u.lastName, role: u.role, attorneyId: u.attorneyId }))
         return NextResponse.json({ success: true, users: paralegals })
     }
 

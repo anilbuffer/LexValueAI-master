@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
 import { deleteS3Objects } from '@/lib/s3'
-import { prisma } from '@/lib/prisma'
+import { getMockUsers } from '@/lib/mock-data'
 
 export async function POST(request: Request) {
   try {
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     // Security: Only allow deleting from the user's firm temp_cases folder
     let firmId = session.firmId
     if (!firmId) {
-      const user = await prisma.user.findUnique({ where: { id: session.id } })
+      const user = getMockUsers().find(u => u.id === session.id)
       firmId = user?.firmId || ''
     }
 

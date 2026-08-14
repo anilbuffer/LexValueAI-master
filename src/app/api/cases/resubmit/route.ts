@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
+import { getMockCaseById, updateMockCase, getMockUsers } from '@/lib/mock-data'
 
 export async function POST(request: Request) {
   try {
@@ -21,9 +21,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
     }
 
-    const dbCase = await prisma.case.findUnique({
-      where: { id: caseId }
-    })
+    const dbCase = getMockCaseById(caseId)
 
     if (!dbCase) {
       return NextResponse.json({ error: 'Case not found' }, { status: 404 })
@@ -32,7 +30,7 @@ export async function POST(request: Request) {
     // Verify firm access
     let firmId = session.firmId
     if (!firmId) {
-      const user = await prisma.user.findUnique({ where: { id: session.id } })
+      const user = getMockUsers().find(u => u.id === session.id)
       firmId = user?.firmId || ''
     }
     if (dbCase.firmId !== firmId) {
@@ -40,12 +38,10 @@ export async function POST(request: Request) {
     }
 
     // Resubmit the case (set to PENDING)
-    await prisma.case.update({
-      where: { id: caseId },
-      data: {
-        approvalStatus: 'PENDING',
-        rejectionReason: null
-      }
+    updateMockCase(caseId, {
+      approvalStatus: 'PENDING',
+      rejectionReason: null,
+      updatedAt: new Date()
     })
 
     return NextResponse.json({ success: true })

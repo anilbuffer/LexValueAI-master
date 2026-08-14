@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { deleteS3Objects } from '@/lib/s3'
+import { mockCases, mockDocuments, getMockFirm, createMockAuditLog, deleteMockCase, deleteMockDocument, getMockUsers } from '@/lib/mock-data'
 
 export async function GET(request: Request) {
   try {
@@ -10,94 +10,49 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // 2. Fetch all firms to process their individual retention policies
-    const firms = await prisma.firm.findMany({
-      select: { id: true, name: true, dataRetention: true }
-    })
-
+    const firm = getMockFirm()
     let totalDeletedAcrossAllFirms = 0;
 
-    for (const firm of firms) {
-      try {
-        // Skip if they want to keep data indefinitely
-        if (firm.dataRetention === "Indefinitely" || !firm.dataRetention) {
-          continue;
-        }
-
-        // Parse the number of years (e.g. "7" from "7 Years (Standard)")
-        const retentionYears = parseInt(firm.dataRetention, 10);
-        if (isNaN(retentionYears)) {
-          continue;
-        }
-
-        // 3. Calculate cutoff date exactly X years ago
+    // Simulate retention check for the single mock firm
+    if (firm && firm.dataRetention && firm.dataRetention !== "Indefinitely") {
+      const retentionYears = parseInt(firm.dataRetention, 10);
+      if (!isNaN(retentionYears)) {
         const cutoffDate = new Date();
         cutoffDate.setFullYear(cutoffDate.getFullYear() - retentionYears);
 
-        // 4. Find cases to delete to count them and prepare for audit log
-        const casesToDelete = await prisma.case.findMany({
-          where: {
-            firmId: firm.id,
-            status: 'Closed',
-            updatedAt: { lte: cutoffDate }
-          },
-          select: { id: true }
-        });
-
+        const casesToDelete = mockCases.filter(c => c.firmId === firm.id && c.status === 'Closed' && new Date(c.updatedAt) <= cutoffDate);
+        
         if (casesToDelete.length > 0) {
-          const caseIds = casesToDelete.map((c: any) => c.id);
+          const caseIds = casesToDelete.map(c => c.id);
+          
+          const documents = mockDocuments.filter(d => caseIds.includes(d.caseId));
+          const s3Keys = documents.map(d => d.s3Key).filter(Boolean);
 
-          // Fetch all S3 keys for all documents in all these cases to delete from AWS S3
-          const documents = await prisma.document.findMany({
-            where: { caseId: { in: caseIds } },
-            select: { s3Key: true }
-          });
-          const s3Keys = documents.map((d: any) => d.s3Key).filter(Boolean);
-
-          // AWS S3 DeleteObjects max limit is 1000 keys per request. Process in chunks.
-          for (let i = 0; i < s3Keys.length; i += 1000) {
-            const chunk = s3Keys.slice(i, i + 1000);
+          if (s3Keys.length > 0) {
             try {
-              await deleteS3Objects(chunk);
+              await deleteS3Objects(s3Keys);
             } catch (e) {
               console.error("Failed to delete S3 objects chunk during data retention purge:", e);
             }
           }
 
-          // Perform bulk cascade delete in DB (process in chunks to avoid Prisma query limits)
-          let deletedCount = 0;
-          for (let i = 0; i < caseIds.length; i += 1000) {
-            const chunkIds = caseIds.slice(i, i + 1000);
-            const deleteResult = await prisma.case.deleteMany({
-              where: {
-                id: { in: chunkIds }
-              }
-            });
-            deletedCount += deleteResult.count;
-          }
+          documents.forEach(d => deleteMockDocument(d.id));
+          caseIds.forEach(id => deleteMockCase(id));
+          
+          totalDeletedAcrossAllFirms += caseIds.length;
 
-          totalDeletedAcrossAllFirms += deletedCount;
-
-          // 5. Create an Audit Log entry so the firm knows the system deleted data
-          const systemAdmin = await prisma.user.findFirst({
-            where: { firmId: firm.id },
-            orderBy: { role: 'asc' } // ADMIN is alphabetically first
-          });
-
+          const systemAdmin = getMockUsers().find(u => u.firmId === firm.id && u.role === 'ADMIN');
           if (systemAdmin) {
-            await prisma.auditLog.create({
-              data: {
-                action: 'Automated Data Retention Purge',
-                details: `SYSTEM AUTO-ACTION: Permanently deleted ${deletedCount} closed cases that exceeded the ${retentionYears}-year data retention policy.`,
-                firmId: firm.id,
-                userId: systemAdmin.id
-              }
+            createMockAuditLog({
+              id: `log-${Date.now()}`,
+              action: 'Automated Data Retention Purge',
+              details: `SYSTEM AUTO-ACTION: Permanently deleted ${caseIds.length} closed cases that exceeded the ${retentionYears}-year data retention policy.`,
+              firmId: firm.id,
+              userId: systemAdmin.id,
+              createdAt: new Date()
             });
           }
         }
-      } catch (firmError) {
-        console.error(`Error processing data retention for firm ${firm.id}:`, firmError);
-        // Continue to the next firm even if this one fails
       }
     }
 

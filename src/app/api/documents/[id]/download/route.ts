@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
+import { mockDocuments, getMockUsers } from '@/lib/mock-data'
 import { generatePresignedDownloadUrl } from '@/lib/s3'
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -12,9 +12,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     const { id: documentId } = await params
 
-    const document = await prisma.document.findUnique({
-      where: { id: documentId }
-    })
+    const document = mockDocuments.find(d => d.id === documentId)
 
     if (!document) {
       return NextResponse.json({ error: 'Document not found' }, { status: 404 })
@@ -23,7 +21,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     // Ensure the user belongs to the same firm as the document
     let firmId = session.firmId
     if (!firmId) {
-      const user = await prisma.user.findUnique({ where: { id: session.id } })
+      const user = getMockUsers().find(u => u.id === session.id)
       if (!user) return NextResponse.json({ error: 'User not found' }, { status: 401 })
       firmId = user.firmId
     }

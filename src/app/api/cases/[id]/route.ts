@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
+import { getMockCaseById, getMockUsers, getMockDocumentsForCase, deleteMockCase } from '@/lib/mock-data'
 import { deleteS3Objects } from '@/lib/s3'
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -9,21 +9,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     if (!session || !session.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const { id: caseId } = await params
-    const targetCase = await prisma.case.findUnique({
-      where: { id: caseId },
-      select: {
-        id: true, scanProgress: true, scanStage: true, firmId: true, status: true,
-        createdByUserId: true,
-        createdByUser: { select: { managingPartnerId: true, attorneyId: true } },
-        assignedUsers: { select: { id: true, managingPartnerId: true, attorneyId: true } }
-      }
-    })
+    const targetCase = getMockCaseById(caseId)
 
     if (!targetCase) return NextResponse.json({ error: 'Case not found' }, { status: 404 })
 
     let firmId: string | undefined | null = session.firmId
     if (!firmId) {
-      const user = await prisma.user.findUnique({ where: { id: session.id } })
+      const user = getMockUsers().find(u => u.id === session.id)
       firmId = user?.firmId
     }
 
@@ -31,18 +23,20 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     if (targetCase.firmId !== firmId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
+    const createdByUser = getMockUsers().find(u => u.id === targetCase.createdByUserId)
+
     // RBAC check
     if (session.role === 'MANAGING_PARTNER') {
-      const isCreatorSubordinate = targetCase.createdByUserId === session.id || targetCase.createdByUser?.managingPartnerId === session.id;
-      const isAssignedSubordinate = targetCase.assignedUsers.some((u: any) => u.id === session.id || u.managingPartnerId === session.id);
+      const isCreatorSubordinate = targetCase.createdByUserId === session.id || createdByUser?.managingPartnerId === session.id;
+      const isAssignedSubordinate = targetCase.assignedUsers?.some((u: any) => u.id === session.id || u.managingPartnerId === session.id);
       if (!isCreatorSubordinate && !isAssignedSubordinate) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     } else if (session.role === 'ATTORNEY') {
-      const isCreatorSubordinate = targetCase.createdByUserId === session.id || targetCase.createdByUser?.attorneyId === session.id;
-      const isAssignedSubordinate = targetCase.assignedUsers.some((u: any) => u.id === session.id || u.attorneyId === session.id);
+      const isCreatorSubordinate = targetCase.createdByUserId === session.id || createdByUser?.attorneyId === session.id;
+      const isAssignedSubordinate = targetCase.assignedUsers?.some((u: any) => u.id === session.id || u.attorneyId === session.id);
       if (!isCreatorSubordinate && !isAssignedSubordinate) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     } else if (session.role === 'PARALEGAL') {
       const isCreator = targetCase.createdByUserId === session.id;
-      const isAssigned = targetCase.assignedUsers.some((u: any) => u.id === session.id);
+      const isAssigned = targetCase.assignedUsers?.some((u: any) => u.id === session.id);
       if (!isCreator && !isAssigned) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
@@ -66,13 +60,13 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
     const { id: caseId } = await params
 
-    const targetCase = await prisma.case.findUnique({ where: { id: caseId } })
+    const targetCase = getMockCaseById(caseId)
     if (!targetCase) return NextResponse.json({ error: 'Case not found' }, { status: 404 })
 
     // Check firm isolation
     let firmId: string | undefined | null = session.firmId
     if (!firmId) {
-      const user = await prisma.user.findUnique({ where: { id: session.id } })
+      const user = getMockUsers().find(u => u.id === session.id)
       if (!user) return NextResponse.json({ error: 'User not found' }, { status: 401 })
       firmId = user.firmId
     }
@@ -82,16 +76,14 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     }
 
     // Delete from S3 first to avoid orphaned files
-    const documents = await prisma.document.findMany({ where: { caseId }, select: { s3Key: true } })
+    const documents = getMockDocumentsForCase(caseId)
     const s3Keys = documents.map((d: any) => d.s3Key).filter(Boolean)
     if (s3Keys.length > 0) {
       await deleteS3Objects(s3Keys)
     }
 
-    // Delete case (cascade will delete related documents/logs if schema is setup for it)
-    await prisma.case.delete({
-      where: { id: caseId }
-    })
+    // Delete case
+    deleteMockCase(caseId)
 
     return NextResponse.json({ success: true })
   } catch (error) {

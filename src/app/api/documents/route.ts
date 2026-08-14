@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
+import { getMockCaseById, getMockUsers, createMockDocument } from '@/lib/mock-data'
 import { generatePresignedUploadUrl } from '@/lib/s3'
 
 export async function POST(request: Request) {
@@ -18,13 +18,13 @@ export async function POST(request: Request) {
     }
 
     // Security: Check if user has access to this case
-    const targetCase = await prisma.case.findUnique({ where: { id: caseId } })
+    const targetCase = getMockCaseById(caseId)
     if (!targetCase) return NextResponse.json({ error: 'Case not found' }, { status: 404 })
 
     // Use session firmId or fetch user's firmId
     let firmId: string | undefined | null = session.firmId
     if (!firmId) {
-       const user = await prisma.user.findUnique({ where: { id: session.id } })
+       const user = getMockUsers().find(u => u.id === session.id)
        firmId = user?.firmId
     }
 
@@ -42,16 +42,17 @@ export async function POST(request: Request) {
     const s3Key = `firms/${firmId}/cases/${caseId}/${Date.now()}_${fileName}`
 
     // Create Document record in DB (status: UPLOADED/PENDING)
-    const newDocument = await prisma.document.create({
-      data: {
-        fileName,
-        s3Key,
-        size,
-        mimeType,
-        status: 'PENDING_UPLOAD',
-        caseId,
-        firmId: validFirmId
-      }
+    const newDocument = createMockDocument({
+      id: `doc-${Date.now()}`,
+      fileName,
+      s3Key,
+      size,
+      mimeType,
+      status: 'PENDING_UPLOAD',
+      caseId,
+      firmId: validFirmId,
+      createdAt: new Date(),
+      updatedAt: new Date()
     })
 
     // Generate Pre-signed URL for direct frontend upload

@@ -28,7 +28,7 @@ export const mockUser = {
   updatedAt: new Date("2026-08-01T00:00:00Z"),
 };
 
-export const mockUsers = [
+export let mockUsers = [
   mockUser,
   {
     id: "user-2",
@@ -62,7 +62,7 @@ export const mockUsers = [
   },
 ];
 
-export const mockCases = [
+export let mockCases = [
   {
     id: "case-1",
     referenceId: "Illo rerum praesenti",
@@ -117,7 +117,7 @@ export const mockCases = [
   }
 ];
 
-export const mockDocuments = [
+export let mockDocuments = [
   {
     id: "doc-1",
     fileName: "PD00302BDEAC13B19_Meds_Redacted.pdf",
@@ -287,7 +287,7 @@ QUESTIONING LIST
   }
 ];
 
-export const mockNotifications = [
+export let mockNotifications = [
   {
     id: "notif-1",
     message: "New case 'Williams Auto Collision' requires approval.",
@@ -310,7 +310,7 @@ export const mockNotifications = [
   },
 ];
 
-export const mockTimelineEvents = [
+export let mockTimelineEvents = [
   {
     id: "event-1",
     date: new Date("2018-06-01T08:30:00Z"),
@@ -443,7 +443,7 @@ export const mockTimelineEvents = [
   }
 ];
 
-export const mockAuditLogs = [
+export let mockAuditLogs = [
   {
     id: "log-1",
     action: "USER_LOGIN",
@@ -464,3 +464,31 @@ export const getMockNotifications = () => mockNotifications;
 export const getMockAuditLogs = () => mockAuditLogs;
 export const getMockUsers = () => mockUsers;
 export const getMockFirm = () => mockFirm;
+
+// Mutators
+export const createMockCase = (newCase: any) => { mockCases.push(newCase); return newCase; }
+export const updateMockCase = (id: string, data: any) => {
+  const index = mockCases.findIndex(c => c.id === id);
+  if (index > -1) { mockCases[index] = { ...mockCases[index], ...data }; return mockCases[index]; }
+  return null;
+}
+export const deleteMockCase = (id: string) => { mockCases = mockCases.filter(c => c.id !== id); }
+
+export const createMockUser = (newUser: any) => { mockUsers.push(newUser); return newUser; }
+export const updateMockUser = (id: string, data: any) => {
+  const index = mockUsers.findIndex(u => u.id === id);
+  if (index > -1) { mockUsers[index] = { ...mockUsers[index], ...data }; return mockUsers[index]; }
+  return null;
+}
+export const deleteMockUser = (id: string) => { mockUsers = mockUsers.filter(u => u.id !== id); }
+
+export const createMockDocument = (newDoc: any) => { mockDocuments.push(newDoc); return newDoc; }
+export const updateMockDocument = (id: string, data: any) => {
+  const index = mockDocuments.findIndex(d => d.id === id);
+  if (index > -1) { mockDocuments[index] = { ...mockDocuments[index], ...data }; return mockDocuments[index]; }
+  return null;
+}
+export const deleteMockDocument = (id: string) => { mockDocuments = mockDocuments.filter(d => d.id !== id); }
+
+export const createMockNotification = (newNotif: any) => { mockNotifications.push(newNotif); return newNotif; }
+export const createMockAuditLog = (newLog: any) => { mockAuditLogs.push(newLog); return newLog; }
