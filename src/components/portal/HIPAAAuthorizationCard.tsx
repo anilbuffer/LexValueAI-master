@@ -7,6 +7,7 @@ export function HIPAAAuthorizationCard({ caseId }: { caseId: string }) {
   const [isSigned, setIsSigned] = useState(false);
   const [signature, setSignature] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [signedDate, setSignedDate] = useState<Date | null>(null);
   
   const handleSign = (e: React.FormEvent) => {
     e.preventDefault();
@@ -14,19 +15,31 @@ export function HIPAAAuthorizationCard({ caseId }: { caseId: string }) {
       // Simulate API call to save signature
       setTimeout(() => {
         setIsSigned(true);
+        setSignedDate(new Date());
       }, 500);
     }
   };
 
-  if (isSigned) {
+  if (isSigned && signedDate) {
     return (
-      <div className="bg-emerald-50 rounded-xl border border-emerald-200 p-6 flex flex-col items-center justify-center text-center space-y-3">
-        <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
-          <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+      <div className="bg-white rounded-xl shadow-sm border border-emerald-200 overflow-hidden">
+        <div className="bg-emerald-50 px-6 py-4 border-b border-emerald-200 flex justify-between items-center">
+          <h2 className="font-bold text-emerald-900 text-lg flex items-center gap-2">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+            HIPAA Authorization
+          </h2>
+          <span className="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider rounded border border-emerald-200">
+            Signed
+          </span>
         </div>
-        <div>
-          <h3 className="text-lg font-bold text-emerald-900">HIPAA Authorization Signed</h3>
-          <p className="text-sm text-emerald-700 mt-1">Thank you. Your legal team now has the authorization to request your medical records.</p>
+        <div className="p-6">
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-slate-500">Status: <span className="text-emerald-600 font-bold">Signed</span></p>
+            <p className="text-sm font-medium text-slate-500">Date: <span className="text-slate-800">{signedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span></p>
+            <p className="text-sm text-slate-600 mt-4">
+              Thank you. Your legal team now has the authorization to request your medical records. You can download a copy of your signed authorization if needed.
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -37,14 +50,16 @@ export function HIPAAAuthorizationCard({ caseId }: { caseId: string }) {
       <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
         <h2 className="font-bold text-slate-800 text-lg flex items-center gap-2">
           <ShieldAlert className="w-5 h-5 text-teal-600" />
-          HIPAA Release Authorization
+          HIPAA Authorization
         </h2>
         <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-bold uppercase tracking-wider rounded border border-amber-200">
-          Action Required
+          Pending Signature
         </span>
       </div>
       
       <div className="p-6">
+        <p className="text-sm font-medium text-amber-600 mb-4">Status: Pending Signature</p>
+
         <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 h-48 overflow-y-auto text-sm text-slate-600 mb-6 font-mono leading-relaxed">
           <p className="font-bold mb-2">AUTHORIZATION FOR RELEASE OF HEALTH INFORMATION PURSUANT TO HIPAA</p>
           <p className="mb-2">I authorize the use or disclosure of my health information as described below.</p>
@@ -88,7 +103,7 @@ export function HIPAAAuthorizationCard({ caseId }: { caseId: string }) {
               disabled={!acceptedTerms || signature.trim().length < 3}
               className="h-11 px-6 bg-teal-600 text-white font-medium rounded-lg shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors w-full md:w-auto shrink-0"
             >
-              Sign Authorization
+              Review & Sign
             </button>
           </div>
         </form>

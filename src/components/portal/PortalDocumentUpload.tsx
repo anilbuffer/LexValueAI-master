@@ -220,7 +220,7 @@ export function PortalDocumentUpload({ caseId }: { caseId: string }) {
                             {staged.status === 'complete' && (
                               <>
                                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                                <span className="text-emerald-600 font-medium">Uploaded successfully</span>
+                                <span className="text-emerald-600 font-medium">Uploaded - Under Review</span>
                               </>
                             )}
                           </p>

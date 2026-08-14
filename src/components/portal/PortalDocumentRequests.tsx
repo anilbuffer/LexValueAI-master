@@ -40,7 +40,11 @@ export function PortalDocumentRequests({ requests }: { requests: any[] }) {
                 <div>
                   <h3 className="text-base font-bold text-amber-900">{req.documentName}</h3>
                   <p className="text-sm text-amber-700 mt-1">{req.description}</p>
-                  <p className="text-xs text-amber-600 mt-2 font-medium">Requested by: {req.requestedBy} • {new Date(req.createdAt).toLocaleDateString()}</p>
+                  <div className="flex flex-wrap items-center gap-3 mt-2 text-xs font-medium">
+                    <span className="text-amber-600">Requested: {new Date(req.createdAt).toLocaleDateString()}</span>
+                    {req.dueDate && <span className="text-rose-600">Due: {new Date(req.dueDate).toLocaleDateString()}</span>}
+                    <span className="px-2 py-0.5 bg-amber-200 text-amber-800 rounded-full">Pending</span>
+                  </div>
                 </div>
                 {/* 
                   Since we have a general upload component below this on the page (in the Documents tab), 

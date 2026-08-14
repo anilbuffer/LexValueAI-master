@@ -15,7 +15,9 @@ import {
   LogOut,
   Scale,
   Activity,
-  FileText
+  FileText,
+  ActivitySquare,
+  Shield
 } from "lucide-react";
 import { logoutUser } from "@/app/actions/auth";
 
@@ -53,8 +55,9 @@ export default function Sidebar({ role, user }: SidebarProps) {
     const items = [
       { name: "Overview", href: "/", icon: LayoutDashboard, roles: ['ADMIN', 'MANAGING_PARTNER', 'ATTORNEY', 'PARALEGAL'] },
       { name: "Dashboard", href: "/portal", icon: LayoutDashboard, roles: ['PLAINTIFF'] },
-      { name: "My Cases", href: "/portal/cases", icon: FolderOpen, roles: ['PLAINTIFF'] },
+      { name: "Timeline", href: "/portal/timeline", icon: ActivitySquare, roles: ['PLAINTIFF'] },
       { name: "Documents", href: "/portal/documents", icon: FileText, roles: ['PLAINTIFF'] },
+      { name: "Authorizations", href: "/portal/authorizations", icon: Shield, roles: ['PLAINTIFF'] },
       { name: "Cases & AI Analysis", href: "/cases", icon: FolderOpen, roles: ['ADMIN', 'MANAGING_PARTNER', 'ATTORNEY', 'PARALEGAL'] },
       { name: "Users", href: "/users", icon: Users, roles: ['ADMIN', 'MANAGING_PARTNER', 'ATTORNEY'] },
       { name: "Audit Log", href: "/audit", icon: Activity, roles: ['ADMIN', 'MANAGING_PARTNER'] },

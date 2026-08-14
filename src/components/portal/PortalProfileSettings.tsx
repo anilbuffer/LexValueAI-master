@@ -8,15 +8,18 @@ export function PortalProfileSettings({ caseData }: { caseData: any }) {
   const [showSuccess, setShowSuccess] = useState(false);
 
   // Initialize with case data client info (simulate user profile)
+  const [nameParts] = useState((caseData.client || "").split(" "));
   const [formData, setFormData] = useState({
-    name: caseData.client || "",
+    firstName: nameParts[0] || "",
+    lastName: nameParts.slice(1).join(" ") || "",
     email: caseData.clientEmail || "",
     phone: caseData.clientPhone || "",
+    preferredContact: "Email",
     password: "",
     confirmPassword: ""
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -34,14 +37,19 @@ export function PortalProfileSettings({ caseData }: { caseData: any }) {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-      <div className="bg-slate-50 px-6 py-4 border-b border-slate-200">
-        <h2 className="font-bold text-slate-800 text-lg flex items-center gap-2">
-          <User className="w-5 h-5 text-teal-600" />
-          Profile & Account Settings
-        </h2>
-        <p className="text-sm text-slate-500 mt-1">
-          Manage your contact information and account security.
-        </p>
+      <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+        <div>
+          <h2 className="font-bold text-slate-800 text-lg flex items-center gap-2">
+            <User className="w-5 h-5 text-teal-600" />
+            Profile & Account Settings
+          </h2>
+          <p className="text-sm text-slate-500 mt-1">
+            Manage your contact information and account security.
+          </p>
+        </div>
+        <div className="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider rounded-full border border-emerald-200">
+          Account Active
+        </div>
       </div>
 
       <div className="p-6">
@@ -53,23 +61,30 @@ export function PortalProfileSettings({ caseData }: { caseData: any }) {
         )}
 
         <form onSubmit={handleSave} className="space-y-6 max-w-2xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Contact Information */}
             <div className="space-y-4">
               <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-2">Contact Info</h3>
               
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-4 w-4 text-slate-400" />
-                  </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">First Name</label>
                   <input
                     type="text"
-                    name="name"
-                    value={formData.name}
+                    name="firstName"
+                    value={formData.firstName}
                     onChange={handleChange}
-                    className="block w-full h-10 pl-10 pr-3 border border-slate-300 rounded-lg text-sm focus:ring-teal-500 focus:border-teal-500"
+                    className="block w-full h-10 px-3 border border-slate-300 rounded-lg text-sm focus:ring-teal-500 focus:border-teal-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Last Name</label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className="block w-full h-10 px-3 border border-slate-300 rounded-lg text-sm focus:ring-teal-500 focus:border-teal-500"
                   />
                 </div>
               </div>
@@ -104,6 +119,20 @@ export function PortalProfileSettings({ caseData }: { caseData: any }) {
                     className="block w-full h-10 pl-10 pr-3 border border-slate-300 rounded-lg text-sm focus:ring-teal-500 focus:border-teal-500"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Preferred Contact Method</label>
+                <select
+                  name="preferredContact"
+                  value={formData.preferredContact}
+                  onChange={handleChange}
+                  className="block w-full h-10 px-3 border border-slate-300 rounded-lg text-sm focus:ring-teal-500 focus:border-teal-500 bg-white"
+                >
+                  <option value="Email">Email</option>
+                  <option value="Phone Call">Phone Call</option>
+                  <option value="Text Message">Text Message</option>
+                </select>
               </div>
             </div>
 
@@ -147,7 +176,7 @@ export function PortalProfileSettings({ caseData }: { caseData: any }) {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-100 flex justify-end">
+          <div className="pt-6 border-t border-slate-100 flex justify-end">
             <button
               type="submit"
               disabled={isSaving}

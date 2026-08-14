@@ -17,13 +17,30 @@ export default async function PortalPage({ params }: { params: Promise<{ caseId:
   const portalUpdates = getMockPortalUpdates(caseData.firmId, caseId);
   const uploadedDocuments = getMockClientUploadedDocuments(caseData.firmId, caseId);
 
+  // Strictly sanitize caseData to prevent internal firm data or AI analysis from leaking to the client
+  const clientCaseData = {
+    id: caseData.id,
+    referenceId: caseData.referenceId,
+    title: caseData.title,
+    client: caseData.client,
+    clientEmail: caseData.clientEmail,
+    clientPhone: caseData.clientPhone,
+    type: caseData.type,
+    dateOfInjury: caseData.dateOfInjury,
+    status: caseData.status,
+    firmId: caseData.firmId,
+    createdAt: caseData.createdAt,
+    updatedAt: caseData.updatedAt,
+    assignedUsers: caseData.assignedUsers,
+  };
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto w-full">
       {/* Welcome Banner */}
       <div className="bg-gradient-to-r from-teal-900 to-teal-700 rounded-xl p-8 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight mb-2">Welcome, {caseData.client.split(' ')[0]}</h1>
+            <h1 className="text-3xl font-bold tracking-tight mb-2">Welcome, {clientCaseData.client.split(' ')[0]}</h1>
             <p className="text-teal-100 text-lg max-w-2xl">
               This is your secure portal to track case progress, upload documents directly to your legal team, and sign necessary authorizations.
             </p>
@@ -47,7 +64,7 @@ export default async function PortalPage({ params }: { params: Promise<{ caseId:
 
       {/* Main Tabs Area */}
       <PortalTabs 
-        caseData={caseData} 
+        caseData={clientCaseData} 
         documentRequests={documentRequests} 
         portalUpdates={portalUpdates} 
         uploadedDocuments={uploadedDocuments} 

@@ -1,50 +1,59 @@
 "use client"
 
-import { Clock, Info } from "lucide-react"
+import { ActivitySquare, CheckCircle2 } from "lucide-react"
 
 export function PortalUpdates({ updates }: { updates: any[] }) {
-  if (!updates || updates.length === 0) {
-    return (
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="p-6 text-center text-slate-500">
-          <p>No updates available for your case yet.</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Sort updates by date descending
-  const sortedUpdates = [...updates].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  // Mocked Timeline Milestones as requested by the user
+  const milestones = [
+    { label: "Case Opened", description: "Your case has been formally opened with our firm.", completed: true },
+    { label: "Documents Submitted", description: "Initial documents have been received.", completed: true },
+    { label: "Medical Records Collected", description: "We have collected the necessary medical records.", completed: true },
+    { label: "Attorney Review", description: "Your legal team is currently reviewing your case.", completed: false, active: true },
+    { label: "Demand Preparation", description: "We are preparing a demand letter for the opposing party.", completed: false },
+    { label: "Negotiation", description: "We are currently in negotiations.", completed: false },
+    { label: "Settlement / Closure", description: "Your case is being finalized.", completed: false }
+  ];
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
       <div className="bg-slate-50 px-6 py-4 border-b border-slate-200">
         <h2 className="font-bold text-slate-800 text-lg flex items-center gap-2">
-          <Clock className="w-5 h-5 text-teal-600" />
-          Case Timeline & Updates
+          <ActivitySquare className="w-5 h-5 text-teal-600" />
+          Case Timeline
         </h2>
         <p className="text-sm text-slate-500 mt-1">
-          Stay informed with the latest developments in your case.
+          Track the overall progress of your case.
         </p>
       </div>
       
-      <div className="p-6">
-        <div className="relative border-l-2 border-slate-200 ml-3 space-y-8">
-          {sortedUpdates.map((update, index) => (
-            <div key={update.id} className="relative pl-6">
-              <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-white border-2 border-teal-500 flex items-center justify-center">
-                {index === 0 && <div className="w-1.5 h-1.5 bg-teal-500 rounded-full animate-pulse" />}
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-teal-600 mb-1">{new Date(update.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}</p>
-                <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
-                  <h3 className="font-bold text-slate-800 text-sm flex items-center gap-2">
-                    {update.title}
-                  </h3>
-                  <p className="text-slate-600 text-sm mt-1 leading-relaxed">
-                    {update.description}
-                  </p>
+      <div className="p-8">
+        <div className="relative border-l-2 border-slate-200 ml-4 space-y-8">
+          {milestones.map((milestone, index) => (
+            <div key={index} className="relative pl-8">
+              {milestone.completed ? (
+                <div className="absolute -left-[17px] top-0 w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center border-4 border-white shadow-sm">
+                  <CheckCircle2 className="w-4 h-4" />
                 </div>
+              ) : milestone.active ? (
+                <div className="absolute -left-[13px] top-1.5 w-6 h-6 rounded-full bg-white border-4 border-teal-500 shadow-sm" />
+              ) : (
+                <div className="absolute -left-[11px] top-2 w-5 h-5 rounded-full bg-white border-2 border-slate-300" />
+              )}
+              
+              <div className={`bg-slate-50 rounded-lg p-5 border ${
+                milestone.active ? 'border-teal-200 shadow-sm' : 'border-slate-100'
+              }`}>
+                <h3 className={`font-bold text-base flex items-center gap-2 ${
+                  milestone.completed ? 'text-slate-800' : milestone.active ? 'text-teal-700' : 'text-slate-500'
+                }`}>
+                  {milestone.label}
+                  {milestone.active && <span className="text-xs font-bold bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full ml-2">Current Stage</span>}
+                </h3>
+                <p className={`text-sm mt-1 leading-relaxed ${
+                  milestone.active ? 'text-slate-700' : 'text-slate-500'
+                }`}>
+                  {milestone.description}
+                </p>
               </div>
             </div>
           ))}

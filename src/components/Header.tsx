@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { Bell, Search, Maximize, Minimize, Plus, FileText, History, CheckCircle2, AlertTriangle, XCircle, Clock, Info, Folder, Loader2, User, Shield, CreditCard, Settings, Menu } from "lucide-react"
 
 export default function Header({ role, user }: { role: string, user: { firstName: string, lastName: string } }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Listen for fullscreen changes (e.g. if user presses Esc)
@@ -347,10 +348,12 @@ export default function Header({ role, user }: { role: string, user: { firstName
         </div>
 
         {/* Quick Action Button (Login Button Style) */}
-        <Link href="/cases/new" className="h-12 flex justify-center items-center px-5 border border-transparent rounded-lg text-sm font-medium text-white bg-teal-900 hover:bg-teal-950 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-900 transition-all cursor-pointer group">
-          New Case
-          <Plus className="ml-2 h-4 w-4 group-hover:rotate-90 transition-transform" />
-        </Link>
+        {!pathname.startsWith('/portal') && (
+          <Link href="/cases/new" className="h-12 flex justify-center items-center px-5 border border-transparent rounded-lg text-sm font-medium text-white bg-teal-900 hover:bg-teal-950 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-900 transition-all cursor-pointer group">
+            New Case
+            <Plus className="ml-2 h-4 w-4 group-hover:rotate-90 transition-transform" />
+          </Link>
+        )}
 
       </div>
     </header>

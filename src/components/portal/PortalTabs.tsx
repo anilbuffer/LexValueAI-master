@@ -1,14 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { LayoutDashboard, FileText, Clock, User } from "lucide-react"
-import { CaseStatusCard } from "./CaseStatusCard"
+import { LayoutDashboard, FileText, User, ListTodo, Shield, ActivitySquare } from "lucide-react"
+import { PortalDashboard } from "./PortalDashboard"
 import { HIPAAAuthorizationCard } from "./HIPAAAuthorizationCard"
 import { PortalDocumentUpload } from "./PortalDocumentUpload"
 import { PortalDocumentRequests } from "./PortalDocumentRequests"
 import { PortalMyDocuments } from "./PortalMyDocuments"
 import { PortalUpdates } from "./PortalUpdates"
-import { PortalProfileSettings } from "./PortalProfileSettings"
 
 interface PortalTabsProps {
   caseData: any;
@@ -18,9 +17,14 @@ interface PortalTabsProps {
 }
 
 export function PortalTabs({ caseData, documentRequests, portalUpdates, uploadedDocuments }: PortalTabsProps) {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'documents' | 'updates' | 'settings'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'timeline' | 'documents' | 'authorizations'>('dashboard');
 
   const pendingRequestsCount = documentRequests.filter(r => r.status === 'PENDING').length;
+  const pendingAuthorizations = 1; // Assuming 1 pending for demo based on mock
+
+  const handleNavigate = (tab: 'dashboard' | 'timeline' | 'documents' | 'authorizations') => {
+    setActiveTab(tab);
+  };
 
   return (
     <div className="space-y-6">
@@ -40,6 +44,18 @@ export function PortalTabs({ caseData, documentRequests, portalUpdates, uploaded
           </button>
           
           <button
+            onClick={() => setActiveTab('timeline')}
+            className={`whitespace-nowrap flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === 'timeline'
+                ? 'border-teal-500 text-teal-600'
+                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+            }`}
+          >
+            <ActivitySquare className="w-4 h-4" />
+            Timeline
+          </button>
+
+          <button
             onClick={() => setActiveTab('documents')}
             className={`whitespace-nowrap flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors relative ${
               activeTab === 'documents'
@@ -51,67 +67,59 @@ export function PortalTabs({ caseData, documentRequests, portalUpdates, uploaded
             Documents
             {pendingRequestsCount > 0 && (
               <span className="ml-1 bg-amber-100 text-amber-700 py-0.5 px-2 rounded-full text-[10px] font-bold">
-                {pendingRequestsCount} Action{pendingRequestsCount > 1 ? 's' : ''}
+                {pendingRequestsCount} Request{pendingRequestsCount > 1 ? 's' : ''}
               </span>
             )}
           </button>
 
           <button
-            onClick={() => setActiveTab('updates')}
-            className={`whitespace-nowrap flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-              activeTab === 'updates'
+            onClick={() => setActiveTab('authorizations')}
+            className={`whitespace-nowrap flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors relative ${
+              activeTab === 'authorizations'
                 ? 'border-teal-500 text-teal-600'
                 : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
             }`}
           >
-            <Clock className="w-4 h-4" />
-            Updates
+            <Shield className="w-4 h-4" />
+            Authorizations
+            {pendingAuthorizations > 0 && (
+              <span className="ml-1 bg-rose-100 text-rose-700 w-4 h-4 flex items-center justify-center rounded-full text-[10px] font-bold">
+                {pendingAuthorizations}
+              </span>
+            )}
           </button>
 
-          <button
-            onClick={() => setActiveTab('settings')}
-            className={`whitespace-nowrap flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-              activeTab === 'settings'
-                ? 'border-teal-500 text-teal-600'
-                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
-            }`}
-          >
-            <User className="w-4 h-4" />
-            Profile
-          </button>
         </nav>
       </div>
 
       {/* Tab Content */}
       <div className="py-2">
         {activeTab === 'dashboard' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="space-y-6">
-              <CaseStatusCard caseData={caseData} />
-            </div>
-            <div className="space-y-6">
-              <HIPAAAuthorizationCard caseId={caseData.id} />
-            </div>
-          </div>
+          <PortalDashboard 
+            caseData={caseData} 
+            documentRequests={documentRequests} 
+            uploadedDocuments={uploadedDocuments}
+            onNavigate={handleNavigate}
+          />
         )}
 
-        {activeTab === 'documents' && (
-          <div className="space-y-6 max-w-4xl">
-            <PortalDocumentRequests requests={documentRequests} />
-            <PortalDocumentUpload caseId={caseData.id} />
-            <PortalMyDocuments documents={uploadedDocuments} />
-          </div>
-        )}
-
-        {activeTab === 'updates' && (
+        {activeTab === 'timeline' && (
           <div className="max-w-3xl">
             <PortalUpdates updates={portalUpdates} />
           </div>
         )}
 
-        {activeTab === 'settings' && (
+        {activeTab === 'documents' && (
+          <div className="space-y-6 max-w-4xl">
+            {documentRequests.length > 0 && <PortalDocumentRequests requests={documentRequests} />}
+            <PortalDocumentUpload caseId={caseData.id} />
+            <PortalMyDocuments documents={uploadedDocuments} />
+          </div>
+        )}
+        
+        {activeTab === 'authorizations' && (
           <div className="max-w-3xl">
-            <PortalProfileSettings caseData={caseData} />
+            <HIPAAAuthorizationCard caseId={caseData.id} />
           </div>
         )}
       </div>
