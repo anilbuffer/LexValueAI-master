@@ -511,13 +511,7 @@ export default function CasesPage() {
             const summaries = summaryCase.documents
               .map((d: any) => {
                 const text = d.aiAnalysis?.shortSummary || d.summary;
-                if (!text) return null;
-                
-                const firstParagraph = text.split('\n').find((line: string) => {
-                  const trimmed = line.trim();
-                  return trimmed.length > 20 && !trimmed.startsWith('---') && !trimmed.startsWith('***') && !trimmed.startsWith('#') && /[a-z]/i.test(trimmed);
-                });
-                return firstParagraph || null;
+                return text || null;
               })
               .filter(Boolean);
               

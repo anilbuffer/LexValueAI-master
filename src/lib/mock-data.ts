@@ -101,7 +101,13 @@ export let mockCases = [
     createdByUserId: mockUser.id,
     createdAt: new Date("2026-01-10T10:00:00Z"),
     updatedAt: new Date("2026-08-10T15:30:00Z"),
-    documents: [],
+    documents: [
+      {
+        aiAnalysis: {
+          shortSummary: "new case\nPatient: Robin Johnson (also documented as Lori Guidi in some records); DOB: Jan 01, 1958; Current age: 68 years old; Sex: Female. Patient is a 68-year-old female with a complex medical history involving multiple injuries sustained from a slip-and-fall accident on ice in Jan 2018 while being evacuated from her apartment complex. The incident resulted in injuries to her cervical spine, right shoulder, and bilateral knees. Patient: Robin Johnson (also documented as Lori Guidi in some records); DOB: Jan 01, 1958; Current age: 68 years old; Sex: Female. Patient is a 68-year-old female with a complex medical history involving multiple injuries sustained from a slip-and-fall accident on ice in Jan 2018 while being evacuated from her apartment complex. The incident resulted in injuries to her cervical spine, right shoulder, and bilateral knees."
+        }
+      }
+    ],
     assignedUsers: [mockUser, mockUsers[1]],
   },
   {
@@ -589,6 +595,18 @@ export let mockNegotiationLogs = [
 ];
 
 export let mockMedicalBills = [
+  {
+    id: "bill-6",
+    caseId: "case-1",
+    firmId: "firm-1",
+    provider: "Shah Orthopedic Spine",
+    datesOfService: "9/5/2025",
+    billed: 0,
+    adjusted: 0,
+    paid: 0,
+    balance: 0,
+    isMissing: true,
+  },
   {
     id: "bill-1",
     caseId: "case-1",

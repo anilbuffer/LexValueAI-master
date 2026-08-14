@@ -26,30 +26,30 @@ DEMAND. Based on the foregoing, ${caseData?.client || 'the client'} demands the 
 
   return (
     <div className="flex flex-col h-full bg-white animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <div className="bg-slate-50 p-5 border-b border-slate-200 shrink-0 flex max-[640px]:flex-col min-[640px]:items-center justify-between gap-4">
+      <div className="bg-slate-50 p-3 border-b border-slate-200 shrink-0 flex max-[640px]:flex-col min-[640px]:items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <div className="bg-teal-100 text-teal-600 p-1.5 rounded-md">
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-slate-800 tracking-tight">AI-Generated Demand Letter</h2>
-            <p className="text-sm text-slate-500 mt-0.5">Editable draft pre-filled with case details.</p>
+            <h2 className="text-lg font-bold text-slate-800 tracking-tight">AI-Generated Demand Letter</h2>
+            <p className="text-xs text-slate-500 mt-0.5">Editable draft pre-filled with case details.</p>
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {!isEditing ? (
             <button 
               onClick={() => setIsEditing(true)}
-              className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors text-sm font-semibold shadow-sm"
+              className="flex items-center gap-2 px-2.5 py-1 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors text-xs font-semibold shadow-sm"
             >
-              <Edit3 className="w-4 h-4" /> Edit
+              <Edit3 className="w-3.5 h-3.5" /> Edit
             </button>
           ) : (
             <button 
               onClick={() => { setIsEditing(false); toast.success("Draft saved successfully."); }}
-              className="flex items-center gap-2 px-3 py-1.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm font-semibold shadow-sm"
+              className="flex items-center gap-2 px-2.5 py-1 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-xs font-semibold shadow-sm"
             >
-              <Save className="w-4 h-4" /> Save
+              <Save className="w-3.5 h-3.5" /> Save
             </button>
           )}
           <button 
@@ -57,33 +57,33 @@ DEMAND. Based on the foregoing, ${caseData?.client || 'the client'} demands the 
               navigator.clipboard.writeText(letterContent);
               toast.success("Copied to clipboard");
             }}
-            className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors text-sm font-semibold shadow-sm"
+            className="flex items-center gap-2 px-2.5 py-1 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors text-xs font-semibold shadow-sm"
           >
-            <Copy className="w-4 h-4" /> Copy
+            <Copy className="w-3.5 h-3.5" /> Copy
           </button>
           <button 
             onClick={() => toast.success("Demand letter exported as PDF")}
-            className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 border border-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors text-sm font-semibold shadow-sm"
+            className="flex items-center gap-2 px-2.5 py-1 bg-slate-800 border border-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors text-xs font-semibold shadow-sm"
           >
-            <Download className="w-4 h-4" /> Export
+            <Download className="w-3.5 h-3.5" /> Export
           </button>
         </div>
       </div>
 
-      <div className="p-6 md:p-8 flex-1 overflow-y-auto bg-slate-100/50">
-        <div className="max-w-4xl mx-auto border border-slate-200/60 rounded-xl p-8 md:p-12 bg-white shadow-sm font-serif text-[15px] leading-relaxed text-slate-800">
+      <div className="p-4 flex-1 overflow-y-auto bg-slate-100/50">
+        <div className="max-w-4xl mx-auto border border-slate-200/60 rounded-lg p-6 md:p-8 bg-white shadow-sm font-serif text-sm leading-normal text-slate-800">
           
-          <div className="flex items-center gap-3 mb-10 pb-6 border-b border-slate-100">
-            <div className="w-10 h-10 rounded-lg bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 font-bold text-xl">
+          <div className="flex items-center gap-2.5 mb-6 pb-4 border-b border-slate-100">
+            <div className="w-8 h-8 rounded-lg bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 font-bold text-lg">
               {firm?.name.charAt(0)}
             </div>
             <div>
-              <p className="font-sans font-bold text-slate-800 tracking-wide uppercase text-sm">{firm?.name}</p>
-              <p className="font-sans text-xs text-slate-500">{firm?.address} • {firm?.phone}</p>
+              <p className="font-sans font-bold text-slate-800 tracking-wide uppercase text-xs">{firm?.name}</p>
+              <p className="font-sans text-[10px] text-slate-500">{firm?.address} • {firm?.phone}</p>
             </div>
           </div>
 
-          <div className="mb-8 text-slate-600">
+          <div className="mb-5 text-slate-600">
             <p className="font-bold text-slate-800">RE: Settlement Demand — {caseData?.client}</p>
             <p>Date of Loss: {caseData?.dateOfInjury ? new Date(caseData.dateOfInjury).toLocaleDateString() : 'Unknown'}</p>
           </div>
@@ -92,16 +92,16 @@ DEMAND. Based on the foregoing, ${caseData?.client || 'the client'} demands the 
             <textarea
               value={letterContent}
               onChange={(e) => setLetterContent(e.target.value)}
-              className="w-full min-h-[400px] p-4 border border-teal-500 rounded-lg outline-none focus:ring-4 focus:ring-teal-500/10 font-serif leading-relaxed text-slate-700 resize-y bg-white"
+              className="w-full min-h-[300px] p-3 border border-teal-500 rounded-lg outline-none focus:ring-4 focus:ring-teal-500/10 font-serif leading-normal text-slate-700 resize-y bg-white"
             />
           ) : (
-            <div className="whitespace-pre-wrap font-serif text-slate-700 leading-loose">
+            <div className="whitespace-pre-wrap font-serif text-slate-700 leading-normal">
               {letterContent}
             </div>
           )}
 
-          <div className="mt-12 pt-8 border-t border-slate-100">
-            <p className="mb-3 text-slate-600">Very truly yours,</p>
+          <div className="mt-8 pt-5 border-t border-slate-100">
+            <p className="mb-2 text-slate-600">Very truly yours,</p>
             <p className="font-bold font-sans text-slate-800">{firm?.name}</p>
           </div>
         </div>

@@ -103,10 +103,20 @@ export async function AIProcessingQueue() {
           let flagsCount = 0;
           let summaryText = "";
 
-          const docs = getMockDocumentsForCase(c.id);
+          const mockDocs = getMockDocumentsForCase(c.id);
+          let summaries: string[] = [];
 
-          docs.forEach((doc) => {
-            if (doc.summary) summaryText = doc.summary;
+          if (c.documents && c.documents.length > 0) {
+            summaries = c.documents.map((d: any) => d.aiAnalysis?.shortSummary || d.summary).filter(Boolean);
+          }
+          if (summaries.length === 0) {
+            summaries = mockDocs.map((d: any) => d.aiAnalysis?.shortSummary || d.summary).filter(Boolean);
+          }
+          if (summaries.length > 0) {
+            summaryText = summaries.join('\n\n');
+          }
+
+          mockDocs.forEach((doc) => {
             if (doc.aiAnalysis && typeof doc.aiAnalysis === 'object') {
               const analysis = doc.aiAnalysis as any;
               if (Array.isArray(analysis.gaps)) {
@@ -121,12 +131,6 @@ export async function AIProcessingQueue() {
           const totalFlags = flagsCount;
           if (!summaryText) {
             summaryText = `AI has successfully processed the medical records for this case. ${totalFlags} risk flags were identified. Click View Timeline to see the full chronological breakdown.`;
-          } else {
-            // Keep only the first paragraph and limit length
-            summaryText = summaryText.split('\n').filter((p: string) => p.trim().length > 0)[0] || summaryText;
-            if (summaryText.length > 1200) {
-              summaryText = summaryText.substring(0, 1200) + '...';
-            }
           }
 
           return (
