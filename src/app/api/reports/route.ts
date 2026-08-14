@@ -155,7 +155,7 @@ export async function GET(req: Request) {
       select: { createdAt: true, updatedAt: true }
     });
     let totalDays = 0;
-    turnaroundCasesQuery.forEach(c => {
+    turnaroundCasesQuery.forEach((c: any) => {
       const diffTime = Math.abs(c.updatedAt.getTime() - c.createdAt.getTime());
       totalDays += Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     });
@@ -294,7 +294,7 @@ export async function GET(req: Request) {
 
       if (paralegalCounts.length > 0) {
         topParalegalCount = paralegalCounts[0].count;
-        const topTied = paralegalCounts.filter(p => p.count === topParalegalCount);
+        const topTied = paralegalCounts.filter((p: any) => p.count === topParalegalCount);
         const names = [];
         for (const t of topTied) {
           const u = await prisma.user.findUnique({ where: { id: t.userId }, select: { firstName: true, lastName: true } });
@@ -326,10 +326,10 @@ export async function GET(req: Request) {
             },
             select: { id: true }
           });
-          const subordinateIds = new Set(subordinates.map(s => s.id));
+          const subordinateIds = new Set(subordinates.map((s: any) => s.id));
           subordinateIds.add(mp.id);
 
-          const count = teamCases.filter(c => c.createdByUserId && subordinateIds.has(c.createdByUserId)).length;
+          const count = teamCases.filter((c: any) => c.createdByUserId && subordinateIds.has(c.createdByUserId)).length;
           if (count > 0) {
             mpPerformance.push({ mp, count });
           }
@@ -338,8 +338,8 @@ export async function GET(req: Request) {
         if (mpPerformance.length > 0) {
           mpPerformance.sort((a, b) => b.count - a.count);
           topManagingPartnerCount = mpPerformance[0].count;
-          const topTied = mpPerformance.filter(p => p.count === topManagingPartnerCount);
-          topManagingPartnerStr = topTied.map(p => `${p.mp.firstName} ${p.mp.lastName}`).join(', ');
+          const topTied = mpPerformance.filter((p: any) => p.count === topManagingPartnerCount);
+          topManagingPartnerStr = topTied.map((p: any) => `${p.mp.firstName} ${p.mp.lastName}`).join(', ');
         }
       }
     }
@@ -528,7 +528,7 @@ export async function GET(req: Request) {
 
     if (session.role === 'ATTORNEY') {
       const allowedAttorneyMetrics = ['my_cases', 'pending', 'approved', 'returned', 'top_approved_category', 'top_rejected_category'];
-      metricsData = metricsData.filter(m => allowedAttorneyMetrics.includes(m.id));
+      metricsData = metricsData.filter((m: any) => allowedAttorneyMetrics.includes(m.id));
     } else if (session.role === 'ADMIN') {
       const allowedAdminMetrics = [
         'my_cases', 'pending', 'closed_cases', 'approved', 'returned', 
@@ -536,14 +536,14 @@ export async function GET(req: Request) {
         'top_category', 'top_approved_category', 'top_rejected_category', 'top_closed_category',
         'top_managing_partner', 'top_attorney', 'top_paralegal'
       ];
-      metricsData = metricsData.filter(m => allowedAdminMetrics.includes(m.id));
+      metricsData = metricsData.filter((m: any) => allowedAdminMetrics.includes(m.id));
     } else if (session.role === 'MANAGING_PARTNER') {
       const allowedManagingPartnerMetrics = ['my_cases', 'pending', 'closed_cases', 'approved', 'returned', 'top_attorney', 'top_paralegal', 'top_category', 'top_approved_category', 'top_rejected_category', 'top_closed_category'];
-      metricsData = metricsData.filter(m => allowedManagingPartnerMetrics.includes(m.id));
+      metricsData = metricsData.filter((m: any) => allowedManagingPartnerMetrics.includes(m.id));
     } else {
       // Paralegal role
       const allowedParalegalMetrics = ['my_cases', 'analyzed', 'missing_docs', 'returned', 'approved', 'pending', 'top_category', 'top_approved_category', 'top_rejected_category'];
-      metricsData = metricsData.filter(m => allowedParalegalMetrics.includes(m.id));
+      metricsData = metricsData.filter((m: any) => allowedParalegalMetrics.includes(m.id));
     }
 
     return NextResponse.json({ success: true, data: metricsData });

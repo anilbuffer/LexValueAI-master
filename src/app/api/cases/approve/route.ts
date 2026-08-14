@@ -83,7 +83,7 @@ export async function POST(request: Request) {
       // Notify the MP of the approver (if they have one)
       if (approver?.managingPartnerId) targetUserIds.add(approver.managingPartnerId)
       // Notify admins
-      admins.forEach(admin => targetUserIds.add(admin.id))
+      admins.forEach((admin: any) => targetUserIds.add(admin.id))
       // Don't notify the approver themselves
       targetUserIds.delete(session.id)
 

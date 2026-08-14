@@ -393,7 +393,7 @@ Example format:
       // Find unique users involved in this case (creator + assigned)
       const userIds = new Set<string>();
       if (updatedCase.createdByUserId) userIds.add(updatedCase.createdByUserId);
-      updatedCase.assignedUsers.forEach(u => userIds.add(u.id));
+      updatedCase.assignedUsers.forEach((u: any) => userIds.add(u.id));
 
       if (userIds.size > 0) {
         await prisma.notification.createMany({

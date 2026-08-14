@@ -42,7 +42,7 @@ export async function deleteS3Objects(keys: string[]) {
   
   if (response.Errors && response.Errors.length > 0) {
     console.error("S3 Delete Errors:", response.Errors);
-    throw new Error(`Failed to delete S3 objects: ${response.Errors.map(e => e.Code).join(', ')}`);
+    throw new Error(`Failed to delete S3 objects: ${response.Errors.map((e: any) => e.Code).join(', ')}`);
   }
 }
 

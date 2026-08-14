@@ -67,7 +67,7 @@ export async function POST(request: Request) {
       
       const targetUserIds = new Set<string>()
       if (dbCase.createdByUserId) targetUserIds.add(dbCase.createdByUserId)
-      dbCase.assignedUsers.forEach(u => targetUserIds.add(u.id))
+      dbCase.assignedUsers.forEach((u: any) => targetUserIds.add(u.id))
       
       // Don't notify the person who is closing it
       targetUserIds.delete(session.id)

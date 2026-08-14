@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       where: { id: { in: caseIds }, firmId: session.firmId },
       select: { id: true, createdByUserId: true, title: true }
     })
-    const validCaseIds = validCases.map(c => c.id)
+    const validCaseIds = validCases.map((c: any) => c.id)
 
     const transactions = validCaseIds.map(caseId => {
       return prisma.case.update({
@@ -54,8 +54,8 @@ export async function POST(request: Request) {
       const targetUserIds = new Set<string>()
       userIds.forEach((id: string) => targetUserIds.add(id))
       if (assigner?.managingPartnerId) targetUserIds.add(assigner.managingPartnerId)
-      admins.forEach(admin => targetUserIds.add(admin.id))
-      validCases.forEach(c => {
+      admins.forEach((admin: any) => targetUserIds.add(admin.id))
+      validCases.forEach((c: any) => {
         if (c.createdByUserId) targetUserIds.add(c.createdByUserId)
       })
       targetUserIds.delete(session.id)

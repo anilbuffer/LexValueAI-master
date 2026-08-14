@@ -33,7 +33,7 @@ export async function GET(request: Request) {
             where: { firmId: session.firmId, managingPartnerId: session.id, role: 'ATTORNEY' },
             select: { id: true }
         })
-        const attyIds = attorneysForMp.map(a => a.id)
+        const attyIds = attorneysForMp.map((a: any) => a.id)
 
         if (!roleParam || roleParam === 'ATTORNEY') {
             const attorneys = await prisma.user.findMany({

@@ -167,13 +167,13 @@ export async function exportToWord(caseData: any) {
         safeParagraph(`Case Report: ${caseData.title || 'Untitled Case'}`, HeadingLevel.HEADING_1),
 
         safeParagraph("Narrative Summary", HeadingLevel.HEADING_2),
-        ...(combinedSummary || "No summary available.").split('\n').filter(l => l.trim()).map(line => safeParagraph(line)),
+        ...(combinedSummary || "No summary available.").split('\n').filter((l: any) => l.trim()).map((line: any) => safeParagraph(line)),
 
         safeParagraph("Case Flags (Risks)", HeadingLevel.HEADING_2),
-        ...normalizedFlags.map(f => safeParagraph(`• [${f.severity.toUpperCase()}] [${f.confidence} Confidence] [Page: ${f.pageNumber}] ${f.title}`)),
+        ...normalizedFlags.map((f: any) => safeParagraph(`• [${f.severity.toUpperCase()}] [${f.confidence} Confidence] [Page: ${f.pageNumber}] ${f.title}`)),
 
         safeParagraph("Missing Records", HeadingLevel.HEADING_2),
-        ...normalizedGaps.map(g => safeParagraph(`• [${g.confidence} Confidence] [Page: ${g.pageNumber}] ${g.title}`)),
+        ...normalizedGaps.map((g: any) => safeParagraph(`• [${g.confidence} Confidence] [Page: ${g.pageNumber}] ${g.title}`)),
 
         safeParagraph("Chronology of Events", HeadingLevel.HEADING_2),
         new Table({
@@ -248,7 +248,7 @@ export async function exportToPDF(caseData: any) {
     autoTable(doc, {
       startY: finalY + 10,
       head: [['Severity', 'Confidence', 'Page', 'Flag Description']],
-      body: normalizedFlags.map(f => [f.severity, f.confidence, f.pageNumber, f.title]),
+      body: normalizedFlags.map((f: any) => [f.severity, f.confidence, f.pageNumber, f.title]),
       theme: 'grid',
       headStyles: { fillColor: [225, 29, 72], textColor: [255, 255, 255], fontStyle: 'bold' }, // rose-600
       styles: { fontSize: 9.5, textColor: [15, 23, 42], lineColor: [203, 213, 225] },
@@ -264,7 +264,7 @@ export async function exportToPDF(caseData: any) {
     autoTable(doc, {
       startY: finalY + 10,
       head: [['Confidence', 'Page', 'Missing Record Description']],
-      body: normalizedGaps.map(g => [g.confidence, g.pageNumber, g.title]),
+      body: normalizedGaps.map((g: any) => [g.confidence, g.pageNumber, g.title]),
       theme: 'grid',
       headStyles: { fillColor: [217, 119, 6], textColor: [255, 255, 255], fontStyle: 'bold' }, // amber-600
       styles: { fontSize: 9.5, textColor: [15, 23, 42], lineColor: [203, 213, 225] },

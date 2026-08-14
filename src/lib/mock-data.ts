@@ -457,9 +457,9 @@ export const mockAuditLogs = [
 
 export const getMockUser = () => mockUser;
 export const getMockCases = () => mockCases;
-export const getMockCaseById = (id: string) => mockCases.find(c => c.id === id);
-export const getMockDocumentsForCase = (caseId: string) => mockDocuments.filter(d => d.caseId === caseId);
-export const getMockTimelineForCase = (caseId: string) => mockTimelineEvents.filter(t => t.caseId === caseId);
+export const getMockCaseById = (id: string) => mockCases.find((c: any) => c.id === id);
+export const getMockDocumentsForCase = (caseId: string) => mockDocuments.filter((d: any) => d.caseId === caseId);
+export const getMockTimelineForCase = (caseId: string) => mockTimelineEvents.filter((t: any) => t.caseId === caseId);
 export const getMockNotifications = () => mockNotifications;
 export const getMockAuditLogs = () => mockAuditLogs;
 export const getMockUsers = () => mockUsers;
