@@ -6,8 +6,15 @@ import { ChronologyTab } from "@/components/timeline/ChronologyTab"
 import { SummaryTab } from "@/components/timeline/SummaryTab"
 import { GapsTab } from "@/components/timeline/GapsTab"
 import { CaseIntelligenceBlock } from "@/components/timeline/CaseIntelligenceBlock"
+import { MedicalBillsTab } from "@/components/timeline/MedicalBillsTab"
+import { NegotiationTab } from "@/components/timeline/NegotiationTab"
+import { CaseDocumentsTab } from "@/components/timeline/CaseDocumentsTab"
+import { DemandLetterTab } from "@/components/timeline/DemandLetterTab"
+import { DepositionOutlineTab } from "@/components/timeline/DepositionOutlineTab"
+import { RightSidebar } from "@/components/timeline/RightSidebar"
+import { Receipt, Handshake, FolderOpen, Mail, UserCheck } from "lucide-react"
 
-type TabType = 'flags' | 'chronology' | 'summary' | 'gaps'
+type TabType = 'flags' | 'chronology' | 'summary' | 'gaps' | 'bills' | 'negotiation' | 'documents' | 'demand_letter' | 'deposition_outline'
 
 export function TimelineTabs({ caseData }: { caseData: any }) {
   const [activeTab, setActiveTab] = useState<TabType>('chronology')
@@ -18,7 +25,7 @@ export function TimelineTabs({ caseData }: { caseData: any }) {
     getUserRole().then(setRole)
     const params = new URLSearchParams(window.location.search)
     const tabParam = params.get('tab') as TabType
-    if (tabParam && ['flags', 'chronology', 'summary', 'gaps'].includes(tabParam)) {
+    if (tabParam && ['flags', 'chronology', 'summary', 'gaps', 'bills', 'negotiation', 'documents', 'demand_letter', 'deposition_outline'].includes(tabParam)) {
       setActiveTab(tabParam)
     }
   }, [])
@@ -30,34 +37,7 @@ export function TimelineTabs({ caseData }: { caseData: any }) {
     return 'high';
   }
 
-  // Extract flags for the right sidebar
-  const flags: any[] = []
-  if (caseData?.documents) {
-    caseData.documents.forEach((doc: any) => {
-      if (doc.aiAnalysis?.flags && Array.isArray(doc.aiAnalysis.flags)) {
-        doc.aiAnalysis.flags.forEach((flag: any) => {
-          let title = "Identified Flag";
-          let confidence = "High";
-          
-          if (typeof flag === 'string') {
-            title = flag;
-          } else {
-            title = flag.title || flag.text || "Identified Flag";
-            confidence = flag.confidence || "High";
-          }
-          
-          flags.push({ title, confidence })
-        })
-      }
-    })
-  }
 
-  function getDotStyle(confidence: string) {
-    const c = (confidence || '').toLowerCase();
-    if (c === 'high') return 'bg-rose-500';
-    if (c === 'low') return 'bg-slate-400';
-    return 'bg-amber-400'; // medium
-  }
 
   return (
     <div className="flex flex-col gap-[15px]">
@@ -115,6 +95,71 @@ export function TimelineTabs({ caseData }: { caseData: any }) {
           </div>
           Missing Records
         </button>
+
+        <button
+          onClick={() => setActiveTab('bills')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[14px] font-semibold transition-all whitespace-nowrap cursor-pointer border ${activeTab === 'bills'
+            ? 'bg-teal-900 text-white border-teal-900 shadow-md'
+            : 'bg-white text-slate-500 border-slate-200/50 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800 shadow-sm'
+            }`}
+        >
+          <div className={`${activeTab === 'bills' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'} p-1 rounded-md transition-colors`}>
+            <Receipt className="w-4 h-4" />
+          </div>
+          Medical Bills
+        </button>
+
+        <button
+          onClick={() => setActiveTab('negotiation')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[14px] font-semibold transition-all whitespace-nowrap cursor-pointer border ${activeTab === 'negotiation'
+            ? 'bg-teal-900 text-white border-teal-900 shadow-md'
+            : 'bg-white text-slate-500 border-slate-200/50 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800 shadow-sm'
+            }`}
+        >
+          <div className={`${activeTab === 'negotiation' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'} p-1 rounded-md transition-colors`}>
+            <Handshake className="w-4 h-4" />
+          </div>
+          Negotiation
+        </button>
+
+        <button
+          onClick={() => setActiveTab('documents')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[14px] font-semibold transition-all whitespace-nowrap cursor-pointer border ${activeTab === 'documents'
+            ? 'bg-teal-900 text-white border-teal-900 shadow-md'
+            : 'bg-white text-slate-500 border-slate-200/50 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800 shadow-sm'
+            }`}
+        >
+          <div className={`${activeTab === 'documents' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'} p-1 rounded-md transition-colors`}>
+            <FolderOpen className="w-4 h-4" />
+          </div>
+          Case Documents
+        </button>
+
+        <button
+          onClick={() => setActiveTab('demand_letter')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[14px] font-semibold transition-all whitespace-nowrap cursor-pointer border ${activeTab === 'demand_letter'
+            ? 'bg-teal-900 text-white border-teal-900 shadow-md'
+            : 'bg-white text-slate-500 border-slate-200/50 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800 shadow-sm'
+            }`}
+        >
+          <div className={`${activeTab === 'demand_letter' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'} p-1 rounded-md transition-colors`}>
+            <Mail className="w-4 h-4" />
+          </div>
+          Demand Letter
+        </button>
+
+        <button
+          onClick={() => setActiveTab('deposition_outline')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[14px] font-semibold transition-all whitespace-nowrap cursor-pointer border ${activeTab === 'deposition_outline'
+            ? 'bg-teal-900 text-white border-teal-900 shadow-md'
+            : 'bg-white text-slate-500 border-slate-200/50 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800 shadow-sm'
+            }`}
+        >
+          <div className={`${activeTab === 'deposition_outline' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'} p-1 rounded-md transition-colors`}>
+            <UserCheck className="w-4 h-4" />
+          </div>
+          Deposition Outline
+        </button>
       </div>
 
       <div className="flex flex-col xl:flex-row gap-[15px]">
@@ -124,45 +169,15 @@ export function TimelineTabs({ caseData }: { caseData: any }) {
           {activeTab === 'chronology' && <ChronologyTab caseData={caseData} />}
           {activeTab === 'summary' && <SummaryTab caseData={caseData} />}
           {activeTab === 'gaps' && <GapsTab caseData={caseData} role={role} />}
+          {activeTab === 'bills' && <MedicalBillsTab caseData={caseData} />}
+          {activeTab === 'negotiation' && <NegotiationTab caseData={caseData} />}
+          {activeTab === 'documents' && <CaseDocumentsTab caseData={caseData} />}
+          {activeTab === 'demand_letter' && <DemandLetterTab caseData={caseData} />}
+          {activeTab === 'deposition_outline' && <DepositionOutlineTab caseData={caseData} />}
         </div>
 
-        {/* Right Sidebar: Case Flags Summary */}
-        <div className="w-full xl:w-[380px] shrink-0">
-          <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm sticky top-4 overflow-hidden">
-            <div className="flex items-center gap-2.5 px-5 py-5 bg-white border-b border-slate-100">
-              <Sparkles className="w-5 h-5 text-rose-500" />
-              <h2 className="text-[18px] font-bold text-slate-900 tracking-tight">Case Flags</h2>
-            </div>
-            
-            <div className="flex flex-col">
-              {flags.length === 0 ? (
-                <div className="p-6 text-center">
-                  <p className="text-[13px] text-slate-500">No flags identified yet.</p>
-                </div>
-              ) : (
-                flags.map((flag, idx) => {
-                  const dotStyle = getDotStyle(flag.confidence);
-                  return (
-                    <div 
-                      key={idx} 
-                      className={`group flex items-center px-5 py-4 border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors cursor-pointer ${highlightedFlag === idx ? 'bg-teal-50/50' : ''}`}
-                      onClick={() => {
-                        setActiveTab('flags')
-                        setHighlightedFlag(idx)
-                        // Smooth scroll to the tab if on mobile, though usually it's side-by-side
-                      }}
-                    >
-                      <div className={`w-2.5 h-2.5 rounded-full ${dotStyle} mr-3.5 shrink-0 mt-1`}></div>
-                      <span className="text-[15px] text-slate-700 font-medium group-hover:text-slate-900 transition-colors flex-1 pr-2 leading-tight">
-                        {flag.title}
-                      </span>
-                    </div>
-                  )
-                })
-              )}
-            </div>
-          </div>
-        </div>
+        {/* Right Sidebar: Case Notes & Ask This Case */}
+        <RightSidebar caseData={caseData} />
       </div>
 
     </div>
