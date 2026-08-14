@@ -1,7 +1,15 @@
-import React from 'react'
-import { FileText, ClipboardList, Link as LinkIcon, Stethoscope, Activity } from 'lucide-react'
+import React, { useState, useMemo } from 'react'
+import { FileText, ClipboardList, Link as LinkIcon, Stethoscope, Activity, Filter, MessageSquare } from 'lucide-react'
 
 export function ChronologyTab({ caseData }: { caseData?: any }) {
+  const [providerFilter, setProviderFilter] = useState<string>('All')
+  const [bodyPartFilter, setBodyPartFilter] = useState<string>('All')
+  const [confidenceFilter, setConfidenceFilter] = useState<string>('All')
+
+  const [annotations, setAnnotations] = useState<Record<string, { note: string; date: string }[]>>({})
+  const [annotatingEventId, setAnnotatingEventId] = useState<string | null>(null)
+  const [newAnnotation, setNewAnnotation] = useState('')
+
   const handlePageClick = async (documentId: string, pageStr: string) => {
     if (!documentId) return;
     const match = pageStr.match(/\d+/);
@@ -13,23 +21,103 @@ export function ChronologyTab({ caseData }: { caseData?: any }) {
     }
   };
 
-  const events = caseData?.timelineEvents || []
+  const filteredEvents = useMemo(() => {
+    return (caseData?.timelineEvents || []).filter((event: any) => {
+      let details: any = null;
+      try {
+        const parsed = JSON.parse(event.description);
+        if (parsed && typeof parsed === 'object') {
+          details = parsed;
+        }
+      } catch (e) {}
+      
+      const provider = details?.provider || '';
+      const confidence = details?.confidence || 'Medium';
+      
+      const textForBodyPart = (details?.complaints || '') + ' ' + (details?.diagnosis || '') + ' ' + (event.title || '');
+
+      if (providerFilter !== 'All' && provider !== providerFilter) return false;
+      if (confidenceFilter !== 'All' && confidence !== confidenceFilter) return false;
+      if (bodyPartFilter !== 'All' && !textForBodyPart.toLowerCase().includes(bodyPartFilter.toLowerCase())) return false;
+      
+      return true;
+    });
+  }, [caseData, providerFilter, bodyPartFilter, confidenceFilter]);
+
+  const uniqueProviders = useMemo(() => {
+    const providers = new Set<string>();
+    (caseData?.timelineEvents || []).forEach((event: any) => {
+      try {
+        const parsed = JSON.parse(event.description);
+        if (parsed?.provider && parsed.provider.toLowerCase() !== 'not specified' && parsed.provider.toLowerCase() !== 'n/a') {
+          providers.add(parsed.provider);
+        }
+      } catch(e) {}
+    });
+    return Array.from(providers).sort();
+  }, [caseData]);
+  
+  const bodyPartOptions = ['Cervical', 'Lumbar', 'Left Knee', 'Right Shoulder', 'Brain', 'Head', 'Spine', 'Back'];
 
   return (
     <div className="flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="bg-slate-50 p-3 border-b border-slate-200">
-        <h2 className="text-xl font-bold text-slate-800">Medical Chronology</h2>
-        <p className="text-xs text-slate-500 mt-0.5">Timeline of {events.length} extracted medical events.</p>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div>
+            <h2 className="text-xl font-bold text-slate-800">Medical Chronology</h2>
+            <p className="text-xs text-slate-500 mt-0.5">Timeline of {filteredEvents.length} extracted medical events.</p>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-md px-2 py-1 shadow-sm hover:border-slate-300 transition-colors">
+              <Filter className="w-3.5 h-3.5 text-slate-400" />
+              <select 
+                className="text-xs font-medium text-slate-700 bg-transparent border-none focus:ring-0 outline-none cursor-pointer pr-4"
+                value={providerFilter}
+                onChange={(e) => setProviderFilter(e.target.value)}
+              >
+                <option value="All">All Providers</option>
+                {uniqueProviders.map(p => <option key={p} value={p}>{p}</option>)}
+              </select>
+            </div>
+            
+            <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-md px-2 py-1 shadow-sm hover:border-slate-300 transition-colors">
+              <Filter className="w-3.5 h-3.5 text-slate-400" />
+              <select 
+                className="text-xs font-medium text-slate-700 bg-transparent border-none focus:ring-0 outline-none cursor-pointer pr-4"
+                value={bodyPartFilter}
+                onChange={(e) => setBodyPartFilter(e.target.value)}
+              >
+                <option value="All">All Body Parts</option>
+                {bodyPartOptions.map(bp => <option key={bp} value={bp}>{bp}</option>)}
+              </select>
+            </div>
+            
+            <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-md px-2 py-1 shadow-sm hover:border-slate-300 transition-colors">
+              <Filter className="w-3.5 h-3.5 text-slate-400" />
+              <select 
+                className="text-xs font-medium text-slate-700 bg-transparent border-none focus:ring-0 outline-none cursor-pointer pr-4"
+                value={confidenceFilter}
+                onChange={(e) => setConfidenceFilter(e.target.value)}
+              >
+                <option value="All">All Confidences</option>
+                <option value="High">High Conf</option>
+                <option value="Medium">Medium Conf</option>
+                <option value="Low">Low Conf</option>
+              </select>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="p-3 w-full">
-        {events.length === 0 ? (
+        {filteredEvents.length === 0 ? (
           <div className="p-8 text-center border-2 border-dashed border-slate-200 rounded-xl bg-slate-50">
-            <p className="text-slate-500">No events generated yet. Upload a document to automatically generate a timeline.</p>
+            <p className="text-slate-500">No events match the selected filters or none generated yet.</p>
           </div>
         ) : (
           <div className="flex flex-col">
-            {events.map((event: any, index: number) => {
+            {filteredEvents.map((event: any, index: number) => {
               let rawDate = undefined
               const d = new Date(event.date)
               const isDateValid = !isNaN(d.getTime()) && d.getTime() > 0
@@ -169,7 +257,7 @@ export function ChronologyTab({ caseData }: { caseData?: any }) {
                         </div>
                       )}
 
-                      <div className="mt-3 pt-2 border-t border-slate-50 flex items-center gap-3 w-full min-w-0">
+                      <div className="mt-3 pt-2 border-t border-slate-50 flex items-center justify-between gap-3 w-full min-w-0">
                         <div
                           title={sourcePage === "Source page unclear" ? `Page unclear, ${docName}` : `Page ${sourcePage}, ${docName}`}
                           onClick={(e) => { e.stopPropagation(); handlePageClick(event.documentId, String(sourcePage)); }}
@@ -180,7 +268,73 @@ export function ChronologyTab({ caseData }: { caseData?: any }) {
                             {sourcePage === "Source page unclear" ? `Page unclear, ${docName}` : `Page ${sourcePage}, ${docName}`}
                           </span>
                         </div>
+                        
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setAnnotatingEventId(annotatingEventId === event.id ? null : event.id);
+                          }}
+                          className={`flex items-center gap-1.5 text-[11px] font-semibold px-2 py-1 rounded-md transition-colors ${annotatingEventId === event.id || (annotations[event.id] && annotations[event.id].length > 0) ? 'bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100' : 'text-slate-500 hover:bg-slate-100 border border-transparent'}`}
+                        >
+                          <MessageSquare className="w-3.5 h-3.5" />
+                          {annotations[event.id]?.length ? `${annotations[event.id].length} Notes` : 'Add Note'}
+                        </button>
                       </div>
+
+                      {/* Annotation Area */}
+                      {(annotatingEventId === event.id || (annotations[event.id] && annotations[event.id].length > 0)) && (
+                        <div className="mt-3 pt-3 border-t border-slate-100 animate-in fade-in slide-in-from-top-2 duration-300">
+                          <div className="flex items-center gap-2 mb-2">
+                            <MessageSquare className="w-3.5 h-3.5 text-amber-500" />
+                            <h4 className="text-[11px] font-bold text-amber-700 uppercase tracking-wider">Internal Notes & Flags</h4>
+                          </div>
+                          
+                          {annotations[event.id]?.map((ann, idx) => (
+                            <div key={idx} className="bg-amber-50/50 border border-amber-100 rounded-md p-2 mb-2">
+                              <div className="text-[10px] text-amber-600 mb-1 font-semibold">{ann.date}</div>
+                              <p className="text-[12px] text-slate-800 leading-relaxed font-medium">{ann.note}</p>
+                            </div>
+                          ))}
+
+                          {annotatingEventId === event.id && (
+                            <div className="flex gap-2 mt-2">
+                              <input 
+                                type="text" 
+                                placeholder="Type an internal note or flag..." 
+                                className="flex-1 text-[12px] px-2.5 py-1.5 border border-slate-200 rounded-md focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 bg-white shadow-sm"
+                                value={newAnnotation}
+                                onChange={(e) => setNewAnnotation(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' && newAnnotation.trim()) {
+                                    const current = annotations[event.id] || [];
+                                    setAnnotations({
+                                      ...annotations,
+                                      [event.id]: [...current, { note: newAnnotation.trim(), date: new Date().toLocaleString() }]
+                                    });
+                                    setNewAnnotation('');
+                                  }
+                                }}
+                              />
+                              <button 
+                                className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-md text-[11px] font-bold transition-colors shadow-sm disabled:opacity-50"
+                                disabled={!newAnnotation.trim()}
+                                onClick={() => {
+                                  if (newAnnotation.trim()) {
+                                    const current = annotations[event.id] || [];
+                                    setAnnotations({
+                                      ...annotations,
+                                      [event.id]: [...current, { note: newAnnotation.trim(), date: new Date().toLocaleString() }]
+                                    });
+                                    setNewAnnotation('');
+                                  }
+                                }}
+                              >
+                                Save
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

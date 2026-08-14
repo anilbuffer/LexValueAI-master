@@ -80,8 +80,8 @@ export let mockUsers = [
 export let mockCases = [
   {
     id: "case-1",
-    referenceId: "Illo rerum praesenti",
-    title: "Illo rerum praesenti",
+    referenceId: "LVA-2026-001",
+    title: "Espinoza v. Commercial Transport Inc.",
     client: "Debra Espinoza",
     clientEmail: "debra.e@example.com",
     clientPhone: "555-0123",
@@ -358,7 +358,7 @@ export let mockNotifications = [
   },
   {
     id: "notif-2",
-    message: "AI Scan completed for 'Illo rerum praesenti'.",
+    message: "AI Scan completed for 'Espinoza v. Commercial Transport Inc.'.",
     type: "INFO",
     isRead: true,
     userId: mockUser.id,
@@ -616,6 +616,7 @@ export let mockMedicalBills = [
     paid: 0,
     balance: 0,
     isMissing: true,
+    type: "Standard",
   },
   {
     id: "bill-1",
@@ -627,6 +628,7 @@ export let mockMedicalBills = [
     adjusted: 1200.00,
     paid: 3300.00,
     balance: 0,
+    type: "Standard",
   },
   {
     id: "bill-2",
@@ -638,6 +640,7 @@ export let mockMedicalBills = [
     adjusted: 500.00,
     paid: 2700.00,
     balance: 0,
+    type: "PIP Pay-off",
   },
   {
     id: "bill-3",
@@ -649,6 +652,7 @@ export let mockMedicalBills = [
     adjusted: 15000.00,
     paid: 10000.00,
     balance: 20000.00,
+    type: "Standard",
   },
   {
     id: "bill-4",
@@ -660,6 +664,7 @@ export let mockMedicalBills = [
     adjusted: 35000.00,
     paid: 0,
     balance: 50000.00,
+    type: "Medicare Lien",
   },
   {
     id: "bill-5",
@@ -671,6 +676,20 @@ export let mockMedicalBills = [
     adjusted: 4500.00,
     paid: 8000.00,
     balance: 0,
+    type: "ERISA Subrogation",
+  },
+  {
+    id: "bill-7",
+    caseId: "case-1",
+    firmId: "firm-1",
+    provider: "Neurological Associates",
+    datesOfService: "08/12/2018",
+    billed: 0,
+    adjusted: 0,
+    paid: 0,
+    balance: 0,
+    isMissing: true,
+    type: "Standard",
   }
 ];
 
@@ -683,22 +702,96 @@ export let mockDepositionOutlines = [
     gaps: ["Missing physical therapy progress notes.", "Missing lumbar MRI."],
     inconsistencies: ["Conflicting dates on right shoulder arthroscopy.", "Inconsistent patient names (Johnson vs Guidi)."],
     questionLines: [
-      { topic: "Causation & MVA", suggestedQuestion: "Doctor, isn't it true that a rear-end collision of this magnitude is a well-documented mechanism of injury for a C5-C6 disc herniation?", citation: "Page 85, ACDF Operative Report" },
-      { topic: "Pre-existing Conditions", suggestedQuestion: "You emphasize the patient's prior lower back pain, yet you acknowledge in your report that she had zero documented complaints of cervical or radicular pain prior to June 8, 2018, correct?", citation: "Page 15, Initial Ortho Eval" },
-      { topic: "Treatment Necessity", suggestedQuestion: "Do you dispute Dr. Grossman's surgical opinion that conservative therapy had failed and ACDF was medically necessary to prevent permanent nerve damage?", citation: "Page 55, Neurosurgery Clearance" },
-      { topic: "Surgical Efficacy", suggestedQuestion: "Even if you argue the shoulder surgery wasn't strictly related to the MVA, you agree the cervical fusion is a permanent structural alteration of her spine?", citation: "Page 85" }
+      { 
+        topic: "Financial Bias", 
+        suggestedQuestion: "Doctor, isn't it true that a significant portion of your annual income comes directly from performing these exams for insurance defense firms?", 
+        citation: "Defense Medical Exam Report",
+        impeachment: "Prior trial transcripts (Smith v. Jones) show Dr. X admitted 85% of his practice is defense exams.",
+        branching: {
+          ifYes: "Explore exactly how much income is generated annually from defense work.",
+          ifNo: "Confront with prior testimony or 1099 subpeona records."
+        }
+      },
+      { 
+        topic: "Failure to Examine Post-Surgery", 
+        suggestedQuestion: "You wrote this report stating the plaintiff has fully recovered, yet you haven't actually examined her since her second surgery, correct?", 
+        citation: "Page 85, ACDF Operative Report vs DME Exam Date",
+        impeachment: "DME exam was dated Oct 1, 2018. Surgery was Oct 15, 2018.",
+        branching: {
+          ifYes: "Establish that the report cannot account for current post-surgical limitations.",
+          ifNo: "Demand he point to the specific date in his chart showing a post-surgery exam."
+        }
+      },
+      { 
+        topic: "Pre-existing Conditions", 
+        suggestedQuestion: "You emphasize the patient's prior lower back pain to suggest pre-existing issues, yet you acknowledge in your own report that she had zero documented complaints of cervical or radicular pain prior to the accident, correct?", 
+        citation: "Page 15, Initial Ortho Eval",
+        impeachment: "Medical records from 2010-2017 show zero complaints of neck pain. Plaintiff was asymptomatic.",
+        branching: {
+          ifYes: "Lock in the admission that the cervical injury is new and related to the MVA.",
+          ifNo: "Open the primary care records on Page 15 to show the complete absence of neck pain complaints."
+        }
+      }
     ]
   },
   {
     id: "depo-2",
     caseId: "case-1",
     firmId: "firm-1",
-    deponentType: "Treating Physician (Dr. Cline)",
+    deponentType: "Treating Physician",
     gaps: ["Missing right shoulder MRI findings.", "Missing left knee operative report."],
     inconsistencies: ["Notes state patient refused injection, but billing shows injection administered."],
     questionLines: [
-      { topic: "Diagnosis Justification", suggestedQuestion: "Dr. Cline, can you walk us through the specific objective findings on the June 15th MRI that led you to recommend arthroscopic surgery?", citation: "Page 35" },
-      { topic: "Future Prognosis", suggestedQuestion: "In your expert opinion, what is the likelihood this patient will require a revision surgery or adjacent segment fusion within the next 10 years?", citation: "Page 155, Re-Evaluation" }
+      { 
+        topic: "Causation & MVA", 
+        suggestedQuestion: "Dr. Cline, within a reasonable degree of medical certainty, did the motor vehicle accident of June 8th directly cause the plaintiff's C5-C6 herniation?", 
+        citation: "Page 35",
+        impeachment: "Note: Ensure doctor does not waver. Refer to his own causation statement in the initial narrative.",
+        branching: {
+          ifYes: "Move to future medical costs and permanency of the injury.",
+          ifNo: "Confront with his own report on Page 35 which states 'injuries are casually related to the MVA'."
+        }
+      },
+      { 
+        topic: "Future Medical Care Costs", 
+        suggestedQuestion: "In your expert opinion, what is the likelihood this patient will require a revision surgery or adjacent segment fusion within the next 10 years, and what would be the estimated cost?", 
+        citation: "Page 155, Re-Evaluation",
+        impeachment: "Reference the Life Care Plan which estimates $150k for future medicals based on his notes.",
+        branching: {
+          ifYes: "Have him breakdown the specific costs (surgery, anesthesia, facility fee, PT).",
+          ifNo: "Ask if he disagrees with the Life Care Planner's assessment which relied on his clinical notes."
+        }
+      }
+    ]
+  },
+  {
+    id: "depo-3",
+    caseId: "case-1",
+    firmId: "firm-1",
+    deponentType: "Defendant Driver",
+    gaps: ["Cell phone records missing for the 10 minutes prior to impact."],
+    inconsistencies: ["Defendant claimed he was going 20mph, but police report estimates 35mph based on skid marks."],
+    questionLines: [
+      { 
+        topic: "Speed & Impact", 
+        suggestedQuestion: "You claim you were only traveling 20 mph, but isn't it true the police report indicates a much higher speed based on the skid marks and impact damage?", 
+        citation: "Police Report MV104",
+        impeachment: "Police report section 2-1 notes estimated speed of 35 MPH in a 25 MPH zone.",
+        branching: {
+          ifYes: "Establish that he was speeding and unable to stop in time.",
+          ifNo: "Present the Police Report and the property damage photos showing a crushed rear bumper."
+        }
+      },
+      { 
+        topic: "Distraction", 
+        suggestedQuestion: "In the 30 seconds immediately before you rear-ended my client, were you looking at your cell phone?", 
+        citation: "Cell Phone Subpoena / Police Report",
+        impeachment: "Traffic citation issued at scene for 'Following Too Closely'. Potential for phone records to show text sent at 08:14 AM.",
+        branching: {
+          ifYes: "Confirm he was distracted and not looking at the road.",
+          ifNo: "Ask why he failed to stop if he was looking at the red light, and ask if he'd object to us subpoenaing his phone data."
+        }
+      }
     ]
   }
 ];

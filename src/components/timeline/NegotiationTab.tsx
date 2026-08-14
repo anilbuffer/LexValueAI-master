@@ -21,9 +21,6 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
           <h2 className="text-lg font-bold text-slate-800">Negotiation Tracker</h2>
           <p className="text-xs text-slate-500 mt-0.5">Track demands, counteroffers, and settlement lifecycle.</p>
         </div>
-        <button className="flex items-center gap-2 px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-semibold transition-all shadow-sm">
-          <Plus className="w-4 h-4" /> Log Offer
-        </button>
       </div>
 
       <div className="p-4 flex-1 overflow-y-auto">
@@ -42,13 +39,13 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
                 <div className="w-8 h-8 shrink-0 bg-white border-2 border-teal-500 rounded-full flex items-center justify-center text-teal-600 font-bold text-xs shadow-sm">
                   {logs.length - i}
                 </div>
-                
+
                 <div className="flex-1 bg-white border border-slate-200 rounded-lg p-3 shadow-sm hover:border-slate-300 transition-colors">
                   <div className="flex items-center justify-between mb-2 border-b border-slate-100 pb-2">
                     <div>
                       <h4 className="font-bold text-slate-800 text-sm">{log.party}</h4>
                       <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
-                        <Clock className="w-3.5 h-3.5" /> 
+                        <Clock className="w-3.5 h-3.5" />
                         {new Date(log.date).toLocaleDateString()}
                         {log.responseDays > 0 && <span className="ml-2 text-rose-600 font-medium bg-rose-50 px-2 py-0.5 rounded-full text-[10px]">{log.responseDays} days pending</span>}
                       </p>
