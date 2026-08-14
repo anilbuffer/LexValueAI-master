@@ -41,7 +41,7 @@ function extractAggregatedData(caseData: any) {
   allTimeline.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   // Clean up description if it's stored as JSON string in DB
-  allTimeline = allTimeline.map(event => {
+  allTimeline = allTimeline.map((event: any) => {
     let cleanDesc = event.description;
     let rawDate = undefined;
     let pageNumber = "Source page unclear";
@@ -71,7 +71,7 @@ function extractAggregatedData(caseData: any) {
     return { ...event, description: cleanDesc, displayDate, pageNumber, confidence };
   });
 
-  const normalizedFlags = allFlags.map(flag => {
+  const normalizedFlags = allFlags.map((flag: any) => {
     if (typeof flag === 'string') return { title: flag, severity: 'High', confidence: 'Medium', pageNumber: 'Source page unclear' };
     return { 
       title: flag.title || flag.text || 'Flag', 
@@ -82,7 +82,7 @@ function extractAggregatedData(caseData: any) {
     };
   });
 
-  const normalizedGaps = allGaps.map(gap => {
+  const normalizedGaps = allGaps.map((gap: any) => {
     if (typeof gap === 'string') return { title: gap, confidence: 'Medium', pageNumber: 'Source page unclear' };
     return { 
       title: gap.title || gap.text || gap.description || 'Missing Record',
@@ -107,7 +107,7 @@ export async function exportToExcel(caseData: any) {
   const summarySheet = workbook.addWorksheet('Summary');
   summarySheet.columns = [{ header: 'Narrative Summary', key: 'text', width: 100 }];
   summarySheet.getRow(1).font = { bold: true };
-  combinedSummary.split('\n').forEach(line => {
+  combinedSummary.split('\n').forEach((line: any) => {
     if (line.trim()) summarySheet.addRow({ text: line });
   });
 
@@ -123,7 +123,7 @@ export async function exportToExcel(caseData: any) {
   ];
   timelineSheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F766E' } };
   timelineSheet.getRow(1).font = { color: { argb: 'FFFFFFFF' }, bold: true };
-  allTimeline.forEach(event => timelineSheet.addRow(event));
+  allTimeline.forEach((event: any) => timelineSheet.addRow(event));
 
   // 3. Flags Sheet
   const flagsSheet = workbook.addWorksheet('Case Flags');
@@ -135,7 +135,7 @@ export async function exportToExcel(caseData: any) {
   ];
   flagsSheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE11D48' } };
   flagsSheet.getRow(1).font = { color: { argb: 'FFFFFFFF' }, bold: true };
-  normalizedFlags.forEach(flag => flagsSheet.addRow(flag));
+  normalizedFlags.forEach((flag: any) => flagsSheet.addRow(flag));
 
   // 4. Gaps Sheet
   const gapsSheet = workbook.addWorksheet('Missing Records');
@@ -146,7 +146,7 @@ export async function exportToExcel(caseData: any) {
   ];
   gapsSheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD97706' } };
   gapsSheet.getRow(1).font = { color: { argb: 'FFFFFFFF' }, bold: true };
-  normalizedGaps.forEach(gap => gapsSheet.addRow(gap));
+  normalizedGaps.forEach((gap: any) => gapsSheet.addRow(gap));
 
   // Generate and save
   const buffer = await workbook.xlsx.writeBuffer();
@@ -196,11 +196,11 @@ export async function exportToWord(caseData: any) {
                 new TableCell({ children: [safeParagraph("Conf.")] }),
               ],
             }),
-            ...allTimeline.map(event => new TableRow({
+            ...allTimeline.map((event: any) => new TableRow({
               children: [
                 new TableCell({ children: [safeParagraph(event.displayDate)] }),
-                new TableCell({ children: String(event.title || '').split('\n').map(line => safeParagraph(line)) }),
-                new TableCell({ children: String(event.description || '').split('\n').map(line => safeParagraph(line)) }),
+                new TableCell({ children: String(event.title || '').split('\n').map((line: any) => safeParagraph(line)) }),
+                new TableCell({ children: String(event.description || '').split('\n').map((line: any) => safeParagraph(line)) }),
                 new TableCell({ children: [safeParagraph(String(event.pageNumber))] }),
                 new TableCell({ children: [safeParagraph(String(event.confidence))] }),
               ],
@@ -277,7 +277,7 @@ export async function exportToPDF(caseData: any) {
   doc.setTextColor(30, 41, 59);
   doc.text("Chronology of Events", 14, finalY + 5);
 
-  const tableData = allTimeline.map(event => [
+  const tableData = allTimeline.map((event: any) => [
     event.displayDate || '',
     event.title || '',
     event.description || '',

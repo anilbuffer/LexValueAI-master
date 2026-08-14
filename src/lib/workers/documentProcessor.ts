@@ -397,7 +397,7 @@ Example format:
 
       if (userIds.size > 0) {
         await prisma.notification.createMany({
-          data: Array.from(userIds).map(userId => ({
+          data: Array.from(userIds).map((userId: any) => ({
             message: `Case Update: New document processed for "${updatedCase.title}"`,
             type: 'INFO',
             userId: userId,

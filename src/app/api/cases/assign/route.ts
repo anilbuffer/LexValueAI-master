@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     })
     const validCaseIds = validCases.map((c: any) => c.id)
 
-    const transactions = validCaseIds.map(caseId => {
+    const transactions = validCaseIds.map((caseId: any) => {
       return prisma.case.update({
         where: { id: caseId },
         data: {

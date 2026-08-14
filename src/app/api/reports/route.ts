@@ -187,7 +187,7 @@ export async function GET(req: Request) {
       include: { case: { select: { type: true } } }
     });
     const approvedTypeMap: Record<string, number> = {};
-    approvedLogs.forEach(log => {
+    approvedLogs.forEach((log: any) => {
       const t = log.case?.type;
       if (t) approvedTypeMap[t] = (approvedTypeMap[t] || 0) + 1;
     });
@@ -206,7 +206,7 @@ export async function GET(req: Request) {
       include: { case: { select: { type: true } } }
     });
     const rejectedTypeMap: Record<string, number> = {};
-    rejectedLogs.forEach(log => {
+    rejectedLogs.forEach((log: any) => {
       const t = log.case?.type;
       if (t) rejectedTypeMap[t] = (rejectedTypeMap[t] || 0) + 1;
     });
@@ -225,7 +225,7 @@ export async function GET(req: Request) {
       include: { case: { select: { type: true } } }
     });
     const closedTypeMap: Record<string, number> = {};
-    closedLogs.forEach(log => {
+    closedLogs.forEach((log: any) => {
       const t = log.case?.type;
       if (t) closedTypeMap[t] = (closedTypeMap[t] || 0) + 1;
     });
@@ -261,7 +261,7 @@ export async function GET(req: Request) {
 
       if (attorneyLogs.length > 0 && attorneyLogs[0].userId) {
         topAttorneyCount = attorneyLogs[0]._count.userId;
-        const topTied = attorneyLogs.filter(log => log._count.userId === topAttorneyCount);
+        const topTied = attorneyLogs.filter((log: any) => log._count.userId === topAttorneyCount);
         const names = [];
         for (const t of topTied) {
           if (!t.userId) continue;

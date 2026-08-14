@@ -34,7 +34,7 @@ export async function deleteS3Objects(keys: string[]) {
   const command = new DeleteObjectsCommand({
     Bucket: process.env.AWS_S3_BUCKET_NAME || "",
     Delete: {
-      Objects: keys.map(key => ({ Key: key }))
+      Objects: keys.map((key: any) => ({ Key: key }))
     }
   });
 
