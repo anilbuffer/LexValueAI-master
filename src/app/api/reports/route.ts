@@ -137,7 +137,7 @@ export async function GET(req: Request) {
       where: userCaseFilter,
       select: { flags: true }
     });
-    const totalFlagsCount = casesWithFlags.reduce((sum, c) => sum + (c.flags || 0), 0);
+    const totalFlagsCount = casesWithFlags.reduce((sum: any, c: any) => sum + (c.flags || 0), 0);
 
     const closedCasesCount = await prisma.case.count({
       where: { ...userCaseFilter, status: 'Closed' }

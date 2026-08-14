@@ -16,7 +16,7 @@ export function DamagesTab({ caseData }: { caseData?: any }) {
     })
   }
 
-  const totalExpenses = damages.reduce((sum, damage) => sum + (Number(damage.amount) || 0), 0)
+  const totalExpenses = damages.reduce((sum: any, damage: any) => sum + (Number(damage.amount) || 0), 0)
 
   return (
     <div className="flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-500">
