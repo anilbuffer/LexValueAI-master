@@ -366,6 +366,16 @@ export let mockNotifications = [
     caseId: "case-1",
     createdAt: new Date("2026-08-10T15:30:00Z"),
   },
+  {
+    id: "notif-3",
+    message: "Missing document requested: Right Shoulder MRI Report.",
+    type: "PORTAL_DOCUMENT_REQUEST",
+    isRead: false,
+    userId: mockUsers[2].id, // client-1
+    firmId: mockFirm.id,
+    caseId: "case-1",
+    createdAt: new Date("2026-08-14T09:00:00Z"),
+  }
 ];
 
 export let mockTimelineEvents = [
@@ -727,6 +737,50 @@ export let mockChatHistory = [
   }
 ];
 
+export let mockDocumentRequests = [
+  {
+    id: "req-1",
+    caseId: "case-1",
+    firmId: "firm-1",
+    documentName: "Right Shoulder MRI Report",
+    description: "Please provide the detailed radiology report for the right shoulder MRI you had in 2018.",
+    status: "PENDING", // PENDING, FULFILLED
+    requestedBy: "Rachel Zane",
+    createdAt: new Date("2026-08-14T09:00:00Z"),
+  }
+];
+
+export let mockPortalUpdates = [
+  {
+    id: "update-1",
+    caseId: "case-1",
+    firmId: "firm-1",
+    title: "Medical Records Under Review",
+    description: "Our paralegal team is currently reviewing your uploaded medical records.",
+    createdAt: new Date("2026-08-13T14:30:00Z"),
+  },
+  {
+    id: "update-2",
+    caseId: "case-1",
+    firmId: "firm-1",
+    title: "Case Opened",
+    description: "Your case has been successfully opened and assigned to our legal team.",
+    createdAt: new Date("2026-01-10T10:00:00Z"),
+  }
+];
+
+export let mockClientUploadedDocuments = [
+  {
+    id: "client-doc-1",
+    caseId: "case-1",
+    firmId: "firm-1",
+    fileName: "Emergency_Room_Bill.pdf",
+    category: "Medical Bills",
+    status: "ACCEPTED", // PENDING_REVIEW, ACCEPTED, REJECTED
+    uploadedAt: new Date("2026-08-12T11:00:00Z"),
+  }
+];
+
 export const getMockUser = () => mockUser;
 export const getMockCases = () => mockCases;
 export const getMockCaseById = (id: string) => mockCases.find((c: any) => c.id === id);
@@ -745,6 +799,9 @@ export const getMockMedicalBills = (firmId: string, caseId: string) => mockMedic
 export const getMockDepositionOutlines = (firmId: string, caseId: string) => mockDepositionOutlines.filter((d: any) => d.firmId === firmId && d.caseId === caseId);
 export const getMockCaseValuations = (firmId: string, caseId: string) => mockCaseValuations.filter((v: any) => v.firmId === firmId && v.caseId === caseId);
 export const getMockChatHistory = (firmId: string, caseId: string) => mockChatHistory.filter((c: any) => c.firmId === firmId && c.caseId === caseId);
+export const getMockDocumentRequests = (firmId: string, caseId: string) => mockDocumentRequests.filter((r: any) => r.firmId === firmId && r.caseId === caseId);
+export const getMockPortalUpdates = (firmId: string, caseId: string) => mockPortalUpdates.filter((u: any) => u.firmId === firmId && u.caseId === caseId);
+export const getMockClientUploadedDocuments = (firmId: string, caseId: string) => mockClientUploadedDocuments.filter((d: any) => d.firmId === firmId && d.caseId === caseId);
 
 // Mutators
 export const createMockCase = (newCase: any) => { mockCases.push(newCase); return newCase; }
@@ -786,3 +843,9 @@ export const updateMockMedicalBill = (id: string, data: any) => {
 }
 export const deleteMockMedicalBill = (id: string) => { mockMedicalBills = mockMedicalBills.filter(b => b.id !== id); }
 export const createMockChatHistory = (chat: any) => { mockChatHistory.push(chat); return chat; }
+export const fulfillMockDocumentRequest = (id: string) => {
+  const index = mockDocumentRequests.findIndex(r => r.id === id);
+  if (index > -1) { mockDocumentRequests[index].status = "FULFILLED"; return mockDocumentRequests[index]; }
+  return null;
+}
+export const createMockClientUploadedDocument = (doc: any) => { mockClientUploadedDocuments.unshift(doc); return doc; }

@@ -316,8 +316,8 @@ export default function Header({ role, user }: { role: string, user: { firstName
                       if (msg.includes('delete') || msg.includes('remov')) return { Icon: AlertTriangle, bg: 'bg-rose-50', text: notif.isRead ? 'text-rose-400' : 'text-rose-600' }
                       if (msg.includes('reject')) return { Icon: XCircle, bg: 'bg-rose-50', text: notif.isRead ? 'text-rose-400' : 'text-rose-600' }
                       if (msg.includes('approv')) return { Icon: CheckCircle2, bg: 'bg-emerald-50', text: notif.isRead ? 'text-emerald-400' : 'text-emerald-600' }
-                      if (msg.includes('warn') || msg.includes('alert')) return { Icon: AlertTriangle, bg: 'bg-amber-50', text: notif.isRead ? 'text-amber-400' : 'text-amber-600' }
-                      if (msg.includes('remind')) return { Icon: Clock, bg: 'bg-purple-50', text: notif.isRead ? 'text-purple-400' : 'text-purple-600' }
+                      if (msg.includes('warn') || msg.includes('alert') || msg.includes('missing')) return { Icon: AlertTriangle, bg: 'bg-amber-50', text: notif.isRead ? 'text-amber-400' : 'text-amber-600' }
+                      if (msg.includes('remind') || msg.includes('request')) return { Icon: Clock, bg: 'bg-purple-50', text: notif.isRead ? 'text-purple-400' : 'text-purple-600' }
                       if (msg.includes('create') || msg.includes('new') || msg.includes('info') || msg.includes('status') || msg.includes('change') || msg.includes('updat')) return { Icon: Info, bg: 'bg-blue-50', text: notif.isRead ? 'text-blue-400' : 'text-blue-600' }
                       return { Icon: Bell, bg: 'bg-teal-50', text: notif.isRead ? 'text-slate-400' : 'text-teal-600' }
                     }

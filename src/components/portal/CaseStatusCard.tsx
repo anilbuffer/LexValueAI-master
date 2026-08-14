@@ -14,12 +14,15 @@ export function CaseStatusCard({ caseData }: CaseStatusCardProps) {
   const getClientFriendlyStatus = (status: string) => {
     switch (status) {
       case "ACTIVE":
+        return "Documents Being Collected";
       case "REVIEWING":
-        return "In Progress - Gathering Medical Records";
+        return "Medical Records Under Review";
       case "PENDING":
-        return "Awaiting Review";
+        return "Attorney Review";
+      case "NEGOTIATING":
+        return "Negotiation";
       default:
-        return "In Progress";
+        return "Documents Being Collected";
     }
   }
 
