@@ -26,7 +26,7 @@ export async function getSession(): Promise<SessionPayload | null> {
 
   const { getMockUsers } = await import('./mock-data');
   const users = getMockUsers();
-  const user = users.find(u => u.email === email) || users[0];
+  const user = users.find((u: any) => u.email === email) || users[0];
 
   return {
     id: user.id,

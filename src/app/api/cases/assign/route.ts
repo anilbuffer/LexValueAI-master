@@ -61,8 +61,8 @@ export async function POST(request: Request) {
       targetUserIds.delete(session.id)
 
       const notifications: { message: string; type: string; userId: string; firmId: string; caseId?: string }[] = []
-      validCaseIds.forEach(caseId => {
-        Array.from(targetUserIds).forEach(userId => {
+      validCaseIds.forEach((caseId: any) => {
+        Array.from(targetUserIds).forEach((userId: any) => {
           notifications.push({
             message: `A case assignment was updated (Case ID: ${caseId}) by ${assigner?.firstName} ${assigner?.lastName}`,
             type: 'CASE_ASSIGNED',
