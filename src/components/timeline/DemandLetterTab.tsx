@@ -12,17 +12,36 @@ export function DemandLetterTab({ caseData }: { caseData: any }) {
   
   const [letterContent, setLetterContent] = useState(`Dear Claims Representative,
 
-This firm represents ${caseData?.client || 'the client'} for injuries sustained in the personal injury incident. This letter and the enclosed medical chronology, specials summary, and imaging constitute our client's demand for settlement.
+Please be advised that this office represents ${caseData?.client || 'our client'} in connection with severe and permanent injuries sustained on ${caseData?.dateOfInjury ? new Date(caseData.dateOfInjury).toLocaleDateString() : 'the date of loss'}. This letter, along with the enclosed medical chronology, case flags, narrative summary, and medical bills ledger, constitutes our client's formal demand for settlement.
 
-LIABILITY. Liability is clear and undisputed on the facts documented in the incident report and corroborated by the property damage documentation enclosed.
+I. INTRODUCTION & LIABILITY SUMMARY
+On ${caseData?.dateOfInjury ? new Date(caseData.dateOfInjury).toLocaleDateString() : 'the date of loss'}, our client was the restrained driver of a vehicle completely stopped at a steady red light at the intersection of Atlantic Ave and Flatbush Ave, Brooklyn NY. The defendant, operating a commercial vehicle, failed to stop and rear-ended our client's vehicle at approximately 35 MPH. Liability is clear and undisputed; the defendant was cited at the scene for following too closely (NYPD Police Report MV104). 
 
-INJURIES. ${caseData?.client || 'The client'} sustained injuries confirmed by MRI and correlated with clinical findings across independent providers.
+II. INJURY DESCRIPTION
+The sheer force of the impact caused our client to be thrust violently forward and backward, resulting in immediate onset of severe neck and back pain that subsequently radiated to her extremities. MRI diagnostics and independent clinical evaluations confirmed the following traumatic injuries:
+• Severe cervical spondylosis with radiculopathy at C5-C7
+• Superior labral anterior-posterior (SLAP) tear of the right shoulder
+• Medial meniscus tear of the left knee
 
-TREATMENT. Care progressed conservatively through physical therapy before further interventions were recommended.
+Prior to this collision, ${caseData?.client || 'our client'} was a healthy individual with no history of neck pain or upper extremity symptoms. Her life has been permanently altered by the defendant's negligence.
 
-SPECIAL DAMAGES. Past medical specials to date total $${totalSpecials.toLocaleString()} as itemized in the enclosed ledger. 
+III. TREATMENT SUMMARY
+Conservative treatment, including physical therapy and pain management, failed to provide relief from the debilitating symptoms. Consequently, our client was forced to undergo multiple invasive surgical procedures to address the injuries sustained in the crash:
+• Left Knee Arthroscopy with partial medial meniscectomy (June 15, 2018)
+• Anterior Cervical Discectomy and Fusion (ACDF) at C5-C6 and C6-C7 with anterior plating and allograft (October 15, 2018)
+• Right Shoulder Arthroscopy with extensive debridement and SLAP repair (November 12, 2018)
 
-DEMAND. Based on the foregoing, ${caseData?.client || 'the client'} demands the sum stated in the enclosed cover sheet in full settlement of all claims. This demand remains open for thirty (30) days.`)
+Our client continues to experience significant functional limitations, chronic pain, and requires ongoing medical care.
+
+IV. SPECIAL DAMAGES BREAKDOWN
+As a direct and proximate result of the collision, our client has incurred substantial medical expenses. The attached medical bills ledger itemizes the past medical specials, which currently total $${totalSpecials.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}.
+
+V. SETTLEMENT DEMAND AMOUNT
+Considering the undisputed liability, the catastrophic nature of the injuries requiring a two-level cervical fusion and multiple arthroscopic surgeries, the immense pain and suffering, and the total medical specials of $${totalSpecials.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}, we demand the sum of $500,000.00 in full and final settlement of this claim.
+
+This demand remains open for thirty (30) days from the date of this letter. If we do not receive a favorable response within this timeframe, we will proceed with filing suit without further notice.
+
+We look forward to your prompt response.`)
 
   return (
     <div className="flex flex-col h-full bg-white animate-in fade-in slide-in-from-bottom-2 duration-500">
@@ -92,7 +111,7 @@ DEMAND. Based on the foregoing, ${caseData?.client || 'the client'} demands the 
             <textarea
               value={letterContent}
               onChange={(e) => setLetterContent(e.target.value)}
-              className="w-full min-h-[300px] p-3 border border-teal-500 rounded-lg outline-none focus:ring-4 focus:ring-teal-500/10 font-serif leading-normal text-slate-700 resize-y bg-white"
+              className="w-full min-h-[600px] p-3 border border-teal-500 rounded-lg outline-none focus:ring-4 focus:ring-teal-500/10 font-serif leading-normal text-slate-700 resize-y bg-white"
             />
           ) : (
             <div className="whitespace-pre-wrap font-serif text-slate-700 leading-normal">

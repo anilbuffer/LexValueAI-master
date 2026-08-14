@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { Copy, Download } from 'lucide-react'
+import { Calendar, User, Activity, FileText, Info, ExternalLink } from 'lucide-react'
 import { updateMockDocument } from '@/lib/mock-data'
+import { useRouter } from 'next/navigation'
 
 type NarrativePerspective = 'Structured' | 'Plaintiff view' | 'Defense view'
 
@@ -18,40 +19,207 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
   }
 
   const handleSaveClick = (sectionId: string) => {
-    if (doc && doc.summarySections) {
-      const updatedSections = doc.summarySections.map((s: any) => 
-        s.id === sectionId ? { ...s, content: editContent } : s
-      )
-      updateMockDocument(doc.id, { summarySections: updatedSections })
-      // Update local state if needed (since it's a mock, caseData might need a refresh, but we can mutate it directly for demo)
-      const target = doc.summarySections.find((s: any) => s.id === sectionId)
-      if (target) target.content = editContent;
+    if (doc) {
+      if (sectionId === 'plaintiff') {
+        updateMockDocument(doc.id, { plaintiffNarrative: editContent })
+        doc.plaintiffNarrative = editContent;
+      } else if (sectionId === 'defense') {
+        updateMockDocument(doc.id, { defenseNarrative: editContent })
+        doc.defenseNarrative = editContent;
+      } else if (doc.summarySections) {
+        const updatedSections = doc.summarySections.map((s: any) =>
+          s.id === sectionId ? { ...s, content: editContent } : s
+        )
+        updateMockDocument(doc.id, { summarySections: updatedSections })
+        // Update local state if needed (since it's a mock, caseData might need a refresh, but we can mutate it directly for demo)
+        const target = doc.summarySections.find((s: any) => s.id === sectionId)
+        if (target) target.content = editContent;
+      }
     }
     setEditingSection(null)
   }
 
+  // Define annotations
+  const annotations = [
+    {
+      term: "Anterior Cervical Discectomy and Fusion (ACDF) C5-C6 and C6-C7",
+      date: "Oct 15, 2018",
+      provider: "Dr. David Grossman",
+      symptoms: "Severe cervical spondylosis with radiculopathy at C5-C7.",
+      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf",
+      details: "Surgeon: Dr. David Grossman. Operative Report: ACDF C5-C7 with anterior plating and allograft.",
+      eventId: "event-8"
+    },
+    {
+      term: "Right shoulder arthroscopy with extensive debridement and SLAP repair",
+      date: "Nov 12, 2018",
+      provider: "Dr. Christopher Cline",
+      symptoms: "SLAP tear right shoulder.",
+      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf",
+      details: "Surgeon: Dr. Christopher Cline. Extensive debridement and SLAP repair performed.",
+      eventId: "event-9"
+    },
+    {
+      term: "Left knee arthroscopy with partial medial meniscectomy",
+      date: "Jun 15, 2018",
+      provider: "Dr. Christopher Cline",
+      symptoms: "Medial meniscus tear.",
+      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf",
+      details: "Surgeon: Dr. Christopher Cline. Partial medial meniscectomy. No complications.",
+      eventId: "event-3"
+    },
+    {
+      term: "motor vehicle accident (MVA)",
+      date: "Jun 08, 2018",
+      provider: "NYPD / EMS",
+      symptoms: "Neck and back pain",
+      sourceDocument: "NYPD_Police_Report_MV104.pdf",
+      details: "Rear-ended at steady red light by commercial driver at ~35 MPH.",
+      eventId: "event-1"
+    },
+    {
+      term: "rear-end collision",
+      date: "Jun 08, 2018",
+      provider: "NYPD / EMS",
+      symptoms: "Neck and back pain",
+      sourceDocument: "NYPD_Police_Report_MV104.pdf",
+      details: "Rear-ended at steady red light by commercial driver at ~35 MPH.",
+      eventId: "event-1"
+    },
+    {
+      term: "C5-C7 ACDF surgery",
+      date: "Oct 15, 2018",
+      provider: "Dr. David Grossman",
+      symptoms: "Severe cervical spondylosis with radiculopathy at C5-C7.",
+      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 85)",
+      details: "Surgeon: Dr. David Grossman. Operative Report: ACDF C5-C7 with anterior plating and allograft.",
+      eventId: "event-8"
+    },
+    {
+      term: "no history of neck pain",
+      date: "Prior to Jun 08, 2018",
+      provider: "Patient Self-Report",
+      symptoms: "Denies prior neck pain",
+      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15)",
+      details: "Initial Orthopedic Evaluation notes patient denied any prior neck pain or upper extremity symptoms.",
+      eventId: "event-1"
+    },
+    {
+      term: "pre-existing lower back complaints",
+      date: "Prior to Jun 08, 2018",
+      provider: "Dr. Christopher Cline",
+      symptoms: "Mild, occasional lower back pain",
+      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15)",
+      details: "Patient reported a history of mild, occasional lower back pain prior to the MVA.",
+      eventId: "event-1"
+    },
+    {
+      term: "not wearing the cervical orthosis",
+      date: "Jan 15, 2019",
+      provider: "Dr. Sarah Jenkins",
+      symptoms: "Non-compliance with post-operative care",
+      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 68)",
+      details: "Documentation states 'The patient has not been wearing the cervical orthosis brace.'",
+      eventId: "event-11"
+    }
+  ];
+
   // Hover Annotation Component
   const AnnotatedText = ({ text }: { text: string }) => {
-    // Simple regex to find dates like "Jun 08, 2018" or "10/15/2018" and wrap them
-    const parts = text.split(/(Jun 08, 2018|10\/15\/2018|11\/12\/2018|06\/15\/2018)/g);
-    
+    const router = useRouter();
+
+    // Sort annotations by length (longest first) to prevent partial matching issues
+    const sortedAnnotations = [...annotations].sort((a, b) => b.term.length - a.term.length);
+
+    let parts: { text: string; annotation?: any }[] = [{ text }];
+
+    sortedAnnotations.forEach(ann => {
+      const newParts: { text: string; annotation?: any }[] = [];
+      parts.forEach(part => {
+        if (part.annotation) {
+          newParts.push(part);
+          return;
+        }
+
+        const split = part.text.split(ann.term);
+        for (let i = 0; i < split.length; i++) {
+          if (split[i]) {
+            newParts.push({ text: split[i] });
+          }
+          if (i < split.length - 1) {
+            newParts.push({ text: ann.term, annotation: ann });
+          }
+        }
+      });
+      parts = newParts;
+    });
+
+    const handleAnnotationClick = (e: React.MouseEvent, eventId: string) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // Navigate to chronology tab and pass eventId in query params
+      router.push(`?tab=chronology&eventId=${eventId}`);
+    };
+
     return (
       <div className="whitespace-pre-wrap">
         {parts.map((part, i) => {
-          if (part.match(/(Jun 08, 2018|10\/15\/2018|11\/12\/2018|06\/15\/2018)/)) {
+          if (part.annotation) {
+            const ann = part.annotation;
             return (
-              <span key={i} className="group relative inline-block cursor-help border-b border-dashed border-teal-500 text-teal-700 bg-teal-50/50 transition-colors hover:bg-teal-100">
-                {part}
-                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-48 bg-slate-800 text-white text-xs font-sans rounded p-2 z-10 shadow-lg text-left leading-normal">
-                  <span className="font-bold block mb-1">Source Record:</span>
-                  <span className="text-slate-300 block">Click to jump to chronology event on this date.</span>
-                  {/* Small pointer */}
-                  <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800"></span>
+              <span key={i} className="group/tooltip relative inline-block cursor-pointer border-b-2 border-teal-500/30 text-teal-700 bg-teal-50/50 transition-colors hover:bg-teal-100 font-medium rounded-sm px-0.5">
+                <span onClick={(e) => handleAnnotationClick(e, ann.eventId)}>{part.text}</span>
+                <span className="absolute top-full -left-2 mt-2 hidden group-hover/tooltip:block w-80 bg-white text-slate-800 text-xs font-sans rounded-xl p-0 z-[100] shadow-xl border border-slate-200 text-left leading-normal overflow-hidden transform transition-all duration-200 scale-95 group-hover/tooltip:scale-100 origin-top-left">
+                  <div className="bg-slate-50 border-b border-slate-100 p-3">
+                    <div className="font-bold text-[13px] text-slate-900 mb-1 leading-tight">{ann.term}</div>
+                    <div className="flex items-center text-teal-600 font-medium text-[11px] uppercase tracking-wider">
+                      <Calendar className="w-3 h-3 mr-1" /> {ann.date}
+                    </div>
+                  </div>
+
+                  <div className="p-3 space-y-2">
+                    <div className="flex items-start">
+                      <User className="w-3.5 h-3.5 text-slate-400 mt-0.5 mr-2 shrink-0" />
+                      <div>
+                        <span className="text-slate-500 font-medium block text-[11px] uppercase tracking-wider mb-0.5">Provider</span>
+                        <span className="text-slate-700">{ann.provider}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start">
+                      <Activity className="w-3.5 h-3.5 text-slate-400 mt-0.5 mr-2 shrink-0" />
+                      <div>
+                        <span className="text-slate-500 font-medium block text-[11px] uppercase tracking-wider mb-0.5">Symptoms / Findings</span>
+                        <span className="text-slate-700">{ann.symptoms}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start">
+                      <Info className="w-3.5 h-3.5 text-slate-400 mt-0.5 mr-2 shrink-0" />
+                      <div>
+                        <span className="text-slate-500 font-medium block text-[11px] uppercase tracking-wider mb-0.5">Relevant Details</span>
+                        <span className="text-slate-700">{ann.details}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-50 border-t border-slate-100 p-2.5 px-3 flex justify-between items-center group/btn cursor-pointer hover:bg-slate-100 transition-colors" onClick={(e) => handleAnnotationClick(e, ann.eventId)}>
+                    <div className="flex items-center overflow-hidden mr-2">
+                      <FileText className="w-3.5 h-3.5 text-slate-400 mr-1.5 shrink-0" />
+                      <span className="text-slate-500 text-[11px] truncate">{ann.sourceDocument}</span>
+                    </div>
+                    <div className="flex items-center text-teal-600 font-medium text-[11px] whitespace-nowrap group-hover/btn:text-teal-700">
+                      View in Chronology <ExternalLink className="w-3 h-3 ml-1" />
+                    </div>
+                  </div>
+
+                  {/* Pointer */}
+                  <span className="absolute bottom-full left-6 border-8 border-transparent border-b-white drop-shadow-sm"></span>
                 </span>
               </span>
             )
           }
-          return <span key={i}>{part}</span>;
+          return <span key={i}>{part.text}</span>;
         })}
       </div>
     )
@@ -62,35 +230,34 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
       <div className="p-4 md:p-6 pb-0 shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Inner Tabs */}
         <div className="flex items-center bg-slate-100 p-1 rounded-xl w-fit">
-          {['Structured', 'Plaintiff view', 'Defense view'].map((tab) => (
+          {['Structured', 'Plaintiff Summary', 'Defense Summary'].map((tab) => (
             <button
               key={tab}
               onClick={() => setPerspective(tab as NarrativePerspective)}
-              className={`px-4 py-1.5 rounded-lg text-[13px] font-medium transition-all ${
-                perspective === tab
-                  ? 'bg-white text-slate-900 shadow-sm border border-slate-900'
-                  : 'text-slate-500 hover:text-slate-700 border border-transparent'
-              }`}
+              className={`px-4 py-1.5 rounded-lg text-[13px] font-medium transition-all ${perspective === tab
+                ? 'bg-white text-slate-900 shadow-sm border border-slate-900'
+                : 'text-slate-500 hover:text-slate-700 border border-transparent'
+                }`}
             >
               {tab}
             </button>
           ))}
         </div>
-        
+
         {/* Action Buttons */}
-        <div className="flex items-center gap-3 shrink-0">
+        {/* <div className="flex items-center gap-3 shrink-0">
           <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-[13px] font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
             <Copy className="w-4 h-4" /> Copy
           </button>
           <button className="flex items-center gap-2 px-4 py-2 bg-teal-600 rounded-lg text-[13px] font-bold text-white hover:bg-teal-700 transition-colors shadow-sm">
             <Download className="w-4 h-4" /> Export as Word
           </button>
-        </div>
+        </div> */}
       </div>
-      
+
       <div className="p-6 md:p-6 w-full flex-1 overflow-y-auto">
         <div className="max-w-none text-slate-700 leading-relaxed text-[14px]">
-          
+
           {perspective === 'Structured' && doc?.summarySections && (
             <div className="flex flex-col gap-4">
               {doc.summarySections.map((section: any) => (
@@ -98,14 +265,14 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-[12px] font-bold text-slate-700 uppercase tracking-widest m-0">{section.title}</h3>
                     {editingSection !== section.id ? (
-                      <button 
+                      <button
                         onClick={() => handleEditClick(section.id, section.content)}
                         className="text-teal-600 hover:text-teal-700 text-[13px] font-medium transition-colors"
                       >
                         Edit
                       </button>
                     ) : (
-                      <button 
+                      <button
                         onClick={() => handleSaveClick(section.id)}
                         className="text-teal-600 hover:text-teal-700 text-[13px] font-medium transition-colors"
                       >
@@ -113,9 +280,9 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                       </button>
                     )}
                   </div>
-                  
+
                   {editingSection === section.id ? (
-                    <textarea 
+                    <textarea
                       value={editContent}
                       onChange={(e) => setEditContent(e.target.value)}
                       className="w-full min-h-[120px] p-4 bg-white border-2 border-teal-500 rounded-xl outline-none focus:ring-0 text-slate-800 resize-y leading-relaxed text-[14px] shadow-inner"
@@ -131,23 +298,75 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
           )}
 
           {perspective === 'Plaintiff view' && doc?.plaintiffNarrative && (
-            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm animate-in fade-in duration-300">
-              <h3 className="text-[15px] font-bold text-slate-900 mb-4 mt-0">
-                Plaintiff narrative
-              </h3>
-              <p className="text-slate-700 leading-relaxed text-[14px] mb-0">{doc.plaintiffNarrative}</p>
+            <div className="group relative bg-white border border-slate-200 rounded-xl p-5 shadow-sm animate-in fade-in duration-300">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-[12px] font-bold text-slate-700 uppercase tracking-widest m-0">Plaintiff narrative</h3>
+                {editingSection !== 'plaintiff' ? (
+                  <button
+                    onClick={() => handleEditClick('plaintiff', doc.plaintiffNarrative)}
+                    className="text-teal-600 hover:text-teal-700 text-[13px] font-medium transition-colors"
+                  >
+                    Edit
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleSaveClick('plaintiff')}
+                    className="text-teal-600 hover:text-teal-700 text-[13px] font-medium transition-colors"
+                  >
+                    Done
+                  </button>
+                )}
+              </div>
+
+              {editingSection === 'plaintiff' ? (
+                <textarea
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                  className="w-full min-h-[120px] p-4 bg-white border-2 border-teal-500 rounded-xl outline-none focus:ring-0 text-slate-800 resize-y leading-relaxed text-[14px] shadow-inner"
+                />
+              ) : (
+                <div className="text-slate-700 text-[14px] leading-relaxed">
+                  <AnnotatedText text={doc.plaintiffNarrative} />
+                </div>
+              )}
             </div>
           )}
 
           {perspective === 'Defense view' && doc?.defenseNarrative && (
-            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm animate-in fade-in duration-300">
-              <h3 className="text-[15px] font-bold text-slate-900 mb-4 mt-0">
-                Defense narrative (anticipated counterarguments)
-              </h3>
-              <p className="text-slate-700 leading-relaxed text-[14px] mb-0">{doc.defenseNarrative}</p>
+            <div className="group relative bg-white border border-slate-200 rounded-xl p-5 shadow-sm animate-in fade-in duration-300">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-[12px] font-bold text-slate-700 uppercase tracking-widest m-0">Defense narrative (anticipated counterarguments)</h3>
+                {editingSection !== 'defense' ? (
+                  <button
+                    onClick={() => handleEditClick('defense', doc.defenseNarrative)}
+                    className="text-teal-600 hover:text-teal-700 text-[13px] font-medium transition-colors"
+                  >
+                    Edit
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleSaveClick('defense')}
+                    className="text-teal-600 hover:text-teal-700 text-[13px] font-medium transition-colors"
+                  >
+                    Done
+                  </button>
+                )}
+              </div>
+
+              {editingSection === 'defense' ? (
+                <textarea
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                  className="w-full min-h-[120px] p-4 bg-white border-2 border-teal-500 rounded-xl outline-none focus:ring-0 text-slate-800 resize-y leading-relaxed text-[14px] shadow-inner"
+                />
+              ) : (
+                <div className="text-slate-700 text-[14px] leading-relaxed">
+                  <AnnotatedText text={doc.defenseNarrative} />
+                </div>
+              )}
             </div>
           )}
-          
+
           {(!doc || (!doc.summarySections && !doc.plaintiffNarrative)) && (
             <div className="flex flex-col items-center justify-center p-12 text-slate-400">
               <p className="italic">No narrative summary available for this case.</p>
