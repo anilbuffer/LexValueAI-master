@@ -28,18 +28,24 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     if (!firmId || targetCase.firmId !== firmId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-    const notes = await prisma.caseNote.findMany({
-      where: {
+    // MOCK DATA for notes
+    const notes = [
+      {
+        id: 'mock-note-1',
+        content: 'This is a mock note for testing purposes.',
+        tags: ['Important', 'Mock'],
+        authorId: session.id,
         caseId,
-        firmId
-      },
-      include: {
+        firmId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         author: {
-          select: { firstName: true, lastName: true, role: true }
+          firstName: 'John',
+          lastName: 'Doe',
+          role: 'LAWYER'
         }
-      },
-      orderBy: { createdAt: 'desc' }
-    })
+      }
+    ]
 
     return NextResponse.json({ success: true, notes })
   } catch (error) {
@@ -80,15 +86,22 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: 'Content is required' }, { status: 400 })
     }
 
-    const note = await prisma.caseNote.create({
-      data: {
-        content,
-        tags: Array.isArray(tags) ? tags : [],
-        authorId: session.id,
-        caseId,
-        firmId
+    // MOCK DATA for note creation
+    const note = {
+      id: `mock-note-${Date.now()}`,
+      content,
+      tags: Array.isArray(tags) ? tags : [],
+      authorId: session.id,
+      caseId,
+      firmId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      author: {
+        firstName: 'Current',
+        lastName: 'User',
+        role: session.role || 'LAWYER'
       }
-    })
+    }
 
     return NextResponse.json({ success: true, note })
   } catch (error) {
