@@ -1,28 +1,26 @@
 "use client"
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Handshake,
   TrendingDown,
+  TrendingUp,
   Sparkles,
-  Bot,
-  User,
-  Send,
   Shield,
   FileText,
   Copy,
   Check,
+  PlusCircle,
+  Clock,
+  ArrowRight,
+  User,
+  Building2,
+  DollarSign,
+  CheckCircle2,
+  Database,
   ExternalLink
 } from 'lucide-react'
-import { getMockCaseValuations } from '@/lib/mock-data'
+import { getMockCaseValuations, getMockNegotiationLogs, createMockNegotiationLog } from '@/lib/mock-data'
 import { useRouter, usePathname } from 'next/navigation'
-
-interface ChatMessage {
-  id: string
-  sender: 'user' | 'ai'
-  text: string
-  citation?: string
-  timestamp: string
-}
 
 export function NegotiationTab({ caseData }: { caseData: any }) {
   const firmId = caseData?.firmId || 'firm-1';
@@ -32,31 +30,26 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
   const pathname = usePathname();
 
   const [valuations, setValuations] = useState<any[]>([])
+  const [negotiationLogs, setNegotiationLogs] = useState<any[]>([])
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [showLogModal, setShowLogModal] = useState(false)
 
-  const [chatInput, setChatInput] = useState('')
-  const [isTyping, setIsTyping] = useState(false)
-  const chatScrollRef = useRef<HTMLDivElement>(null)
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    {
-      id: 'msg-1',
-      sender: 'ai',
-      text: "Hello! I am your AI Negotiation Assistant. Based on this case's medical records, chronology, and specials ledger ($31,400 confirmed), I can generate evidence-backed counterarguments to overcome defense discounts. Click a suggested prompt below or type your question.",
-      timestamp: '10:00 AM'
-    }
-  ])
+  // New Round Form
+  const [logForm, setLogForm] = useState({
+    type: 'COUNTER_DEMAND',
+    amount: '',
+    author: 'Attorney Mike Ross',
+    recipient: 'Travelers Adjuster Sarah Jenkins',
+    notes: ''
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     if (firmId && caseId) {
       setValuations(getMockCaseValuations(firmId, caseId));
+      setNegotiationLogs(getMockNegotiationLogs(firmId, caseId));
     }
   }, [firmId, caseId])
-
-  useEffect(() => {
-    if (chatScrollRef.current) {
-      chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
-    }
-  }, [chatMessages, isTyping])
 
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -66,249 +59,411 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
 
   const valuation = valuations[0] || {};
   const defensePressure = valuation.defensePressure || [];
+  const strategy = valuation.negotiationStrategy || {};
 
-  const latestDemand = 175000;
-  const latestCounter = 45000;
-  const currentSpread = latestDemand - latestCounter;
-  const currentMidpoint = (latestDemand + latestCounter) / 2;
+  // Compute Active Negotiation Metrics from Logs
+  const demands = negotiationLogs.filter(l => l.type === 'DEMAND' || l.type === 'COUNTER_DEMAND');
+  const offers = negotiationLogs.filter(l => l.type === 'OFFER' || l.type === 'COUNTER_OFFER');
 
-  const suggestedPrompts = [
-    {
-      label: "Counter the 17-Day Gap",
-      query: "How should I counter the adjuster's claim that the 17-day gap in treatment breaks causation?",
-      response: "Emphasize that the plaintiff reported acute neck pain at the scene and in the ER discharge notes. The 17-day period before physical therapy was due to primary physician referral lag and delayed scheduling, during which the plaintiff strictly followed conservative rest orders. This is supported by Dr. Robert Chen's onset timeline declaration (Page 14).",
-      citation: "Dr. Chen Causation Declaration, Page 14"
-    },
-    {
-      label: "Defeat Pre-Existing Degeneration",
-      query: "What evidence defeats the defense argument that C5-C6 herniation is pre-existing degeneration?",
-      response: "Under NY's Eggshell Plaintiff Doctrine, the defendant takes the plaintiff as they find them. Prior to the collision, the plaintiff was 100% asymptomatic with zero cervical medical visits in 8 years of primary care records. The collision transformed latent spondylosis into an acute, permanent thecal-sac compressing herniation.",
-      citation: "Radiology Addendum, Page 4 & Dr. Chen Initial Exam, Page 12"
-    },
-    {
-      label: "Counter Low Property Damage",
-      query: "How do we neutralize the defense's low property damage ($1,800 bumper repair) defense?",
-      response: "Property damage metrics do not correlate with occupant kinetic energy transfer. Modern polymer bumper fascias are designed to rebound elastically, absorbing external visible damage while transmitting significant G-forces directly to the occupant's cervical spine.",
-      citation: "Biomechanical Impact Evaluation Report, Page 6"
-    }
-  ];
+  const latestDemand = demands.length > 0 ? demands[demands.length - 1].amount : 175000;
+  const latestOffer = offers.length > 0 ? offers[offers.length - 1].amount : 58000;
+  const currentSpread = latestDemand - latestOffer;
+  const currentMidpoint = (latestDemand + latestOffer) / 2;
 
-  const handleSendChatMessage = (textToSend?: string) => {
-    const query = textToSend || chatInput.trim();
-    if (!query) return;
+  const handleAddLog = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!logForm.amount) return;
 
-    const userMsg: ChatMessage = {
-      id: `user-${Date.now()}`,
-      sender: 'user',
-      text: query,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    setIsSubmitting(true);
+    const amountNum = parseFloat(logForm.amount);
+    const newLog = {
+      id: `neg-${Date.now()}`,
+      firmId,
+      caseId,
+      roundNumber: Math.floor(negotiationLogs.length / 2) + 1,
+      date: new Date(),
+      type: logForm.type,
+      amount: amountNum,
+      author: logForm.author,
+      recipient: logForm.recipient,
+      notes: logForm.notes || (logForm.type.includes('DEMAND') ? "Plaintiff tactical counter-demand served." : "Carrier updated position."),
+      status: "ACTIVE"
     };
 
-    setChatMessages(prev => [...prev, userMsg]);
-    if (!textToSend) setChatInput('');
-    setIsTyping(true);
-
-    setTimeout(() => {
-      let aiReply = "Based on the case chronology and verified medical specials, plaintiff counsel holds strong leverage. Emphasize consistent treatment following the gap, fluoroscopy-guided injections, and unimpeached liability against the commercial carrier.";
-      let citation = "Case Medical Chronology & Specials Ledger";
-
-      const matched = suggestedPrompts.find(p => p.query.toLowerCase() === query.toLowerCase() || query.toLowerCase().includes(p.label.toLowerCase()));
-      if (matched) {
-        aiReply = matched.response;
-        citation = matched.citation;
-      } else if (query.toLowerCase().includes('gap') || query.toLowerCase().includes('17-day')) {
-        aiReply = "Counter the treatment gap using Dr. Chen's initial intake notes showing continuous pain since the collision date, attributing the delay to referral authorization rather than symptom resolution.";
-        citation = "Initial Physical Therapy Evaluation, Page 18";
-      } else if (query.toLowerCase().includes('mri') || query.toLowerCase().includes('herniation') || query.toLowerCase().includes('degeneration')) {
-        aiReply = "The cervical MRI objectively confirms 3mm disc herniation with thecal sac impingement at C5-C6 and C6-C7. Pair this with Dr. Chen's causation report to establish objective injury.";
-        citation = "Cervical Spine MRI Report, Page 4";
-      }
-
-      const aiMsg: ChatMessage = {
-        id: `ai-${Date.now()}`,
-        sender: 'ai',
-        text: aiReply,
-        citation,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setChatMessages(prev => [...prev, aiMsg]);
-      setIsTyping(false);
-    }, 1000);
+    createMockNegotiationLog(newLog);
+    setNegotiationLogs(getMockNegotiationLogs(firmId, caseId));
+    setIsSubmitting(false);
+    setShowLogModal(false);
+    setLogForm({
+      type: 'COUNTER_DEMAND',
+      amount: '',
+      author: 'Attorney Mike Ross',
+      recipient: 'Travelers Adjuster Sarah Jenkins',
+      notes: ''
+    });
   };
 
   return (
     <div className="flex flex-col h-full animate-in fade-in slide-in-from-bottom-2 duration-500 font-sans">
 
       {/* Top Header */}
-      <div className="bg-slate-50 p-5 md:p-6 border-b border-slate-200 shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-slate-50/90 p-5 md:p-6 border-b border-slate-200 shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2 mb-1.5">
             <span className="bg-teal-900 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 shadow-sm">
-              <Handshake className="w-3 h-3" /> Case Negotiations
+              <Handshake className="w-3 h-3 text-teal-300" /> Negotiation Tracker
+            </span>
+            <span className="bg-teal-50 text-teal-800 border border-teal-200 text-[11px] font-bold px-2 py-0.5 rounded-full">
+              Round {Math.max(1, Math.ceil(negotiationLogs.length / 2))} in Progress
             </span>
           </div>
-          <h2 className="text-xl md:text-2xl font-bold text-slate-800 tracking-tight">
-            AI Negotiation Assistant & Strategy Command
+          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+            Negotiation & Offer Progression
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Active defense arguments, AI counter-rebuttals, settlement target corridors, and evidentiary chat assistant.
+          <p className="text-xs text-slate-500 mt-1 max-w-3xl leading-relaxed">
+            Logs each demand and counteroffer so negotiation strategy stays connected to real-world carrier movements.
           </p>
         </div>
 
-        <div className="shrink-0 flex items-center gap-2">
-          <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-teal-50 border border-teal-200 text-teal-800">
-            Posture: Strong Favorable Leverage
-          </span>
-        </div>
-      </div>
-
-      {/* Main Container */}
-      <div className="p-5 md:p-8 flex-1 overflow-y-auto space-y-6 bg-slate-50/30">
-
-        {/* 1. Status Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-            <span className="text-[10px] uppercase font-bold text-teal-700 tracking-wider block mb-1">
-              Target Settlement Corridor
-            </span>
-            <div className="text-xl font-extrabold text-teal-950">
-              $85,000 – $120,000
-            </div>
-            <p className="text-[11px] text-slate-500 mt-1">Fair recovery target zone</p>
-          </div>
-
-          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-            <span className="text-[10px] uppercase font-bold text-indigo-700 tracking-wider block mb-1">
-              Latest Plaintiff Demand
-            </span>
-            <div className="text-xl font-extrabold text-indigo-950">
-              ${latestDemand.toLocaleString()}
-            </div>
-            <p className="text-[11px] text-slate-500 mt-1">Active plaintiff anchor</p>
-          </div>
-
-          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-            <span className="text-[10px] uppercase font-bold text-rose-600 tracking-wider block mb-1">
-              Latest Carrier Counteroffer
-            </span>
-            <div className="text-xl font-extrabold text-rose-950">
-              ${latestCounter.toLocaleString()}
-            </div>
-            <p className="text-[11px] text-slate-500 mt-1">Current adjuster offer</p>
-          </div>
-
-          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-            <span className="text-[10px] uppercase font-bold text-slate-700 tracking-wider block mb-1">
-              Active Spread / Midpoint
-            </span>
-            <div className="text-xl font-extrabold text-slate-900">
-              ${currentSpread.toLocaleString()}
-            </div>
-            <p className="text-[11px] text-slate-500 mt-1">Midpoint: ${Math.round(currentMidpoint).toLocaleString()}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center gap-2.5 mb-4 border-b border-slate-100 pb-3">
-            <div className="w-8 h-8 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-700">
-              <Handshake className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-slate-900">Current Negotiation Summary</h3>
-              <p className="text-xs text-slate-500">Live posture analysis based on 3 exchanged rounds</p>
-            </div>
-          </div>
-          <div className="text-base font-bold text-slate-800">
-            <span className="text-teal-700">${latestDemand.toLocaleString()}</span> vs <span className="text-rose-700">${latestCounter.toLocaleString()}</span>
-          </div>
-          <p className="text-xs text-slate-500 mt-1">Spread: ${currentSpread.toLocaleString()} | Midpoint: ${Math.round(currentMidpoint).toLocaleString()}</p>
-        </div>
-
-        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center gap-2.5 mb-4 border-b border-slate-100 pb-3">
-            <div className="w-8 h-8 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-700">
-              <Shield className="w-4 h-4" />
-            </div>
-            <div>
-              <h4 className="text-base font-bold text-slate-900">Evidence-Backed Rebuttals</h4>
-              <p className="text-xs text-slate-500">Click to copy evidence-grounded responses</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {defensePressure.map((dp: any) => {
-              const isCopied = copiedId === dp.id;
-              return (
-                <div key={dp.id} className="p-3.5 rounded-xl border border-teal-100 bg-teal-50/30">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-bold text-teal-900">{dp.title} Rebuttal</span>
-                    <button
-                      onClick={() => copyToClipboard(dp.rebuttal || dp.counterStrategy || "", dp.id)}
-                      className="text-[10px] font-semibold text-teal-700 hover:text-teal-900 flex items-center gap-1 bg-white px-2 py-0.5 rounded border border-teal-200 cursor-pointer"
-                    >
-                      {isCopied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                      {isCopied ? "Copied" : "Copy"}
-                    </button>
-                  </div>
-                  <p className="text-xs text-slate-700 leading-relaxed font-normal">{dp.rebuttal || dp.counterStrategy}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-[500px]">
-        <div className="bg-slate-900 text-white p-4 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <Bot className="w-5 h-5 text-teal-400" />
-            <div>
-              <h4 className="text-sm font-bold text-white">AI Negotiation Chat Assistant</h4>
-            </div>
-          </div>
-        </div>
-        <div className="bg-slate-50 border-b border-slate-200 p-2.5 flex items-center gap-2 overflow-x-auto">
-          {suggestedPrompts.map((p, idx) => (
-            <button
-              key={idx}
-              onClick={() => handleSendChatMessage(p.query)}
-              className="text-xs bg-white hover:bg-teal-50 border border-slate-200 text-slate-700 font-semibold px-3 py-1 rounded-full shrink-0 transition-colors cursor-pointer"
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
-        <div ref={chatScrollRef} className="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-50/40">
-          {chatMessages.map((msg) => (
-            <div key={msg.id} className={`flex gap-3 max-w-[88%] ${msg.sender === 'user' ? 'ml-auto flex-row-reverse' : ''}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.sender === 'user' ? 'bg-teal-700 text-white' : 'bg-slate-900 text-teal-300'}`}>
-                {msg.sender === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-              </div>
-              <div className={`p-4 rounded-2xl text-xs leading-relaxed ${msg.sender === 'user' ? 'bg-teal-900 text-white rounded-tr-none' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-none'}`}>
-                <p>{msg.text}</p>
-                {msg.citation && <div className="mt-2.5 pt-2 border-t text-[11px] font-semibold flex items-center gap-1.5"><FileText className="w-3.5 h-3.5" /> Source: {msg.citation}</div>}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="p-3 bg-white border-t border-slate-200 flex items-center gap-2">
-          <input
-            type="text"
-            value={chatInput}
-            onChange={(e) => setChatInput(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter') handleSendChatMessage(); }}
-            placeholder="Ask AI for strategy or rebuttal..."
-            className="flex-1 text-xs px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-teal-500 bg-slate-50"
-          />
+        <div className="shrink-0 flex items-center gap-2.5 flex-wrap">
           <button
-            onClick={() => handleSendChatMessage()}
-            className="px-4 py-2.5 bg-teal-600 text-white rounded-xl hover:bg-teal-700 flex items-center justify-center cursor-pointer"
+            onClick={() => router.push(`${pathname}?tab=valuation`)}
+            className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 shadow-sm transition-all cursor-pointer"
           >
-            <Send className="w-4 h-4" />
+            <Sparkles className="w-3.5 h-3.5 text-teal-700" />
+            <span>Settlement Intelligence Playbook</span>
+          </button>
+
+          <button
+            onClick={() => setShowLogModal(true)}
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-teal-900 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer"
+          >
+            <PlusCircle className="w-3.5 h-3.5 text-teal-300" />
+            <span>Log Offer / Counter</span>
           </button>
         </div>
       </div>
+
+      {/* Main Content Area */}
+      <div className="p-5 md:p-8 flex-1 overflow-y-auto space-y-6 bg-slate-50/30">
+
+        {/* 1. Live Progression Metrics Bar */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+            <span className="text-[10px] uppercase font-bold text-teal-800 tracking-wider block mb-1">
+              Latest Plaintiff Demand
+            </span>
+            <div className="text-2xl font-black text-teal-950">
+              ${latestDemand.toLocaleString()}
+            </div>
+            <p className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+              <TrendingUp className="w-3 h-3 text-teal-600" /> Active plaintiff anchor
+            </p>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+            <span className="text-[10px] uppercase font-bold text-rose-700 tracking-wider block mb-1">
+              Latest Carrier Offer
+            </span>
+            <div className="text-2xl font-black text-rose-950">
+              ${latestOffer.toLocaleString()}
+            </div>
+            <p className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+              <TrendingDown className="w-3 h-3 text-rose-600" /> Current adjuster authority
+            </p>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+            <span className="text-[10px] uppercase font-bold text-slate-700 tracking-wider block mb-1">
+              Active Spread
+            </span>
+            <div className="text-2xl font-black text-slate-900">
+              ${currentSpread.toLocaleString()}
+            </div>
+            <p className="text-[11px] text-slate-500 mt-1">
+              Gap between positions
+            </p>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+            <span className="text-[10px] uppercase font-bold text-indigo-700 tracking-wider block mb-1">
+              Statistical Midpoint
+            </span>
+            <div className="text-2xl font-black text-indigo-950">
+              ${Math.round(currentMidpoint).toLocaleString()}
+            </div>
+            <p className="text-[11px] text-slate-500 mt-1">
+              Current mathematical median
+            </p>
+          </div>
+        </div>
+
+        {/* 2. Round-by-Round Timeline & Strategic Connection */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* Left 2 Cols: Chronological Negotiation Log */}
+          <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-5 border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-700">
+                  <Clock className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900">Negotiation Round Progression</h3>
+                  <p className="text-xs text-slate-500">Chronological history of demands and carrier counteroffers</p>
+                </div>
+              </div>
+              <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
+                {negotiationLogs.length} Entries Logged
+              </span>
+            </div>
+
+            <div className="space-y-4">
+              {negotiationLogs.map((log: any, idx: number) => {
+                const isDemand = log.type === 'DEMAND' || log.type === 'COUNTER_DEMAND';
+                const formattedDate = new Date(log.date).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric'
+                });
+
+                return (
+                  <div
+                    key={log.id || idx}
+                    className={`p-4 rounded-xl border transition-all ${isDemand
+                      ? 'bg-teal-50/30 border-teal-200 hover:border-teal-300'
+                      : 'bg-rose-50/30 border-rose-200 hover:border-rose-300'
+                      }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${isDemand ? 'bg-teal-900 text-white' : 'bg-rose-800 text-white'
+                            }`}>
+                            Round {log.roundNumber} • {isDemand ? 'Plaintiff Demand' : 'Carrier Offer'}
+                          </span>
+                          <span className="text-xs font-semibold text-slate-500">
+                            {formattedDate}
+                          </span>
+                        </div>
+                        <h4 className="text-lg font-extrabold text-slate-900 mt-1.5">
+                          ${log.amount.toLocaleString()}
+                        </h4>
+                      </div>
+
+                      <div className="text-right">
+                        <span className="text-[11px] font-semibold text-slate-600 block">
+                          From: {log.author}
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                          To: {log.recipient}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 pt-2.5 border-t border-slate-200/60 text-xs text-slate-700 leading-relaxed flex items-start gap-1.5">
+                      <span className="font-semibold text-slate-900 shrink-0">Notes:</span>
+                      <span>{log.notes}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Right Col: Active Strategy Guidance & Rebuttal Preemption */}
+          <div className="space-y-6">
+
+            {/* Next Recommended Tactical Move */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+              <div className="flex items-center gap-2 mb-3 text-slate-900 font-bold text-sm">
+                <Sparkles className="w-4 h-4 text-teal-700" />
+                <span>Strategy Connection</span>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                Based on the carrier's last offer of <strong>${latestOffer.toLocaleString()}</strong>, maintain pressure by anchoring firmly to confirmed objective findings.
+              </p>
+
+              <div className="p-3.5 bg-teal-50 border border-teal-200 rounded-xl space-y-2 text-xs">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-teal-900 block">
+                  Recommended Next Counter Range
+                </span>
+                <p className="font-extrabold text-base text-teal-950">
+                  $125,000 – $135,000
+                </p>
+                <p className="text-[11px] text-teal-800 leading-relaxed">
+                  Avoid conceding below $100k until carrier reviews the Eggshell Plaintiff brief and physician causation affirmation.
+                </p>
+              </div>
+            </div>
+
+            {/* Quick Evidence Rebuttals */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2 text-slate-900 font-bold text-sm">
+                  <Shield className="w-4 h-4 text-teal-700" />
+                  <span>Defense Counter-Points</span>
+                </div>
+                <button
+                  onClick={() => router.push(`${pathname}?tab=valuation`)}
+                  className="text-[11px] font-bold text-teal-700 hover:text-teal-900 cursor-pointer flex items-center gap-0.5"
+                >
+                  <span>All 4 Parts</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                {defensePressure.slice(0, 2).map((dp: any) => {
+                  const isCopied = copiedId === dp.id;
+                  return (
+                    <div key={dp.id} className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-bold text-slate-900">{dp.title}</span>
+                        <button
+                          onClick={() => copyToClipboard(dp.rebuttal || "", dp.id)}
+                          className="text-[10px] font-semibold text-teal-700 flex items-center gap-1 bg-white px-2 py-0.5 rounded border border-teal-200 cursor-pointer"
+                        >
+                          {isCopied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                          {isCopied ? "Copied" : "Copy Rebuttal"}
+                        </button>
+                      </div>
+                      <p className="text-slate-600 text-[11px] leading-relaxed">
+                        {dp.rebuttal}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Direct Link to Log Final Settlement in Moat */}
+            <div className="p-5 bg-gradient-to-br from-slate-900 to-teal-950 text-white rounded-2xl shadow-sm flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-bold text-teal-400 uppercase tracking-wider mb-1">
+                  <Database className="w-3.5 h-3.5" /> Outcome Dataset Moat
+                </div>
+                <h4 className="text-sm font-bold text-white">
+                  Settled this Case?
+                </h4>
+                <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                  Record the final agreed number, offers count, and days to settle to feed your firm's settlement intelligence dataset.
+                </p>
+              </div>
+              <button
+                onClick={() => router.push(`${pathname}?tab=valuation`)}
+                className="mt-4 w-full py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
+              >
+                Log Final Settlement Outcome
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* MODAL: LOG NEW OFFER OR DEMAND */}
+      {showLogModal && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col">
+            <div className="bg-slate-50 p-5 border-b border-slate-200 flex items-center justify-between">
+              <div>
+                <h3 className="text-base font-bold text-slate-900">Log Negotiation Entry</h3>
+                <p className="text-xs text-slate-500 mt-0.5">Record a demand or carrier counteroffer</p>
+              </div>
+              <button
+                onClick={() => setShowLogModal(false)}
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleAddLog} className="p-5 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Entry Type</label>
+                <select
+                  value={logForm.type}
+                  onChange={(e) => setLogForm({ ...logForm, type: e.target.value })}
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-teal-600 font-semibold"
+                >
+                  <option value="COUNTER_DEMAND">Plaintiff Counter-Demand</option>
+                  <option value="COUNTER_OFFER">Carrier Counteroffer</option>
+                  <option value="DEMAND">Formal Initial Demand</option>
+                  <option value="OFFER">Initial Carrier Offer</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Amount ($)</label>
+                <input
+                  type="number"
+                  value={logForm.amount}
+                  onChange={(e) => setLogForm({ ...logForm, amount: e.target.value })}
+                  required
+                  placeholder="e.g. 135000"
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-teal-600 font-bold"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Author / Maker</label>
+                  <input
+                    type="text"
+                    value={logForm.author}
+                    onChange={(e) => setLogForm({ ...logForm, author: e.target.value })}
+                    required
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-teal-600"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Recipient</label>
+                  <input
+                    type="text"
+                    value={logForm.recipient}
+                    onChange={(e) => setLogForm({ ...logForm, recipient: e.target.value })}
+                    required
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-teal-600"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Tactical Notes & Adjuster Justification</label>
+                <textarea
+                  rows={2}
+                  value={logForm.notes}
+                  onChange={(e) => setLogForm({ ...logForm, notes: e.target.value })}
+                  placeholder="e.g. Carrier raised authority after reviewing Dr. Chen's surgical causation report."
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-teal-600"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowLogModal(false)}
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-5 py-2 bg-teal-900 hover:bg-teal-800 text-white rounded-lg text-xs font-bold shadow-sm transition-colors cursor-pointer"
+                >
+                  {isSubmitting ? "Logging..." : "Log Negotiation Entry"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
-  </div>
   )
 }
+

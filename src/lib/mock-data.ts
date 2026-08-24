@@ -561,48 +561,6 @@ export let mockPropertyDamage = [
   }
 ];
 
-export let mockNegotiationLogs = [
-  {
-    id: "neg-4",
-    caseId: "case-1",
-    firmId: "firm-1",
-    demandAmount: 325000.00,
-    counterOffer: 175000.00,
-    party: "Defense Counsel",
-    responseDays: 5,
-    date: new Date("2026-08-10T14:00:00Z")
-  },
-  {
-    id: "neg-3",
-    caseId: "case-1",
-    firmId: "firm-1",
-    demandAmount: 375000.00,
-    counterOffer: 125000.00,
-    party: "Plaintiff Counsel",
-    responseDays: 10,
-    date: new Date("2026-07-25T11:00:00Z")
-  },
-  {
-    id: "neg-2",
-    caseId: "case-1",
-    firmId: "firm-1",
-    demandAmount: 450000.00,
-    counterOffer: 85000.00,
-    party: "Defense Counsel",
-    responseDays: 21,
-    date: new Date("2026-06-15T09:30:00Z")
-  },
-  {
-    id: "neg-1",
-    caseId: "case-1",
-    firmId: "firm-1",
-    demandAmount: 500000.00,
-    counterOffer: 45000.00,
-    party: "Defense Counsel",
-    responseDays: 14,
-    date: new Date("2026-05-10T10:00:00Z")
-  }
-];
 
 export let mockMedicalBills = [
   {
@@ -1194,6 +1152,142 @@ export let mockClientUploadedDocuments = [
   }
 ];
 
+export interface MockNegotiationLog {
+  id: string;
+  firmId: string;
+  caseId: string;
+  roundNumber: number;
+  date: Date;
+  type: string;
+  amount: number;
+  author: string;
+  recipient: string;
+  notes: string;
+  status: string;
+}
+
+export interface MockSettlementOutcome {
+  id: string;
+  firmId: string;
+  caseId: string;
+  caseTitle: string;
+  injuryType: string;
+  jurisdiction: string;
+  carrierName: string;
+  openingDemand: number;
+  initialCarrierOffer: number;
+  carrierOffersCount: number;
+  finalOffer: number;
+  finalSettlement: number;
+  medicalSpecials: number;
+  settlementRatio: number;
+  timeToSettleDays: number;
+  closedDate: Date;
+  primaryValueDrivers: string[];
+  primaryDefenseWeaknesses: string[];
+  notes: string;
+}
+
+export let mockNegotiationLogs: MockNegotiationLog[] = [
+  {
+    id: "neg-1",
+    firmId: "firm-1",
+    caseId: "case-1",
+    roundNumber: 1,
+    date: new Date("2026-07-10T10:00:00Z"),
+    type: "DEMAND",
+    amount: 175000,
+    author: "Attorney Mike Ross",
+    recipient: "Travelers Adjuster Sarah Jenkins",
+    notes: "Formal policy demand served backed by MRI, injection records, and $31,400 confirmed specials ledger.",
+    status: "SUPERSEDED"
+  },
+  {
+    id: "neg-2",
+    firmId: "firm-1",
+    caseId: "case-1",
+    roundNumber: 1,
+    date: new Date("2026-07-28T14:30:00Z"),
+    type: "OFFER",
+    amount: 32000,
+    author: "Travelers Adjuster Sarah Jenkins",
+    recipient: "Attorney Mike Ross",
+    notes: "Adjuster opened with lowball citing 17-day gap and pre-existing degenerative changes on radiologist notes.",
+    status: "SUPERSEDED"
+  },
+  {
+    id: "neg-3",
+    firmId: "firm-1",
+    caseId: "case-1",
+    roundNumber: 2,
+    date: new Date("2026-08-05T11:15:00Z"),
+    type: "COUNTER_DEMAND",
+    amount: 145000,
+    author: "Attorney Mike Ross",
+    recipient: "Travelers Adjuster Sarah Jenkins",
+    notes: "Countered with Eggshell Plaintiff legal rebuttal and treating surgeon causation affirmation.",
+    status: "SUPERSEDED"
+  },
+  {
+    id: "neg-4",
+    firmId: "firm-1",
+    caseId: "case-1",
+    roundNumber: 2,
+    date: new Date("2026-08-18T16:00:00Z"),
+    type: "COUNTER_OFFER",
+    amount: 58000,
+    author: "Travelers Adjuster Sarah Jenkins",
+    recipient: "Attorney Mike Ross",
+    notes: "Carrier increased authority after supervisor review of injection logs. Spread narrowed to $87,000.",
+    status: "ACTIVE"
+  }
+];
+
+export let mockSettlementOutcomes: MockSettlementOutcome[] = [
+  {
+    id: "outcome-1",
+    firmId: "firm-1",
+    caseId: "case-legacy-1",
+    caseTitle: "Martinez v. Logistics Express Corp.",
+    injuryType: "L4-L5 Lumbar Disc Herniation w/ Epidural Injections",
+    jurisdiction: "New York County Supreme Court, NY",
+    carrierName: "Liberty Mutual Commercial",
+    openingDemand: 195000,
+    initialCarrierOffer: 35000,
+    carrierOffersCount: 4,
+    finalOffer: 98000,
+    finalSettlement: 105000,
+    medicalSpecials: 34200,
+    settlementRatio: 3.07,
+    timeToSettleDays: 165,
+    closedDate: new Date("2026-06-12T14:00:00Z"),
+    primaryValueDrivers: ["Confirmed L4-L5 herniation on MRI", "Fluoroscopic ESI procedures", "100% Commercial liability"],
+    primaryDefenseWeaknesses: ["14-day gap after urgent care", "Degenerative spondylolisthesis note"],
+    notes: "Settled at mediator pre-trial conference after rebuttal of pre-existing degeneration with eggshell doctrine."
+  },
+  {
+    id: "outcome-2",
+    firmId: "firm-1",
+    caseId: "case-legacy-2",
+    caseTitle: "Chen v. Fleet Transit LLC",
+    injuryType: "Cervical Strain / Sprain w/ 6 Months Physical Therapy",
+    jurisdiction: "Queens County Supreme Court, NY",
+    carrierName: "State Farm Mutual",
+    openingDemand: 85000,
+    initialCarrierOffer: 15000,
+    carrierOffersCount: 3,
+    finalOffer: 42000,
+    finalSettlement: 45000,
+    medicalSpecials: 16800,
+    settlementRatio: 2.68,
+    timeToSettleDays: 98,
+    closedDate: new Date("2026-07-01T11:00:00Z"),
+    primaryValueDrivers: ["Immediate EMS transport from scene", "Consistent 3x/week physical therapy compliance"],
+    primaryDefenseWeaknesses: ["Absence of surgical or interventional recommendation", "Minor rear bumper damage"],
+    notes: "Settled within 100 days directly with claims adjuster prior to formal litigation filing."
+  }
+];
+
 export const getMockUser = () => mockUser;
 export const getMockCases = () => mockCases;
 export const getMockCaseById = (id: string) => mockCases.find((c: any) => c.id === id);
@@ -1211,6 +1305,12 @@ export const getMockNegotiationLogs = (firmId: string, caseId: string) => mockNe
 export const getMockMedicalBills = (firmId: string, caseId: string) => mockMedicalBills.filter((b: any) => b.firmId === firmId && b.caseId === caseId);
 export const getMockDepositionOutlines = (firmId: string, caseId: string) => mockDepositionOutlines.filter((d: any) => d.firmId === firmId && d.caseId === caseId);
 export const getMockCaseValuations = (firmId: string, caseId: string) => mockCaseValuations.filter((v: any) => v.firmId === firmId && v.caseId === caseId);
+export const getMockSettlementOutcomes = (firmId: string, caseId?: string) => {
+  if (caseId) {
+    return mockSettlementOutcomes.filter((s: any) => s.firmId === firmId && s.caseId === caseId);
+  }
+  return mockSettlementOutcomes.filter((s: any) => s.firmId === firmId);
+};
 export const getMockChatHistory = (firmId: string, caseId: string) => mockChatHistory.filter((c: any) => c.firmId === firmId && c.caseId === caseId);
 export const getMockDocumentRequests = (firmId: string, caseId: string) => mockDocumentRequests.filter((r: any) => r.firmId === firmId && r.caseId === caseId);
 export const getMockPortalUpdates = (firmId: string, caseId: string) => mockPortalUpdates.filter((u: any) => u.firmId === firmId && u.caseId === caseId);
@@ -1247,7 +1347,8 @@ export const createMockAuditLog = (newLog: any) => { mockAuditLogs.push(newLog);
 // Phase 2 Mutators
 export const createMockCaseNote = (note: any) => { mockCaseNotes.unshift(note); return note; }
 export const createMockPropertyDamage = (pd: any) => { mockPropertyDamage.unshift(pd); return pd; }
-export const createMockNegotiationLog = (log: any) => { mockNegotiationLogs.unshift(log); return log; }
+export const createMockNegotiationLog = (log: MockNegotiationLog) => { mockNegotiationLogs.push(log); return log; }
+export const createMockSettlementOutcome = (outcome: MockSettlementOutcome) => { mockSettlementOutcomes.unshift(outcome); return outcome; }
 export const createMockMedicalBill = (bill: any) => { mockMedicalBills.unshift(bill); return bill; }
 export const updateMockMedicalBill = (id: string, data: any) => {
   const index = mockMedicalBills.findIndex(b => b.id === id);

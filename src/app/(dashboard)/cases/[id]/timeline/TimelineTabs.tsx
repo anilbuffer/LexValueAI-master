@@ -177,9 +177,9 @@ export function TimelineTabs({ caseData }: { caseData: any }) {
             }`}
         >
           <div className={`${activeTab === 'valuation' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'} p-1 rounded-md transition-colors`}>
-            <Target className="w-4 h-4" />
+            <Sparkles className="w-4 h-4" />
           </div>
-          Case Valuation
+          Settlement Intelligence
         </button>
       </div>
 
