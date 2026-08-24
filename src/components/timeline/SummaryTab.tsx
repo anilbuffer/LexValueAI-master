@@ -349,7 +349,7 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
               : 'text-teal-800 hover:text-teal-950 bg-teal-50/70 border border-teal-200/60'
               }`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-teal-400" /> Settlement & Negotiation Analysis ⭐
+            <Sparkles className="w-3.5 h-3.5 text-teal-400" /> Settlement & Negotiation Analysis
           </button>
           <button
             onClick={() => setPerspective('Structured')}
@@ -447,7 +447,7 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
           {/* 3. SETTLEMENT & NEGOTIATION ANALYSIS ⭐ NEW */}
           {perspective === 'Settlement & Negotiation Analysis' && (
             <div className="space-y-6 animate-in fade-in duration-300">
-              
+
               {/* Top Overview Banner */}
               <div className="bg-gradient-to-r from-teal-900 via-slate-900 to-slate-950 text-white rounded-2xl p-6 shadow-md border border-teal-800/40">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -539,7 +539,7 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
 
                     <div className="space-y-3.5">
                       {valueDrivers.map((driver: any) => (
-                        <div 
+                        <div
                           key={driver.id}
                           className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/40 hover:bg-white hover:border-teal-300 hover:shadow-sm transition-all"
                         >
@@ -558,11 +558,10 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                                 <p className="text-xs text-slate-600 mt-1 leading-relaxed">{driver.detail}</p>
                               </div>
                             </div>
-                            <span className={`text-[11px] font-bold px-2.5 py-1 rounded-md shrink-0 ${
-                              driver.impactLevel === 'High' || driver.impact?.includes('High')
+                            <span className={`text-[11px] font-bold px-2.5 py-1 rounded-md shrink-0 ${driver.impactLevel === 'High' || driver.impact?.includes('High')
                                 ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold'
                                 : 'bg-teal-50 text-teal-800 border border-teal-200'
-                            }`}>
+                              }`}>
                               {driver.impact || 'High Positive'}
                             </span>
                           </div>
@@ -613,7 +612,7 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
 
                     <div className="space-y-3.5">
                       {defensePressure.map((pressure: any) => (
-                        <div 
+                        <div
                           key={pressure.id}
                           className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/40 hover:bg-white hover:border-rose-300 hover:shadow-sm transition-all"
                         >
