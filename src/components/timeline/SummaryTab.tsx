@@ -1,14 +1,34 @@
-import React, { useState } from 'react'
-import { Calendar, User, Activity, FileText, Info, ExternalLink } from 'lucide-react'
-import { updateMockDocument } from '@/lib/mock-data'
+import React, { useState, useEffect } from 'react'
+import { Calendar, User, Activity, FileText, Info, ExternalLink, TrendingUp, TrendingDown, Shield, Target, AlertTriangle, CheckCircle2, XCircle, ArrowRight, Sparkles, Scale, BookOpen } from 'lucide-react'
+import { updateMockDocument, getMockCaseValuations } from '@/lib/mock-data'
 import { useRouter, usePathname } from 'next/navigation'
 
-type NarrativePerspective = 'Structured' | 'Plaintiff Narrative' | 'Defense Narrative'
+type NarrativePerspective = 'Plaintiff Narrative' | 'Defense Narrative' | 'Settlement & Negotiation Analysis' | 'Structured'
 
 export function SummaryTab({ caseData }: { caseData?: any }) {
-  const [perspective, setPerspective] = useState<NarrativePerspective>('Structured')
+  const [perspective, setPerspective] = useState<NarrativePerspective>('Plaintiff Narrative')
   const [editingSection, setEditingSection] = useState<string | null>(null)
   const [editContent, setEditContent] = useState("")
+  const [valuations, setValuations] = useState<any[]>([])
+
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const firmId = caseData?.firmId || 'firm-1'
+  const caseId = caseData?.id || 'case-1'
+
+  useEffect(() => {
+    if (firmId && caseId) {
+      const vals = getMockCaseValuations(firmId, caseId)
+      setValuations(vals)
+    }
+  }, [firmId, caseId])
+
+  const val = valuations[0] || {}
+  const valueDrivers = val.valueDrivers || []
+  const defensePressure = val.defensePressure || []
+  const strategy = val.negotiationStrategy || {}
+  const carrierModel = val.carrierModel || {}
 
   // Get the primary document (mocked)
   const doc = caseData?.documents?.[0] || null
@@ -22,18 +42,17 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
     if (doc) {
       if (sectionId === 'plaintiff') {
         updateMockDocument(doc.id, { plaintiffNarrative: editContent })
-        doc.plaintiffNarrative = editContent;
+        doc.plaintiffNarrative = editContent
       } else if (sectionId === 'defense') {
         updateMockDocument(doc.id, { defenseNarrative: editContent })
-        doc.defenseNarrative = editContent;
+        doc.defenseNarrative = editContent
       } else if (doc.summarySections) {
         const updatedSections = doc.summarySections.map((s: any) =>
           s.id === sectionId ? { ...s, content: editContent } : s
         )
         updateMockDocument(doc.id, { summarySections: updatedSections })
-        // Update local state if needed (since it's a mock, caseData might need a refresh, but we can mutate it directly for demo)
         const target = doc.summarySections.find((s: any) => s.id === sectionId)
-        if (target) target.content = editContent;
+        if (target) target.content = editContent
       }
     }
     setEditingSection(null)
@@ -194,51 +213,53 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
       details: "Initial Orthopedic Evaluation notes patient denied any prior neck pain or upper extremity symptoms.",
       eventId: "event-1"
     }
-  ];
+  ]
+
+  const handleSourceClick = (e: React.MouseEvent, pageNumber?: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+    router.push(`${pathname}?tab=chronology`)
+  }
 
   // Hover Annotation Component
   const AnnotatedText = ({ text }: { text: string }) => {
-    const router = useRouter();
-    const pathname = usePathname();
-
     // Sort annotations by length (longest first) to prevent partial matching issues
-    const sortedAnnotations = [...annotations].sort((a, b) => b.term.length - a.term.length);
+    const sortedAnnotations = [...annotations].sort((a, b) => b.term.length - a.term.length)
 
-    let parts: { text: string; annotation?: any }[] = [{ text }];
+    let parts: { text: string; annotation?: any }[] = [{ text }]
 
     sortedAnnotations.forEach(ann => {
-      const newParts: { text: string; annotation?: any }[] = [];
+      const newParts: { text: string; annotation?: any }[] = []
       parts.forEach(part => {
         if (part.annotation) {
-          newParts.push(part);
-          return;
+          newParts.push(part)
+          return
         }
 
-        const split = part.text.split(ann.term);
+        const split = part.text.split(ann.term)
         for (let i = 0; i < split.length; i++) {
           if (split[i]) {
-            newParts.push({ text: split[i] });
+            newParts.push({ text: split[i] })
           }
           if (i < split.length - 1) {
-            newParts.push({ text: ann.term, annotation: ann });
+            newParts.push({ text: ann.term, annotation: ann })
           }
         }
-      });
-      parts = newParts;
-    });
+      })
+      parts = newParts
+    })
 
     const handleAnnotationClick = (e: React.MouseEvent, eventId: string) => {
-      e.preventDefault();
-      e.stopPropagation();
-      // Navigate to chronology tab and pass eventId in query params
-      router.push(`${pathname}?tab=chronology&eventId=${eventId}`);
-    };
+      e.preventDefault()
+      e.stopPropagation()
+      router.push(`${pathname}?tab=chronology&eventId=${eventId}`)
+    }
 
     return (
       <div className="whitespace-pre-wrap">
         {parts.map((part, i) => {
           if (part.annotation) {
-            const ann = part.annotation;
+            const ann = part.annotation
             return (
               <span key={i} className="group/tooltip relative inline-block cursor-pointer border-b-2 border-teal-500/30 text-teal-700 bg-teal-50/50 transition-colors hover:bg-teal-100 font-medium rounded-sm px-0.5">
                 <span onClick={(e) => handleAnnotationClick(e, ann.eventId)}>{part.text}</span>
@@ -292,45 +313,488 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
               </span>
             )
           }
-          return <span key={i}>{part.text}</span>;
+          return <span key={i}>{part.text}</span>
         })}
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col h-full animate-in fade-in slide-in-from-bottom-2 duration-500 bg-white">
+    <div className="flex flex-col h-full animate-in fade-in slide-in-from-bottom-2 duration-500 bg-white font-sans">
       <div className="p-4 md:p-6 pb-0 shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Inner Tabs */}
-        <div className="flex items-center bg-slate-100 p-1 rounded-xl w-fit">
-          {['Structured', 'Plaintiff Narrative', 'Defense Narrative'].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setPerspective(tab as NarrativePerspective)}
-              className={`px-4 py-1.5 rounded-lg text-[13px] font-medium transition-all ${perspective === tab
-                ? 'bg-white text-slate-900 shadow-sm border border-slate-900'
-                : 'text-slate-500 hover:text-slate-700 border border-transparent'
-                }`}
-            >
-              {tab}
-            </button>
-          ))}
+        <div className="flex items-center bg-slate-100 p-1 rounded-xl w-fit flex-wrap gap-1">
+          <button
+            onClick={() => setPerspective('Plaintiff Narrative')}
+            className={`px-4 py-2 rounded-lg text-[13px] font-semibold transition-all ${perspective === 'Plaintiff Narrative'
+              ? 'bg-white text-slate-900 shadow-sm border border-slate-300'
+              : 'text-slate-500 hover:text-slate-700 border border-transparent'
+              }`}
+          >
+            Plaintiff Narrative
+          </button>
+          <button
+            onClick={() => setPerspective('Defense Narrative')}
+            className={`px-4 py-2 rounded-lg text-[13px] font-semibold transition-all ${perspective === 'Defense Narrative'
+              ? 'bg-white text-slate-900 shadow-sm border border-slate-300'
+              : 'text-slate-500 hover:text-slate-700 border border-transparent'
+              }`}
+          >
+            Defense Narrative
+          </button>
+          <button
+            onClick={() => setPerspective('Settlement & Negotiation Analysis')}
+            className={`px-4 py-2 rounded-lg text-[13px] font-bold transition-all flex items-center gap-1.5 ${perspective === 'Settlement & Negotiation Analysis'
+              ? 'bg-teal-900 text-white shadow-sm border border-teal-900'
+              : 'text-teal-800 hover:text-teal-950 bg-teal-50/70 border border-teal-200/60'
+              }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-teal-400" /> Settlement & Negotiation Analysis ⭐
+          </button>
+          <button
+            onClick={() => setPerspective('Structured')}
+            className={`px-3 py-2 rounded-lg text-[12px] font-medium transition-all ${perspective === 'Structured'
+              ? 'bg-white text-slate-900 shadow-sm border border-slate-300'
+              : 'text-slate-400 hover:text-slate-600 border border-transparent'
+              }`}
+          >
+            Structured Breakdown
+          </button>
         </div>
-
-        {/* Action Buttons */}
-        {/* <div className="flex items-center gap-3 shrink-0">
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-[13px] font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
-            <Copy className="w-4 h-4" /> Copy
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-teal-600 rounded-lg text-[13px] font-bold text-white hover:bg-teal-700 transition-colors shadow-sm">
-            <Download className="w-4 h-4" /> Export as Word
-          </button>
-        </div> */}
       </div>
 
       <div className="p-6 md:p-6 w-full flex-1 overflow-y-auto">
         <div className="max-w-none text-slate-700 leading-relaxed text-[14px]">
 
+          {/* 1. PLAINTIFF NARRATIVE */}
+          {perspective === 'Plaintiff Narrative' && doc?.plaintiffNarrative && (
+            <div className="group relative bg-white border border-slate-200 rounded-2xl p-6 shadow-sm animate-in fade-in duration-300">
+              <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full bg-teal-600"></span>
+                  <h3 className="text-[13px] font-bold text-slate-800 uppercase tracking-widest m-0">Plaintiff Narrative (Case Presentation)</h3>
+                </div>
+                {editingSection !== 'plaintiff' ? (
+                  <button
+                    onClick={() => handleEditClick('plaintiff', doc.plaintiffNarrative)}
+                    className="text-teal-600 hover:text-teal-700 text-[13px] font-bold px-3 py-1 rounded-lg border border-teal-200 hover:bg-teal-50 transition-colors"
+                  >
+                    Edit
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleSaveClick('plaintiff')}
+                    className="text-white bg-teal-600 hover:bg-teal-700 text-[13px] font-bold px-4 py-1 rounded-lg shadow-sm transition-colors"
+                  >
+                    Save Changes
+                  </button>
+                )}
+              </div>
+
+              {editingSection === 'plaintiff' ? (
+                <textarea
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                  className="w-full min-h-[140px] p-4 bg-white border-2 border-teal-500 rounded-xl outline-none focus:ring-0 text-slate-800 resize-y leading-relaxed text-[14px] shadow-inner"
+                />
+              ) : (
+                <div className="text-slate-700 text-[15px] leading-relaxed font-normal">
+                  <AnnotatedText text={doc.plaintiffNarrative} />
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 2. DEFENSE NARRATIVE */}
+          {perspective === 'Defense Narrative' && doc?.defenseNarrative && (
+            <div className="group relative bg-white border border-slate-200 rounded-2xl p-6 shadow-sm animate-in fade-in duration-300">
+              <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full bg-rose-500"></span>
+                  <h3 className="text-[13px] font-bold text-slate-800 uppercase tracking-widest m-0">Defense Narrative (Anticipated Counterarguments)</h3>
+                </div>
+                {editingSection !== 'defense' ? (
+                  <button
+                    onClick={() => handleEditClick('defense', doc.defenseNarrative)}
+                    className="text-teal-600 hover:text-teal-700 text-[13px] font-bold px-3 py-1 rounded-lg border border-teal-200 hover:bg-teal-50 transition-colors"
+                  >
+                    Edit
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleSaveClick('defense')}
+                    className="text-white bg-teal-600 hover:bg-teal-700 text-[13px] font-bold px-4 py-1 rounded-lg shadow-sm transition-colors"
+                  >
+                    Save Changes
+                  </button>
+                )}
+              </div>
+
+              {editingSection === 'defense' ? (
+                <textarea
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                  className="w-full min-h-[140px] p-4 bg-white border-2 border-teal-500 rounded-xl outline-none focus:ring-0 text-slate-800 resize-y leading-relaxed text-[14px] shadow-inner"
+                />
+              ) : (
+                <div className="text-slate-700 text-[15px] leading-relaxed font-normal">
+                  <AnnotatedText text={doc.defenseNarrative} />
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 3. SETTLEMENT & NEGOTIATION ANALYSIS ⭐ NEW */}
+          {perspective === 'Settlement & Negotiation Analysis' && (
+            <div className="space-y-6 animate-in fade-in duration-300">
+              
+              {/* Top Overview Banner */}
+              <div className="bg-gradient-to-r from-teal-900 via-slate-900 to-slate-950 text-white rounded-2xl p-6 shadow-md border border-teal-800/40">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="bg-teal-500/20 text-teal-300 text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 border border-teal-500/30">
+                        <Sparkles className="w-3 h-3 text-teal-400" /> Settlement & Negotiation Intelligence
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold text-white tracking-tight">
+                      Settlement & Negotiation Analysis
+                    </h3>
+                    <p className="text-xs text-slate-300 mt-1 max-w-3xl leading-relaxed">
+                      AI-synthesized settlement corridor, value drivers, defense vulnerabilities, anticipated carrier counter-moves, and direct citation back-links to source medical records.
+                    </p>
+                  </div>
+
+                  <div className="shrink-0 flex items-center gap-2">
+                    <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-teal-500/20 border border-teal-400/40 text-teal-300">
+                      Overall Standing: Strong Favorable
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 4 Metric Cards including Estimated Settlement Range */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                  <span className="text-[10px] uppercase font-bold text-teal-700 tracking-wider block mb-1">
+                    Estimated Settlement Range
+                  </span>
+                  <div className="text-xl font-extrabold text-teal-950">
+                    $85,000 – $120,000
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-1">Target plaintiff recovery corridor</p>
+                </div>
+
+                <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                  <span className="text-[10px] uppercase font-bold text-rose-600 tracking-wider block mb-1">
+                    Likely Carrier Position
+                  </span>
+                  <div className="text-xl font-extrabold text-rose-950">
+                    $45,000 – $65,000
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-1">Simulated adjuster authority cap</p>
+                </div>
+
+                <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                  <span className="text-[10px] uppercase font-bold text-indigo-600 tracking-wider block mb-1">
+                    Recommended Demand
+                  </span>
+                  <div className="text-xl font-extrabold text-indigo-950">
+                    $175,000
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-1">Strategic initial anchor</p>
+                </div>
+
+                <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                  <span className="text-[10px] uppercase font-bold text-slate-700 tracking-wider block mb-1">
+                    Confirmed Specials
+                  </span>
+                  <div className="text-xl font-extrabold text-slate-900">
+                    $31,400
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-1">Medicals ($27.2k) + Wages ($4.2k)</p>
+                </div>
+              </div>
+
+              {/* Grid: Value Drivers vs Defense Pressure */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                {/* Section A: Value Drivers */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-700">
+                          <TrendingUp className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h4 className="text-base font-bold text-slate-900">Value Drivers</h4>
+                          <p className="text-xs text-slate-500">What strengthens the plaintiff's recovery</p>
+                        </div>
+                      </div>
+                      <span className="text-xs font-bold text-teal-700 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-full">
+                        {valueDrivers.length} Identified Drivers
+                      </span>
+                    </div>
+
+                    <div className="space-y-3.5">
+                      {valueDrivers.map((driver: any) => (
+                        <div 
+                          key={driver.id}
+                          className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/40 hover:bg-white hover:border-teal-300 hover:shadow-sm transition-all"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-start gap-2.5">
+                              <span className="w-5 h-5 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                                ✓
+                              </span>
+                              <div>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <h5 className="text-sm font-bold text-slate-900">{driver.title}</h5>
+                                  <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-200 text-slate-700">
+                                    {driver.category}
+                                  </span>
+                                </div>
+                                <p className="text-xs text-slate-600 mt-1 leading-relaxed">{driver.detail}</p>
+                              </div>
+                            </div>
+                            <span className={`text-[11px] font-bold px-2.5 py-1 rounded-md shrink-0 ${
+                              driver.impactLevel === 'High' || driver.impact?.includes('High')
+                                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold'
+                                : 'bg-teal-50 text-teal-800 border border-teal-200'
+                            }`}>
+                              {driver.impact || 'High Positive'}
+                            </span>
+                          </div>
+
+                          {/* Source Reference Link */}
+                          {driver.citation && (
+                            <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
+                              <span className="text-slate-500 flex items-center gap-1 font-medium">
+                                <FileText className="w-3 h-3 text-teal-600" /> Source Reference:
+                              </span>
+                              <button
+                                onClick={(e) => handleSourceClick(e, driver.pageNumber)}
+                                className="font-semibold text-teal-700 hover:text-teal-900 bg-teal-50 hover:bg-teal-100 px-2 py-0.5 rounded transition-colors flex items-center gap-1 cursor-pointer"
+                              >
+                                <span>{driver.citation}</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 p-3 bg-teal-50/60 rounded-xl border border-teal-100 flex items-center gap-2 text-xs text-teal-900 font-medium">
+                    <Sparkles className="w-4 h-4 text-teal-600 shrink-0" />
+                    <span>Every positive value driver is supported by radiographic findings and itemized medical entries.</span>
+                  </div>
+                </div>
+
+                {/* Section B: Defense Pressure */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-700">
+                          <TrendingDown className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h4 className="text-base font-bold text-slate-900">Defense Pressure</h4>
+                          <p className="text-xs text-slate-500">What weakens the case or creates exposure</p>
+                        </div>
+                      </div>
+                      <span className="text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-full">
+                        {defensePressure.length} Exposure Points
+                      </span>
+                    </div>
+
+                    <div className="space-y-3.5">
+                      {defensePressure.map((pressure: any) => (
+                        <div 
+                          key={pressure.id}
+                          className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/40 hover:bg-white hover:border-rose-300 hover:shadow-sm transition-all"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-start gap-2.5">
+                              <span className="w-5 h-5 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                                !
+                              </span>
+                              <div>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <h5 className="text-sm font-bold text-slate-900">{pressure.title}</h5>
+                                  <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200">
+                                    {pressure.riskLevel || 'High'} Risk
+                                  </span>
+                                </div>
+                                <p className="text-xs text-slate-600 mt-1 leading-relaxed">{pressure.detail}</p>
+                              </div>
+                            </div>
+                            <span className="text-[11px] font-bold px-2.5 py-1 rounded-md shrink-0 bg-rose-50 text-rose-800 border border-rose-200">
+                              {pressure.impact || pressure.carrierDiscount || 'Moderate Negative'}
+                            </span>
+                          </div>
+
+                          {/* Source Reference Link */}
+                          {pressure.citation && (
+                            <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
+                              <span className="text-slate-500 flex items-center gap-1 font-medium">
+                                <FileText className="w-3 h-3 text-rose-600" /> Source Reference:
+                              </span>
+                              <button
+                                onClick={(e) => handleSourceClick(e, pressure.pageNumber)}
+                                className="font-semibold text-rose-700 hover:text-rose-900 bg-rose-50 hover:bg-rose-100 px-2 py-0.5 rounded transition-colors flex items-center gap-1 cursor-pointer"
+                              >
+                                <span>{pressure.citation}</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 p-3 bg-rose-50/60 rounded-xl border border-rose-100 flex items-center gap-2 text-xs text-rose-900 font-medium">
+                    <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                    <span>Deploying the AI Legal Rebuttals prevents adjusters from taking unwarranted alternative-causation discounts.</span>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Section C: Anticipated Carrier Arguments */}
+              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <div className="flex items-center gap-2.5 mb-4 border-b border-slate-100 pb-3">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700">
+                    <Scale className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-base font-bold text-slate-900">Anticipated Carrier Arguments</h4>
+                    <p className="text-xs text-slate-500">What the defense and insurance carrier are likely to argue</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {defensePressure.map((dp: any) => (
+                    <div key={dp.id} className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-bold text-slate-800">{dp.title}</span>
+                          <span className="text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded">
+                            Defense Objection
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-700 leading-relaxed italic mb-3">
+                          "{dp.carrierArgument || dp.detail}"
+                        </p>
+                      </div>
+
+                      <div className="pt-2 border-t border-slate-200/60 bg-white -mx-4 -mb-4 p-3 rounded-b-xl">
+                        <span className="text-[10px] uppercase font-bold text-teal-800 block mb-1 flex items-center gap-1">
+                          <Shield className="w-3 h-3 text-teal-600" /> AI Counter-Rebuttal
+                        </span>
+                        <p className="text-xs text-slate-600 leading-relaxed">
+                          {dp.rebuttal}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Section D: Negotiation Strategy */}
+              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <div className="flex items-center gap-2.5 mb-5 border-b border-slate-100 pb-3">
+                  <div className="w-8 h-8 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-700">
+                    <Target className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-base font-bold text-slate-900">Negotiation Strategy Playbook</h4>
+                    <p className="text-xs text-slate-500">Tactical guidance on what to emphasize, what to avoid, and how to counter</p>
+                  </div>
+                </div>
+
+                {/* Master Strategic Directive Box */}
+                <div className="bg-gradient-to-r from-teal-50 via-indigo-50 to-slate-50 border-2 border-teal-200/80 rounded-2xl p-5 mb-6 shadow-sm">
+                  <span className="text-xs font-bold uppercase tracking-wider text-teal-900 block mb-1">
+                    Master Negotiation Directive
+                  </span>
+                  <p className="text-sm md:text-[15px] font-semibold text-slate-800 leading-relaxed">
+                    "{strategy.headline || "Do not lead heavily with the MRI alone because degenerative findings give the carrier an alternative-causation argument. Emphasize symptom onset, treatment consistency after the gap, injections and functional limitations."}"
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  {/* Column 1: What to Emphasize */}
+                  <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/40 flex flex-col">
+                    <div className="flex items-center gap-2 mb-3 text-emerald-900 font-bold text-xs uppercase tracking-wider">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>What to Emphasize</span>
+                    </div>
+                    <ul className="space-y-2.5 text-xs text-slate-700 leading-relaxed flex-1">
+                      {(strategy.whatToEmphasize || [
+                        "Consistent treatment and strict compliance following the initial 17-day period.",
+                        "Documented functional limitations: inability to lift overhead, perform occupational tasks, or sleep uninterrupted.",
+                        "Invasive interventional procedures: cervical epidural steroid injections and surgical recommendations.",
+                        "Unimpeached liability: commercial vehicle striking a stationary car at a red light."
+                      ]).map((item: string, i: number) => (
+                        <li key={i} className="flex items-start gap-2 bg-white/80 p-2.5 rounded-lg border border-emerald-100">
+                          <span className="text-emerald-600 font-bold mt-0.5">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Column 2: What NOT to Lead With */}
+                  <div className="p-4 rounded-xl border border-amber-200 bg-amber-50/40 flex flex-col">
+                    <div className="flex items-center gap-2 mb-3 text-amber-900 font-bold text-xs uppercase tracking-wider">
+                      <XCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                      <span>What NOT to Lead With</span>
+                    </div>
+                    <ul className="space-y-2.5 text-xs text-slate-700 leading-relaxed flex-1">
+                      {(strategy.whatNotToLeadWith || [
+                        "Do not lead primarily with isolated MRI radiologist notes regarding spondylosis without immediately pairing with the Eggshell Plaintiff causation brief.",
+                        "Avoid opening debates regarding vehicle bumper repair costs; pivot directly to occupant kinetic transfer physics."
+                      ]).map((item: string, i: number) => (
+                        <li key={i} className="flex items-start gap-2 bg-white/80 p-2.5 rounded-lg border border-amber-100">
+                          <span className="text-amber-600 font-bold mt-0.5">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Column 3: How to Respond to Defense Arguments */}
+                  <div className="p-4 rounded-xl border border-indigo-200 bg-indigo-50/40 flex flex-col">
+                    <div className="flex items-center gap-2 mb-3 text-indigo-900 font-bold text-xs uppercase tracking-wider">
+                      <Shield className="w-4 h-4 text-indigo-600 shrink-0" />
+                      <span>How to Respond to Carrier</span>
+                    </div>
+                    <ul className="space-y-2.5 text-xs text-slate-700 leading-relaxed flex-1">
+                      {(strategy.howToRespondToDefense || [
+                        "Counter the 17-day treatment gap by presenting the initial ER discharge instructions and treating physician onset timeline.",
+                        "Counter pre-existing degeneration with proof of zero pre-collision cervical treatment across 8 years of primary care records.",
+                        "Neutralize low property damage arguments using biomechanical bumper isolator elasticity mechanics."
+                      ]).map((item: string, i: number) => (
+                        <li key={i} className="flex items-start gap-2 bg-white/80 p-2.5 rounded-lg border border-indigo-100">
+                          <span className="text-indigo-600 font-bold mt-0.5">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          )}
+
+          {/* 4. STRUCTURED BREAKDOWN */}
           {perspective === 'Structured' && doc?.summarySections && (
             <div className="flex flex-col gap-4">
               {doc.summarySections.map((section: any) => (
@@ -344,76 +808,6 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                   </div>
                 </div>
               ))}
-            </div>
-          )}
-
-          {perspective === 'Plaintiff Narrative' && doc?.plaintiffNarrative && (
-            <div className="group relative bg-white border border-slate-200 rounded-xl p-5 shadow-sm animate-in fade-in duration-300">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-[12px] font-bold text-slate-700 uppercase tracking-widest m-0">Plaintiff narrative</h3>
-                {editingSection !== 'plaintiff' ? (
-                  <button
-                    onClick={() => handleEditClick('plaintiff', doc.plaintiffNarrative)}
-                    className="text-teal-600 hover:text-teal-700 text-[13px] font-medium transition-colors"
-                  >
-                    Edit
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleSaveClick('plaintiff')}
-                    className="text-teal-600 hover:text-teal-700 text-[13px] font-medium transition-colors"
-                  >
-                    Done
-                  </button>
-                )}
-              </div>
-
-              {editingSection === 'plaintiff' ? (
-                <textarea
-                  value={editContent}
-                  onChange={(e) => setEditContent(e.target.value)}
-                  className="w-full min-h-[120px] p-4 bg-white border-2 border-teal-500 rounded-xl outline-none focus:ring-0 text-slate-800 resize-y leading-relaxed text-[14px] shadow-inner"
-                />
-              ) : (
-                <div className="text-slate-700 text-[14px] leading-relaxed">
-                  <AnnotatedText text={doc.plaintiffNarrative} />
-                </div>
-              )}
-            </div>
-          )}
-
-          {perspective === 'Defense Narrative' && doc?.defenseNarrative && (
-            <div className="group relative bg-white border border-slate-200 rounded-xl p-5 shadow-sm animate-in fade-in duration-300">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-[12px] font-bold text-slate-700 uppercase tracking-widest m-0">Defense narrative (anticipated counterarguments)</h3>
-                {editingSection !== 'defense' ? (
-                  <button
-                    onClick={() => handleEditClick('defense', doc.defenseNarrative)}
-                    className="text-teal-600 hover:text-teal-700 text-[13px] font-medium transition-colors"
-                  >
-                    Edit
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleSaveClick('defense')}
-                    className="text-teal-600 hover:text-teal-700 text-[13px] font-medium transition-colors"
-                  >
-                    Done
-                  </button>
-                )}
-              </div>
-
-              {editingSection === 'defense' ? (
-                <textarea
-                  value={editContent}
-                  onChange={(e) => setEditContent(e.target.value)}
-                  className="w-full min-h-[120px] p-4 bg-white border-2 border-teal-500 rounded-xl outline-none focus:ring-0 text-slate-800 resize-y leading-relaxed text-[14px] shadow-inner"
-                />
-              ) : (
-                <div className="text-slate-700 text-[14px] leading-relaxed">
-                  <AnnotatedText text={doc.defenseNarrative} />
-                </div>
-              )}
             </div>
           )}
 
