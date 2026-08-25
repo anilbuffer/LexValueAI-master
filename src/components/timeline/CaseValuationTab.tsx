@@ -242,6 +242,13 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
 
           <div className="shrink-0 flex items-center gap-2.5 flex-wrap">
             <button
+              onClick={() => router.push(`${pathname}?tab=negotiation`)}
+              className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200/80 shadow-sm transition-all cursor-pointer"
+            >
+              <Handshake className="w-3.5 h-3.5 text-teal-700" />
+              <span>Negotiation Tracker</span>
+            </button>
+            <button
               onClick={() => setShowOutcomeDrawer(!showOutcomeDrawer)}
               className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200/80 shadow-sm transition-all cursor-pointer"
             >

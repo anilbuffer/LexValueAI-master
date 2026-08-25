@@ -117,16 +117,16 @@ export function TimelineTabs({ caseData }: { caseData: any }) {
         </button>
 
         <button
-          onClick={() => setActiveTab('valuation')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[14px] font-semibold transition-all whitespace-nowrap cursor-pointer border ${activeTab === 'valuation' || activeTab === 'negotiation'
+          onClick={() => setActiveTab('negotiation')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[14px] font-semibold transition-all whitespace-nowrap cursor-pointer border ${activeTab === 'negotiation'
             ? 'bg-teal-900 text-white border-teal-900 shadow-md'
             : 'bg-white text-slate-500 border-slate-200/50 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800 shadow-sm'
             }`}
         >
-          <div className={`${activeTab === 'valuation' || activeTab === 'negotiation' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'} p-1 rounded-md transition-colors`}>
-            <Sparkles className="w-4 h-4" />
+          <div className={`${activeTab === 'negotiation' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'} p-1 rounded-md transition-colors`}>
+            <Handshake className="w-4 h-4" />
           </div>
-          Settlement & Negotiation Analysis
+          Negotiations
         </button>
 
         <button
@@ -167,6 +167,19 @@ export function TimelineTabs({ caseData }: { caseData: any }) {
           </div>
           Deposition Outline
         </button>
+
+        <button
+          onClick={() => setActiveTab('valuation')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[14px] font-semibold transition-all whitespace-nowrap cursor-pointer border ${activeTab === 'valuation'
+            ? 'bg-teal-900 text-white border-teal-900 shadow-md'
+            : 'bg-white text-slate-500 border-slate-200/50 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800 shadow-sm'
+            }`}
+        >
+          <div className={`${activeTab === 'valuation' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'} p-1 rounded-md transition-colors`}>
+            <Sparkles className="w-4 h-4" />
+          </div>
+          Settlement Intelligence
+        </button>
       </div>
 
       <div className="flex flex-col xl:flex-row gap-[15px]">
@@ -177,7 +190,8 @@ export function TimelineTabs({ caseData }: { caseData: any }) {
           {activeTab === 'summary' && <SummaryTab caseData={caseData} />}
           {activeTab === 'gaps' && <GapsTab caseData={caseData} role={role} />}
           {activeTab === 'bills' && <MedicalBillsTab caseData={caseData} />}
-          {(activeTab === 'valuation' || activeTab === 'negotiation') && <CaseValuationTab caseData={caseData} />}
+          {activeTab === 'valuation' && <CaseValuationTab caseData={caseData} />}
+          {activeTab === 'negotiation' && <NegotiationTab caseData={caseData} />}
           {activeTab === 'documents' && <CaseDocumentsTab caseData={caseData} />}
           {activeTab === 'demand_letter' && <DemandLetterTab caseData={caseData} role={role} />}
           {activeTab === 'deposition_outline' && <DepositionOutlineTab caseData={caseData} />}

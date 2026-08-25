@@ -187,36 +187,77 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
     <div className="flex flex-col h-full animate-in fade-in slide-in-from-bottom-2 duration-500 font-sans">
 
       {/* Top Header */}
-      <div className="bg-slate-50/90 p-5 md:p-6 border-b border-slate-200 shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="bg-teal-900 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 shadow-sm">
-              <Handshake className="w-3 h-3 text-teal-300" /> 6. Negotiations
-            </span>
-            <span className="bg-teal-50 text-teal-800 border border-teal-200 text-[11px] font-bold px-2 py-0.5 rounded-full">
-              Round {Math.max(1, Math.ceil(negotiationLogs.length / 2))} Active
-            </span>
+      <div className="bg-slate-50/90 p-5 md:p-6 border-b border-slate-200 shrink-0 flex flex-col gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+              <span className="bg-teal-900 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                <Handshake className="w-3 h-3 text-teal-300" /> Negotiations Tab
+              </span>
+              <span className="bg-teal-50 text-teal-800 border border-teal-200 text-[11px] font-bold px-2 py-0.5 rounded-full">
+                Round {Math.max(1, Math.ceil(negotiationLogs.length / 2))} Active
+              </span>
+            </div>
+            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+              Negotiation & Offer Progression
+            </h2>
+            <p className="text-xs text-slate-500 mt-1 max-w-3xl leading-relaxed">
+              Multi-round offer tracking, statistical bracket analysis, and an AI Negotiation Assistant powered by your case records and carrier claim models.
+            </p>
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
-            Negotiation & Offer Progression
-          </h2>
-          <p className="text-xs text-slate-500 mt-1 max-w-3xl leading-relaxed">
-            Multi-round offer tracking, statistical bracket analysis, and an AI Negotiation Assistant powered by your case records and carrier claim models.
-          </p>
+
+          <div className="shrink-0 flex items-center gap-2.5 flex-wrap">
+            <button
+              onClick={() => router.push(`${pathname}?tab=valuation`)}
+              className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200/80 shadow-sm transition-all cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-teal-700" />
+              <span>Settlement Intelligence</span>
+            </button>
+          </div>
         </div>
 
-        <div className="shrink-0 flex items-center gap-2.5 flex-wrap">
-          <button
-            onClick={() => router.push(`${pathname}?tab=valuation`)}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200/80 shadow-sm transition-all cursor-pointer"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-teal-700" />
-            <span>Settlement Intelligence</span>
-          </button>
+        {/* Structured Flow Tree Breadcrumb Banner */}
+        <div className="bg-white border border-slate-200/90 rounded-xl p-3 shadow-2xs">
+          <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+            <Handshake className="w-3.5 h-3.5 text-teal-700" />
+            <span>Negotiations Architecture:</span>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-xs text-slate-700 overflow-x-auto no-scrollbar py-0.5 font-mono">
+            <span className="font-extrabold font-sans text-teal-950 px-2.5 py-1 bg-teal-50 rounded-lg border border-teal-200 shrink-0 flex items-center gap-1.5">
+              <Handshake className="w-3.5 h-3.5 text-teal-700" />
+              Negotiations
+            </span>
+            <span className="text-slate-400 font-bold">│&nbsp;&nbsp;├──</span>
+            
+            <button
+              onClick={() => setActiveView('tracker')}
+              className={`px-3 py-1 font-sans rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                activeView === 'tracker' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
+              }`}
+            >
+              <Sliders className="w-3.5 h-3.5" /> Negotiation Tracker
+            </button>
+
+            <span className="text-slate-400 font-bold">└──</span>
+
+            <button
+              onClick={() => setActiveView('assistant')}
+              className={`px-3 py-1 font-sans rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                activeView === 'assistant' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
+              }`}
+            >
+              <Bot className="w-3.5 h-3.5 text-teal-400" /> AI Negotiation Assistant / Chat
+              <span className={`text-[10px] px-1.5 py-0.2 rounded font-extrabold ${activeView === 'assistant' ? 'bg-teal-800 text-teal-200' : 'bg-teal-50 text-teal-700 border border-teal-200'}`}>
+                Live
+              </span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Sub-Navigation Switcher between Negotiation Tracker and AI Negotiation Assistant */}
+      {/* Sub-Navigation Switcher */}
       <div className="bg-white border-b border-slate-200 px-5 md:px-8 py-2.5 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0">
         <button
           onClick={() => setActiveView('tracker')}
@@ -225,7 +266,7 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
             : 'bg-slate-100/80 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900'
             }`}
         >
-          <Handshake className="w-4 h-4" />
+          <Sliders className="w-4 h-4" />
           <span>Negotiation Tracker</span>
         </button>
 

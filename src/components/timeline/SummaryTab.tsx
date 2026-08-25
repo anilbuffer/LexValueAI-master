@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { Calendar, User, Activity, FileText, Info, ExternalLink, TrendingUp, TrendingDown, Shield, Target, AlertTriangle, CheckCircle2, XCircle, ArrowRight, Sparkles, Scale, BookOpen } from 'lucide-react'
+import { Calendar, User, Activity, FileText, Info, ExternalLink, TrendingUp, TrendingDown, Shield, Target, AlertTriangle, CheckCircle2, XCircle, ArrowRight, Sparkles, Scale, BookOpen, Cpu } from 'lucide-react'
 import { updateMockDocument, getMockCaseValuations } from '@/lib/mock-data'
 import { useRouter, usePathname } from 'next/navigation'
 
 type NarrativePerspective = 'Plaintiff Narrative' | 'Defense Narrative' | 'Settlement & Negotiation Analysis' | 'Structured'
+type SettlementSection = 'all' | 'analysis' | 'drivers' | 'defense' | 'carrier' | 'strategy'
 
 export function SummaryTab({ caseData }: { caseData?: any }) {
   const [perspective, setPerspective] = useState<NarrativePerspective>('Plaintiff Narrative')
+  const [settlementSection, setSettlementSection] = useState<SettlementSection>('all')
   const [editingSection, setEditingSection] = useState<string | null>(null)
   const [editContent, setEditContent] = useState("")
   const [valuations, setValuations] = useState<any[]>([])
@@ -454,7 +456,7 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <span className="bg-teal-500/20 text-teal-300 text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 border border-teal-500/30">
-                        <Sparkles className="w-3 h-3 text-teal-400" /> Settlement & Negotiation Intelligence
+                        <Sparkles className="w-3 h-3 text-teal-400" /> Settlement Intelligence
                       </span>
                     </div>
                     <h3 className="text-xl font-bold text-white tracking-tight">
@@ -465,61 +467,200 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                     </p>
                   </div>
 
-                  <div className="shrink-0 flex items-center gap-2">
+                  <div className="shrink-0 flex items-center gap-2.5 flex-wrap">
                     <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-teal-500/20 border border-teal-400/40 text-teal-300">
                       Overall Standing: Strong Favorable
                     </span>
+                    <button
+                      onClick={() => router.push(`${pathname}?tab=valuation`)}
+                      className="text-xs font-bold text-teal-900 hover:text-slate-900 bg-teal-300 hover:bg-teal-200 px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                    >
+                      <span>Full Negotiation Center</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
               </div>
 
-              {/* 4 Metric Cards including Estimated Settlement Range */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-                  <span className="text-[10px] uppercase font-bold text-teal-700 tracking-wider block mb-1">
-                    Estimated Settlement Range
-                  </span>
-                  <div className="text-xl font-extrabold text-teal-950">
-                    $85,000 – $120,000
+              {/* Structured Flow Breadcrumb Banner (Tree Hierarchy Visualization) */}
+              <div className="bg-slate-50 border border-slate-200/90 rounded-xl p-3.5 shadow-2xs">
+                <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+                  <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                    <Sparkles className="w-3.5 h-3.5 text-teal-700" />
+                    <span>Settlement Intelligence Flow Architecture:</span>
                   </div>
-                  <p className="text-[11px] text-slate-500 mt-1">Target plaintiff recovery corridor</p>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setSettlementSection('all')}
+                      className={`text-xs font-semibold px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${
+                        settlementSection === 'all'
+                          ? 'bg-teal-900 text-white font-bold'
+                          : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                      }`}
+                    >
+                      Show All (Complete Flow)
+                    </button>
+                  </div>
                 </div>
 
-                <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-                  <span className="text-[10px] uppercase font-bold text-rose-600 tracking-wider block mb-1">
-                    Likely Carrier Position
-                  </span>
-                  <div className="text-xl font-extrabold text-rose-950">
-                    $45,000 – $65,000
-                  </div>
-                  <p className="text-[11px] text-slate-500 mt-1">Simulated adjuster authority cap</p>
-                </div>
+                <div className="flex items-center gap-1.5 text-xs text-slate-700 overflow-x-auto no-scrollbar py-0.5">
+                  <button
+                    onClick={() => setSettlementSection('all')}
+                    className={`font-extrabold px-2.5 py-1 rounded-lg transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                      settlementSection === 'all'
+                        ? 'bg-teal-900 text-white shadow-xs'
+                        : 'bg-teal-50 hover:bg-teal-100 text-teal-950 border border-teal-200'
+                    }`}
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    Settlement Intelligence
+                  </button>
+                  <span className="text-slate-300 font-bold">└──</span>
+                  
+                  <button
+                    onClick={() => setSettlementSection('analysis')}
+                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
+                      settlementSection === 'analysis' ? 'bg-teal-900 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                    }`}
+                  >
+                    <Scale className="w-3 h-3 text-teal-600" /> Settlement Analysis
+                  </button>
 
-                <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-                  <span className="text-[10px] uppercase font-bold text-indigo-600 tracking-wider block mb-1">
-                    Recommended Demand
-                  </span>
-                  <div className="text-xl font-extrabold text-indigo-950">
-                    $175,000
-                  </div>
-                  <p className="text-[11px] text-slate-500 mt-1">Strategic initial anchor</p>
-                </div>
+                  <span className="text-slate-300 font-bold">└──</span>
 
-                <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-                  <span className="text-[10px] uppercase font-bold text-slate-700 tracking-wider block mb-1">
-                    Confirmed Specials
-                  </span>
-                  <div className="text-xl font-extrabold text-slate-900">
-                    $31,400
-                  </div>
-                  <p className="text-[11px] text-slate-500 mt-1">Medicals ($27.2k) + Wages ($4.2k)</p>
+                  <button
+                    onClick={() => setSettlementSection('drivers')}
+                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
+                      settlementSection === 'drivers' ? 'bg-teal-900 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                    }`}
+                  >
+                    <TrendingUp className="w-3 h-3 text-emerald-600" /> Value Drivers ({valueDrivers.length})
+                  </button>
+
+                  <span className="text-slate-300 font-bold">└──</span>
+
+                  <button
+                    onClick={() => setSettlementSection('defense')}
+                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
+                      settlementSection === 'defense' ? 'bg-teal-900 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                    }`}
+                  >
+                    <TrendingDown className="w-3 h-3 text-rose-600" /> Defense Pressure ({defensePressure.length})
+                  </button>
+
+                  <span className="text-slate-300 font-bold">└──</span>
+
+                  <button
+                    onClick={() => setSettlementSection('carrier')}
+                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
+                      settlementSection === 'carrier' ? 'bg-teal-900 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                    }`}
+                  >
+                    <Cpu className="w-3 h-3 text-indigo-600" /> Carrier Position
+                  </button>
+
+                  <span className="text-slate-300 font-bold">└──</span>
+
+                  <button
+                    onClick={() => setSettlementSection('strategy')}
+                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
+                      settlementSection === 'strategy' ? 'bg-teal-900 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                    }`}
+                  >
+                    <Target className="w-3 h-3 text-teal-600" /> Negotiation Strategy
+                  </button>
                 </div>
               </div>
 
-              {/* Grid: Value Drivers vs Defense Pressure */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* SECTION 1: SETTLEMENT ANALYSIS */}
+              {(settlementSection === 'all' || settlementSection === 'analysis') && (
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-5">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-teal-100 text-teal-900">
+                        Settlement Intelligence └── Settlement Analysis
+                      </span>
+                    </div>
+                    <span className="text-xs font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200">
+                      Target Corridor: $85,000 – $120,000
+                    </span>
+                  </div>
 
-                {/* Section A: Value Drivers */}
+                  {/* 4 Metric Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="bg-slate-50/70 border border-teal-200/80 rounded-xl p-4 shadow-2xs">
+                      <span className="text-[10px] uppercase font-bold text-teal-700 tracking-wider block mb-1">
+                        Estimated Settlement Range
+                      </span>
+                      <div className="text-xl font-extrabold text-teal-950">
+                        $85,000 – $120,000
+                      </div>
+                      <p className="text-[11px] text-slate-500 mt-1">Target plaintiff recovery corridor</p>
+                    </div>
+
+                    <div className="bg-slate-50/70 border border-rose-200/80 rounded-xl p-4 shadow-2xs">
+                      <span className="text-[10px] uppercase font-bold text-rose-600 tracking-wider block mb-1">
+                        Likely Carrier Position
+                      </span>
+                      <div className="text-xl font-extrabold text-rose-950">
+                        $45,000 – $65,000
+                      </div>
+                      <p className="text-[11px] text-slate-500 mt-1">Simulated adjuster authority cap</p>
+                    </div>
+
+                    <div className="bg-slate-50/70 border border-indigo-200/80 rounded-xl p-4 shadow-2xs">
+                      <span className="text-[10px] uppercase font-bold text-indigo-600 tracking-wider block mb-1">
+                        Recommended Demand
+                      </span>
+                      <div className="text-xl font-extrabold text-indigo-950">
+                        $175,000
+                      </div>
+                      <p className="text-[11px] text-slate-500 mt-1">Strategic initial anchor</p>
+                    </div>
+
+                    <div className="bg-slate-50/70 border border-slate-200 rounded-xl p-4 shadow-2xs">
+                      <span className="text-[10px] uppercase font-bold text-slate-700 tracking-wider block mb-1">
+                        Confirmed Specials
+                      </span>
+                      <div className="text-xl font-extrabold text-slate-900">
+                        $31,400
+                      </div>
+                      <p className="text-[11px] text-slate-500 mt-1">Medicals ($27.2k) + Wages ($4.2k)</p>
+                    </div>
+                  </div>
+
+                  {/* Directional Leverage Spectrum Bar */}
+                  <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-200">
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-700 mb-2">
+                      <span className="flex items-center gap-1.5">
+                        <Scale className="w-3.5 h-3.5 text-teal-700" /> Directional Leverage Balance
+                      </span>
+                      <span className="text-teal-800 font-bold bg-teal-50 px-2 py-0.5 rounded border border-teal-200 text-[11px]">
+                        Net Direction: Strong Positive Value
+                      </span>
+                    </div>
+
+                    <div className="h-3.5 bg-slate-100 rounded-full overflow-hidden flex relative shadow-inner">
+                      <div className="w-[15%] bg-rose-400 opacity-80 h-full" title="Defense Resistant"></div>
+                      <div className="w-[15%] bg-amber-300 h-full" title="Moderate Disputed"></div>
+                      <div className="w-[45%] bg-gradient-to-r from-teal-500 to-emerald-500 h-full relative" title="Strong Favorable (Current Posture)">
+                        <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                      </div>
+                      <div className="w-[25%] bg-indigo-600 opacity-90 h-full" title="Dominant Surgical Leverage"></div>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-center text-[11px] mt-2.5 text-slate-500">
+                      <div className="text-left font-medium">15% Defense Exposure</div>
+                      <div className="text-left md:text-center font-medium">15% Disputed Causation</div>
+                      <div className="text-right md:text-center font-bold text-teal-900">45% High Recovery Corridor</div>
+                      <div className="text-right font-medium">25% Policy Limit Pressure</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* SECTION 2: VALUE DRIVERS */}
+              {(settlementSection === 'all' || settlementSection === 'drivers') && (
                 <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
@@ -528,7 +669,12 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                           <TrendingUp className="w-4 h-4" />
                         </div>
                         <div>
-                          <h4 className="text-base font-bold text-slate-900">Value Drivers</h4>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-teal-100 text-teal-900">
+                              Settlement Intelligence └── Value Drivers
+                            </span>
+                          </div>
+                          <h4 className="text-base font-bold text-slate-900 mt-0.5">Value Drivers</h4>
                           <p className="text-xs text-slate-500">What strengthens the plaintiff's recovery</p>
                         </div>
                       </div>
@@ -537,38 +683,40 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                       </span>
                     </div>
 
-                    <div className="space-y-3.5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                       {valueDrivers.map((driver: any) => (
                         <div
                           key={driver.id}
-                          className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/40 hover:bg-white hover:border-teal-300 hover:shadow-sm transition-all"
+                          className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/40 hover:bg-white hover:border-teal-300 hover:shadow-sm transition-all flex flex-col justify-between"
                         >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex items-start gap-2.5">
-                              <span className="w-5 h-5 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
-                                ✓
-                              </span>
-                              <div>
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <h5 className="text-sm font-bold text-slate-900">{driver.title}</h5>
-                                  <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-200 text-slate-700">
-                                    {driver.category}
-                                  </span>
+                          <div>
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-start gap-2.5">
+                                <span className="w-5 h-5 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                                  ✓
+                                </span>
+                                <div>
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <h5 className="text-sm font-bold text-slate-900">{driver.title}</h5>
+                                    <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-200 text-slate-700">
+                                      {driver.category}
+                                    </span>
+                                  </div>
+                                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">{driver.detail}</p>
                                 </div>
-                                <p className="text-xs text-slate-600 mt-1 leading-relaxed">{driver.detail}</p>
                               </div>
+                              <span className={`text-[11px] font-bold px-2.5 py-1 rounded-md shrink-0 ${driver.impactLevel === 'High' || driver.impact?.includes('High')
+                                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold'
+                                  : 'bg-teal-50 text-teal-800 border border-teal-200'
+                                }`}>
+                                {driver.impact || 'High Positive'}
+                              </span>
                             </div>
-                            <span className={`text-[11px] font-bold px-2.5 py-1 rounded-md shrink-0 ${driver.impactLevel === 'High' || driver.impact?.includes('High')
-                                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold'
-                                : 'bg-teal-50 text-teal-800 border border-teal-200'
-                              }`}>
-                              {driver.impact || 'High Positive'}
-                            </span>
                           </div>
 
                           {/* Source Reference Link */}
                           {driver.citation && (
-                            <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
+                            <div className="mt-3 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
                               <span className="text-slate-500 flex items-center gap-1 font-medium">
                                 <FileText className="w-3 h-3 text-teal-600" /> Source Reference:
                               </span>
@@ -591,8 +739,10 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                     <span>Every positive value driver is supported by radiographic findings and itemized medical entries.</span>
                   </div>
                 </div>
+              )}
 
-                {/* Section B: Defense Pressure */}
+              {/* SECTION 3: DEFENSE PRESSURE */}
+              {(settlementSection === 'all' || settlementSection === 'defense') && (
                 <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
@@ -601,7 +751,12 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                           <TrendingDown className="w-4 h-4" />
                         </div>
                         <div>
-                          <h4 className="text-base font-bold text-slate-900">Defense Pressure</h4>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-rose-100 text-rose-900">
+                              Settlement Intelligence └── Defense Pressure
+                            </span>
+                          </div>
+                          <h4 className="text-base font-bold text-slate-900 mt-0.5">Defense Pressure</h4>
                           <p className="text-xs text-slate-500">What weakens the case or creates exposure</p>
                         </div>
                       </div>
@@ -610,35 +765,37 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                       </span>
                     </div>
 
-                    <div className="space-y-3.5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                       {defensePressure.map((pressure: any) => (
                         <div
                           key={pressure.id}
-                          className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/40 hover:bg-white hover:border-rose-300 hover:shadow-sm transition-all"
+                          className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/40 hover:bg-white hover:border-rose-300 hover:shadow-sm transition-all flex flex-col justify-between"
                         >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex items-start gap-2.5">
-                              <span className="w-5 h-5 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
-                                !
-                              </span>
-                              <div>
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <h5 className="text-sm font-bold text-slate-900">{pressure.title}</h5>
-                                  <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200">
-                                    {pressure.riskLevel || 'High'} Risk
-                                  </span>
+                          <div>
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-start gap-2.5">
+                                <span className="w-5 h-5 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                                  !
+                                </span>
+                                <div>
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <h5 className="text-sm font-bold text-slate-900">{pressure.title}</h5>
+                                    <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200">
+                                      {pressure.riskLevel || 'High'} Risk
+                                    </span>
+                                  </div>
+                                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">{pressure.detail}</p>
                                 </div>
-                                <p className="text-xs text-slate-600 mt-1 leading-relaxed">{pressure.detail}</p>
                               </div>
+                              <span className="text-[11px] font-bold px-2.5 py-1 rounded-md shrink-0 bg-rose-50 text-rose-800 border border-rose-200">
+                                {pressure.impact || pressure.carrierDiscount || 'Moderate Negative'}
+                              </span>
                             </div>
-                            <span className="text-[11px] font-bold px-2.5 py-1 rounded-md shrink-0 bg-rose-50 text-rose-800 border border-rose-200">
-                              {pressure.impact || pressure.carrierDiscount || 'Moderate Negative'}
-                            </span>
                           </div>
 
                           {/* Source Reference Link */}
                           {pressure.citation && (
-                            <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
+                            <div className="mt-3 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
                               <span className="text-slate-500 flex items-center gap-1 font-medium">
                                 <FileText className="w-3 h-3 text-rose-600" /> Source Reference:
                               </span>
@@ -661,134 +818,159 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                     <span>Deploying the AI Legal Rebuttals prevents adjusters from taking unwarranted alternative-causation discounts.</span>
                   </div>
                 </div>
+              )}
 
-              </div>
-
-              {/* Section C: Anticipated Carrier Arguments */}
-              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                <div className="flex items-center gap-2.5 mb-4 border-b border-slate-100 pb-3">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700">
-                    <Scale className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h4 className="text-base font-bold text-slate-900">Anticipated Carrier Arguments</h4>
-                    <p className="text-xs text-slate-500">What the defense and insurance carrier are likely to argue</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {defensePressure.map((dp: any) => (
-                    <div key={dp.id} className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col justify-between">
+              {/* SECTION 4: CARRIER POSITION */}
+              {(settlementSection === 'all' || settlementSection === 'carrier') && (
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700">
+                        <Cpu className="w-4 h-4" />
+                      </div>
                       <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-bold text-slate-800">{dp.title}</span>
-                          <span className="text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded">
-                            Defense Objection
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-indigo-100 text-indigo-900">
+                            Settlement Intelligence └── Carrier Position
                           </span>
                         </div>
-                        <p className="text-xs text-slate-700 leading-relaxed italic mb-3">
-                          "{dp.carrierArgument || dp.detail}"
-                        </p>
-                      </div>
-
-                      <div className="pt-2 border-t border-slate-200/60 bg-white -mx-4 -mb-4 p-3 rounded-b-xl">
-                        <span className="text-[10px] uppercase font-bold text-teal-800 block mb-1 flex items-center gap-1">
-                          <Shield className="w-3 h-3 text-teal-600" /> AI Counter-Rebuttal
-                        </span>
-                        <p className="text-xs text-slate-600 leading-relaxed">
-                          {dp.rebuttal}
-                        </p>
+                        <h4 className="text-base font-bold text-slate-900 mt-0.5">Carrier Position & Claims Model Analysis</h4>
+                        <p className="text-xs text-slate-500">Anticipated insurer objections, software algorithms, and AI legal counter-rebuttals</p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* Section D: Negotiation Strategy */}
-              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                <div className="flex items-center gap-2.5 mb-5 border-b border-slate-100 pb-3">
-                  <div className="w-8 h-8 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-700">
-                    <Target className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h4 className="text-base font-bold text-slate-900">Negotiation Strategy Playbook</h4>
-                    <p className="text-xs text-slate-500">Tactical guidance on what to emphasize, what to avoid, and how to counter</p>
-                  </div>
-                </div>
-
-                {/* Master Strategic Directive Box */}
-                <div className="bg-gradient-to-r from-teal-50 via-indigo-50 to-slate-50 border-2 border-teal-200/80 rounded-2xl p-5 mb-6 shadow-sm">
-                  <span className="text-xs font-bold uppercase tracking-wider text-teal-900 block mb-1">
-                    Master Negotiation Directive
-                  </span>
-                  <p className="text-sm md:text-[15px] font-semibold text-slate-800 leading-relaxed">
-                    "{strategy.headline || "Do not lead heavily with the MRI alone because degenerative findings give the carrier an alternative-causation argument. Emphasize symptom onset, treatment consistency after the gap, injections and functional limitations."}"
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                  {/* Column 1: What to Emphasize */}
-                  <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/40 flex flex-col">
-                    <div className="flex items-center gap-2 mb-3 text-emerald-900 font-bold text-xs uppercase tracking-wider">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                      <span>What to Emphasize</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-indigo-800 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-full flex items-center gap-1.5">
+                        <Cpu className="w-3.5 h-3.5 text-indigo-600" />
+                        Software: {carrierModel.softwarePredictedName || "Colossus / Guidewire ClaimCenter"}
+                      </span>
                     </div>
-                    <ul className="space-y-2.5 text-xs text-slate-700 leading-relaxed flex-1">
-                      {(strategy.whatToEmphasize || [
-                        "Consistent treatment and strict compliance following the initial 17-day period.",
-                        "Documented functional limitations: inability to lift overhead, perform occupational tasks, or sleep uninterrupted.",
-                        "Invasive interventional procedures: cervical epidural steroid injections and surgical recommendations.",
-                        "Unimpeached liability: commercial vehicle striking a stationary car at a red light."
-                      ]).map((item: string, i: number) => (
-                        <li key={i} className="flex items-start gap-2 bg-white/80 p-2.5 rounded-lg border border-emerald-100">
-                          <span className="text-emerald-600 font-bold mt-0.5">•</span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
                   </div>
 
-                  {/* Column 2: What NOT to Lead With */}
-                  <div className="p-4 rounded-xl border border-amber-200 bg-amber-50/40 flex flex-col">
-                    <div className="flex items-center gap-2 mb-3 text-amber-900 font-bold text-xs uppercase tracking-wider">
-                      <XCircle className="w-4 h-4 text-amber-600 shrink-0" />
-                      <span>What NOT to Lead With</span>
-                    </div>
-                    <ul className="space-y-2.5 text-xs text-slate-700 leading-relaxed flex-1">
-                      {(strategy.whatNotToLeadWith || [
-                        "Do not lead primarily with isolated MRI radiologist notes regarding spondylosis without immediately pairing with the Eggshell Plaintiff causation brief.",
-                        "Avoid opening debates regarding vehicle bumper repair costs; pivot directly to occupant kinetic transfer physics."
-                      ]).map((item: string, i: number) => (
-                        <li key={i} className="flex items-start gap-2 bg-white/80 p-2.5 rounded-lg border border-amber-100">
-                          <span className="text-amber-600 font-bold mt-0.5">•</span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  {/* Anticipated Carrier Arguments Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {defensePressure.map((dp: any) => (
+                      <div key={dp.id} className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-xs font-bold text-slate-800">{dp.title}</span>
+                            <span className="text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded">
+                              Carrier Objection
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-700 leading-relaxed italic mb-3">
+                            "{dp.carrierArgument || dp.detail}"
+                          </p>
+                        </div>
 
-                  {/* Column 3: How to Respond to Defense Arguments */}
-                  <div className="p-4 rounded-xl border border-indigo-200 bg-indigo-50/40 flex flex-col">
-                    <div className="flex items-center gap-2 mb-3 text-indigo-900 font-bold text-xs uppercase tracking-wider">
-                      <Shield className="w-4 h-4 text-indigo-600 shrink-0" />
-                      <span>How to Respond to Carrier</span>
-                    </div>
-                    <ul className="space-y-2.5 text-xs text-slate-700 leading-relaxed flex-1">
-                      {(strategy.howToRespondToDefense || [
-                        "Counter the 17-day treatment gap by presenting the initial ER discharge instructions and treating physician onset timeline.",
-                        "Counter pre-existing degeneration with proof of zero pre-collision cervical treatment across 8 years of primary care records.",
-                        "Neutralize low property damage arguments using biomechanical bumper isolator elasticity mechanics."
-                      ]).map((item: string, i: number) => (
-                        <li key={i} className="flex items-start gap-2 bg-white/80 p-2.5 rounded-lg border border-indigo-100">
-                          <span className="text-indigo-600 font-bold mt-0.5">•</span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
+                        <div className="pt-2.5 border-t border-slate-200/60 bg-white -mx-4 -mb-4 p-3.5 rounded-b-xl">
+                          <span className="text-[10px] uppercase font-bold text-teal-800 block mb-1 flex items-center gap-1">
+                            <Shield className="w-3.5 h-3.5 text-teal-600" /> AI Legal Counter-Rebuttal
+                          </span>
+                          <p className="text-xs text-slate-600 leading-relaxed">
+                            {dp.rebuttal}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
+              )}
 
-              </div>
+              {/* SECTION 5: NEGOTIATION STRATEGY */}
+              {(settlementSection === 'all' || settlementSection === 'strategy') && (
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-700">
+                        <Target className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-teal-100 text-teal-900">
+                            Settlement Intelligence └── Negotiation Strategy
+                          </span>
+                        </div>
+                        <h4 className="text-base font-bold text-slate-900 mt-0.5">Negotiation Strategy Playbook</h4>
+                        <p className="text-xs text-slate-500">Tactical guidance on what to emphasize, what to avoid, and how to counter</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Master Strategic Directive Box */}
+                  <div className="bg-gradient-to-r from-teal-50 via-indigo-50 to-slate-50 border-2 border-teal-200/80 rounded-2xl p-5 shadow-sm">
+                    <span className="text-xs font-bold uppercase tracking-wider text-teal-900 block mb-1">
+                      Master Negotiation Directive
+                    </span>
+                    <p className="text-sm md:text-[15px] font-semibold text-slate-800 leading-relaxed">
+                      "{strategy.headline || "Do not lead heavily with the MRI alone because degenerative findings give the carrier an alternative-causation argument. Emphasize symptom onset, treatment consistency after the gap, injections and functional limitations."}"
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    {/* Column 1: What to Emphasize */}
+                    <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/40 flex flex-col">
+                      <div className="flex items-center gap-2 mb-3 text-emerald-900 font-bold text-xs uppercase tracking-wider">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span>What to Emphasize</span>
+                      </div>
+                      <ul className="space-y-2.5 text-xs text-slate-700 leading-relaxed flex-1">
+                        {(strategy.whatToEmphasize || [
+                          "Consistent treatment and strict compliance following the initial 17-day period.",
+                          "Documented functional limitations: inability to lift overhead, perform occupational tasks, or sleep uninterrupted.",
+                          "Invasive interventional procedures: cervical epidural steroid injections and surgical recommendations.",
+                          "Unimpeached liability: commercial vehicle striking a stationary car at a red light."
+                        ]).map((item: string, i: number) => (
+                          <li key={i} className="flex items-start gap-2 bg-white/80 p-2.5 rounded-lg border border-emerald-100">
+                            <span className="text-emerald-600 font-bold mt-0.5">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Column 2: What NOT to Lead With */}
+                    <div className="p-4 rounded-xl border border-amber-200 bg-amber-50/40 flex flex-col">
+                      <div className="flex items-center gap-2 mb-3 text-amber-900 font-bold text-xs uppercase tracking-wider">
+                        <XCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                        <span>What NOT to Lead With</span>
+                      </div>
+                      <ul className="space-y-2.5 text-xs text-slate-700 leading-relaxed flex-1">
+                        {(strategy.whatNotToLeadWith || [
+                          "Do not lead primarily with isolated MRI radiologist notes regarding spondylosis without immediately pairing with the Eggshell Plaintiff causation brief.",
+                          "Avoid opening debates regarding vehicle bumper repair costs; pivot directly to occupant kinetic transfer physics."
+                        ]).map((item: string, i: number) => (
+                          <li key={i} className="flex items-start gap-2 bg-white/80 p-2.5 rounded-lg border border-amber-100">
+                            <span className="text-amber-600 font-bold mt-0.5">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Column 3: How to Respond to Defense Arguments */}
+                    <div className="p-4 rounded-xl border border-indigo-200 bg-indigo-50/40 flex flex-col">
+                      <div className="flex items-center gap-2 mb-3 text-indigo-900 font-bold text-xs uppercase tracking-wider">
+                        <Shield className="w-4 h-4 text-indigo-600 shrink-0" />
+                        <span>How to Respond to Carrier</span>
+                      </div>
+                      <ul className="space-y-2.5 text-xs text-slate-700 leading-relaxed flex-1">
+                        {(strategy.howToRespondToDefense || [
+                          "Counter the 17-day treatment gap by presenting the initial ER discharge instructions and treating physician onset timeline.",
+                          "Counter pre-existing degeneration with proof of zero pre-collision cervical treatment across 8 years of primary care records.",
+                          "Neutralize low property damage arguments using biomechanical bumper isolator elasticity mechanics."
+                        ]).map((item: string, i: number) => (
+                          <li key={i} className="flex items-start gap-2 bg-white/80 p-2.5 rounded-lg border border-indigo-100">
+                            <span className="text-indigo-600 font-bold mt-0.5">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                </div>
+              )}
 
             </div>
           )}
