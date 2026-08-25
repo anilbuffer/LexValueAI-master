@@ -14,8 +14,6 @@ import {
   User,
   Building2,
   DollarSign,
-  CheckCircle2,
-  Database,
   ExternalLink,
   Bot,
   Send,
@@ -31,9 +29,7 @@ import {
   getMockCaseValuations,
   getMockNegotiationLogs,
   getMockNegotiationChat,
-  createMockNegotiationChatMessage,
-  getMockSettlementOutcomes,
-  createMockSettlementOutcome
+  createMockNegotiationChatMessage
 } from '@/lib/mock-data'
 import { useRouter, usePathname } from 'next/navigation'
 
@@ -61,26 +57,12 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
   const [valuations, setValuations] = useState<any[]>([]);
   const [negotiationLogs, setNegotiationLogs] = useState<any[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [showOutcomeModal, setShowOutcomeModal] = useState(false);
 
   // Chat State
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [inputQuery, setInputQuery] = useState("");
   const [isAiThinking, setIsAiThinking] = useState(false);
   const chatBottomRef = useRef<HTMLDivElement>(null);
-
-  // Outcome Form
-  const [outcomeForm, setOutcomeForm] = useState({
-    openingDemand: '175000',
-    initialOffer: '32000',
-    finalSettlement: '95000',
-    medicalSpecials: '31400',
-    timeToSettleDays: '142',
-    carrierName: 'Travelers Commercial Insurance',
-    notes: 'Settled at pre-trial conference after serving eggshell plaintiff brief and causation affirmation.'
-  });
-  const [isSavingOutcome, setIsSavingOutcome] = useState(false);
-  const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
 
   useEffect(() => {
     if (firmId && caseId) {
@@ -114,44 +96,6 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
   const latestOffer = offers.length > 0 ? offers[offers.length - 1].amount : 58000;
   const currentSpread = latestDemand - latestOffer;
   const currentMidpoint = (latestDemand + latestOffer) / 2;
-
-  const handleSaveOutcome = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSavingOutcome(true);
-
-    const demandNum = parseFloat(outcomeForm.openingDemand) || 0;
-    const finalNum = parseFloat(outcomeForm.finalSettlement) || 0;
-    const specialsNum = parseFloat(outcomeForm.medicalSpecials) || 1;
-    const ratio = Number((finalNum / specialsNum).toFixed(2));
-
-    const newOutcome = {
-      id: `outcome-${Date.now()}`,
-      firmId,
-      caseId,
-      caseTitle: caseData?.title || "Espinoza v. Commercial Transport Inc.",
-      injuryType: "Cervical Disc Herniation (C5-C7)",
-      jurisdiction: "Kings County Supreme Court, NY",
-      carrierName: outcomeForm.carrierName,
-      openingDemand: demandNum,
-      initialCarrierOffer: parseFloat(outcomeForm.initialOffer) || 0,
-      carrierOffersCount: negotiationLogs.length + 1,
-      finalOffer: finalNum,
-      finalSettlement: finalNum,
-      medicalSpecials: specialsNum,
-      settlementRatio: ratio,
-      timeToSettleDays: parseInt(outcomeForm.timeToSettleDays) || 142,
-      closedDate: new Date(),
-      primaryValueDrivers: ["Confirmed C5-C7 disc herniation on MRI", "Fluoroscopic ESI procedures", "Unimpeached liability"],
-      primaryDefenseWeaknesses: ["17-day initial treatment gap", "Pre-existing degenerative spondylosis"],
-      notes: outcomeForm.notes
-    };
-
-    createMockSettlementOutcome(newOutcome);
-    setIsSavingOutcome(false);
-    setShowOutcomeModal(false);
-    setSaveSuccessMessage(true);
-    setTimeout(() => setSaveSuccessMessage(false), 4000);
-  };
 
   const handleSendChat = (queryText?: string) => {
     const q = (queryText || inputQuery).trim();
@@ -269,14 +213,6 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
             <Sparkles className="w-3.5 h-3.5 text-teal-700" />
             <span>Settlement Intelligence</span>
           </button>
-
-          <button
-            onClick={() => setShowOutcomeModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200/80 shadow-sm transition-all cursor-pointer"
-          >
-            <Database className="w-3.5 h-3.5 text-teal-700" />
-            <span>Log Final Settlement</span>
-          </button>
         </div>
       </div>
 
@@ -291,9 +227,6 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
         >
           <Handshake className="w-4 h-4" />
           <span>Negotiation Tracker</span>
-          <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${activeView === 'tracker' ? 'bg-teal-800 text-teal-200' : 'bg-slate-200 text-slate-700'}`}>
-            {negotiationLogs.length} Entries
-          </span>
         </button>
 
         <button
@@ -310,13 +243,6 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
           </span>
         </button>
       </div>
-
-      {saveSuccessMessage && (
-        <div className="bg-emerald-50 border-b border-emerald-200 p-3 px-6 text-xs text-emerald-800 font-semibold flex items-center gap-2 animate-in fade-in">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-          <span>Settlement outcome recorded! Data added to your firm's private outcome moat.</span>
-        </div>
-      )}
 
       {/* VIEW 1: NEGOTIATION TRACKER */}
       {activeView === 'tracker' && (
@@ -731,136 +657,7 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
         </div>
       )}
 
-      {/* MODAL: LOG CLOSED SETTLEMENT OUTCOME */}
-      {showOutcomeModal && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in">
-          <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col">
-            <div className="bg-slate-50 p-5 border-b border-slate-200 flex items-center justify-between">
-              <div>
-                <h3 className="text-base font-bold text-slate-900">Record Settlement Outcome</h3>
-                <p className="text-xs text-slate-500 mt-0.5">Captures final metrics to expand your firm's settlement intelligence dataset</p>
-              </div>
-              <button
-                onClick={() => setShowOutcomeModal(false)}
-                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleSaveOutcome} className="p-5 space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Opening Demand ($)</label>
-                  <input
-                    type="number"
-                    value={outcomeForm.openingDemand}
-                    onChange={(e) => setOutcomeForm({ ...outcomeForm, openingDemand: e.target.value })}
-                    required
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-teal-600"
-                    placeholder="e.g. 175000"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Initial Carrier Offer ($)</label>
-                  <input
-                    type="number"
-                    value={outcomeForm.initialOffer}
-                    onChange={(e) => setOutcomeForm({ ...outcomeForm, initialOffer: e.target.value })}
-                    required
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-teal-600"
-                    placeholder="e.g. 32000"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Final Settlement Amount ($)</label>
-                  <input
-                    type="number"
-                    value={outcomeForm.finalSettlement}
-                    onChange={(e) => setOutcomeForm({ ...outcomeForm, finalSettlement: e.target.value })}
-                    required
-                    className="w-full px-3 py-2 text-xs border border-teal-400 bg-teal-50/30 rounded-lg focus:outline-none focus:border-teal-600 font-bold text-teal-900"
-                    placeholder="e.g. 95000"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Total Medical Specials ($)</label>
-                  <input
-                    type="number"
-                    value={outcomeForm.medicalSpecials}
-                    onChange={(e) => setOutcomeForm({ ...outcomeForm, medicalSpecials: e.target.value })}
-                    required
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-teal-600"
-                    placeholder="e.g. 31400"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Days to Settle</label>
-                  <input
-                    type="number"
-                    value={outcomeForm.timeToSettleDays}
-                    onChange={(e) => setOutcomeForm({ ...outcomeForm, timeToSettleDays: e.target.value })}
-                    required
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-teal-600"
-                    placeholder="e.g. 142"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Insurance Carrier</label>
-                  <input
-                    type="text"
-                    value={outcomeForm.carrierName}
-                    onChange={(e) => setOutcomeForm({ ...outcomeForm, carrierName: e.target.value })}
-                    required
-                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-teal-600"
-                    placeholder="e.g. Travelers Commercial"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Attorney Settlement Strategy Notes</label>
-                <textarea
-                  rows={2}
-                  value={outcomeForm.notes}
-                  onChange={(e) => setOutcomeForm({ ...outcomeForm, notes: e.target.value })}
-                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-teal-600"
-                  placeholder="Key argument or evidence that broke the negotiation deadlock..."
-                />
-              </div>
-
-              <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-600 flex items-center gap-2">
-                <Database className="w-4 h-4 text-teal-700 shrink-0" />
-                <span>Isolated strictly to firmId: {firmId}. HIPAA compliant.</span>
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowOutcomeModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSavingOutcome}
-                  className="px-5 py-2 bg-teal-900 hover:bg-teal-800 text-white rounded-lg text-xs font-bold shadow-sm transition-colors cursor-pointer"
-                >
-                  {isSavingOutcome ? "Saving..." : "Save to Outcome Moat"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
     </div>
   )
 }
+
