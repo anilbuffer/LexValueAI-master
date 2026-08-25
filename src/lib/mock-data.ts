@@ -1363,3 +1363,23 @@ export const fulfillMockDocumentRequest = (id: string) => {
   return null;
 }
 export const createMockClientUploadedDocument = (doc: any) => { mockClientUploadedDocuments.unshift(doc); return doc; }
+
+export let mockNegotiationChatHistory = [
+  {
+    id: "neg-chat-1",
+    caseId: "case-1",
+    firmId: "firm-1",
+    sender: "ai",
+    content: "Welcome to your AI Negotiation Assistant. I have indexed this case's medical chronology, objective MRI findings, $31,400 economic specials, and Travelers' algorithmic discount patterns.\n\nHow would you like to proceed with Round 3 strategy? You can ask me to calculate bracket midpoints, draft a formal counter-demand letter, or craft a targeted legal rebuttal.",
+    createdAt: new Date("2026-08-18T16:15:00Z"),
+  }
+];
+
+export const getMockNegotiationChat = (firmId: string, caseId: string) =>
+  mockNegotiationChatHistory.filter((c: any) => c.firmId === firmId && c.caseId === caseId);
+
+export const createMockNegotiationChatMessage = (msg: any) => {
+  mockNegotiationChatHistory.push(msg);
+  return msg;
+};
+
