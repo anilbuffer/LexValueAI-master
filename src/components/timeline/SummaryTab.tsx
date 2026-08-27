@@ -52,12 +52,12 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
   const DEFAULT_CARRIER_POSITION_FACTORS = [
     {
       id: "cpf-1",
-      title: "Degenerative findings",
+      title: "Degenerative Findings",
       category: "Causation & Radiography",
       impactType: "negative",
       impactLabel: "Alternative Causation Offset",
-      carrierArgument: "Carrier asserts disc desiccation, facet arthropathy, and spondylosis on MRI are pre-existing degenerative changes, applying an automated 25%–35% alternative-causation discount.",
-      rebuttal: "The records support that Debra was asymptomatic with zero cervical limitations prior to impact. Under the Eggshell Plaintiff Doctrine (PJI 2:282), the tortfeasor is legally liable for precipitating acute symptoms on dormant degeneration.",
+      carrierArgument: "Adjuster argues that cervical MRI findings of disc desiccation, multilevel spondylosis, and facet arthropathy reflect pre-existing, age-related degeneration rather than acute trauma from the collision, attempting to apply an automated 25%–35% alternative-causation discount.",
+      rebuttal: "Plaintiff was fully asymptomatic with zero prior cervical limitations before the crash. Under the Eggshell Plaintiff Doctrine (PJI 2:282), the tortfeasor is legally liable for precipitating acute disc herniations and nerve impingement on dormant degenerative changes.",
       citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 85)",
       pageNumber: "85"
     },
@@ -67,41 +67,41 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
       category: "Medical History & Prior Claims",
       impactType: "positive",
       impactLabel: "Zero Prior Cervical History",
-      carrierArgument: "Adjuster flags prior 2017 medical visit for lower back muscular fatigue, attempting to claim chronic pre-existing musculoskeletal vulnerability.",
-      rebuttal: "The 2017 record documented an isolated lumbar strain that resolved in 10 days with zero follow-up; plaintiff has zero prior cervical complaints, treatment, or imaging on record.",
+      carrierArgument: "Adjuster raises a prior 2017 medical record noting lower back muscular strain, attempting to argue a pre-existing chronic spinal condition and prior physical complaints to diminish current claim value.",
+      rebuttal: "The 2017 record was an isolated lumbar muscular strain that resolved within 10 days; plaintiff has zero prior cervical complaints, treatment, physical therapy, or diagnostic imaging on record.",
       citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 22)",
       pageNumber: "22"
     },
     {
       id: "cpf-3",
-      title: "Treatment gaps",
+      title: "Treatment Gaps",
       category: "Treatment Continuity",
       impactType: "warning",
       impactLabel: "17-Day Delay Addressed",
-      carrierArgument: "Carrier algorithms penalize the 17-day gap between collision (06/08/2018) and initial orthopedic consultation (06/25/2018) as evidence of mild injury or intervening event.",
-      rebuttal: "Plaintiff followed ER discharge protocol for rest and conservative care; when radiating radicular pain intensified, she promptly sought specialist care. Seamless continuous treatment followed with zero intervening trauma.",
+      carrierArgument: "Adjuster and software algorithms use the 17-day period between collision (06/08/2018) and initial orthopedic evaluation (06/25/2018) to question treatment continuity and argue injuries were either minor or caused by an intervening event.",
+      rebuttal: "Plaintiff followed hospital ER discharge instructions for initial rest and conservative care; when severe radiating radicular symptoms failed to subside, specialist care was promptly initiated, followed by unbroken, continuous treatment with no intervening trauma.",
       citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15)",
       pageNumber: "15"
     },
     {
       id: "cpf-4",
-      title: "Conservative treatment",
+      title: "Conservative Treatment",
       category: "Care Modalities & Protocol",
       impactType: "positive",
       impactLabel: "Conservative Care Exhausted",
-      carrierArgument: "Carrier audits whether full conservative protocol (physical therapy, chiropractic, NSAIDs) was completed and exhausted before interventional escalation.",
-      rebuttal: "Plaintiff completed 24+ documented physical therapy sessions and 2 fluoroscopic cervical epidural steroid injections with only transient relief, establishing documented conservative treatment failure.",
+      carrierArgument: "Carrier evaluates treatment modalities and patient response, arguing that escalating to interventional procedures or surgery is unjustified if a full course of conservative care (physical therapy, chiropractic, NSAIDs) was not fully exhausted or showed improvement.",
+      rebuttal: "Plaintiff underwent 24+ documented physical therapy sessions and 2 fluoroscopic cervical epidural steroid injections with only transient relief, establishing documented conservative treatment failure and medical necessity for invasive intervention.",
       citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 48)",
       pageNumber: "48"
     },
     {
       id: "cpf-5",
-      title: "Minimal impact claims",
+      title: "Minimal Impact Claims",
       category: "Biomechanics & Property Damage",
       impactType: "warning",
       impactLabel: "Low Delta-V Cap Rebutted",
-      carrierArgument: "Adjuster applies low-impact algorithm guidelines (sub-$2,000 bumper repair) claiming low speed cannot produce structural disc injury.",
-      rebuttal: "Modern energy-absorbing bumper isolators prevent cosmetic crushing by transferring crash kinetic energy directly through the chassis to the occupant's cervical spine, accounting for acute annular tearing.",
+      carrierArgument: "Adjuster raises minimal vehicle damage ($1,850 bumper repair) under low-impact/minor impact soft-tissue guidelines, arguing that low delta-V collision forces are biomechanically insufficient to cause structural disc pathology.",
+      rebuttal: "Modern energy-absorbing bumper isolators prevent cosmetic crushing by transferring crash kinetic energy directly through the vehicle frame to the occupant's cervical spine, biomechanically causing acute annular tearing regardless of vehicle exterior damage.",
       citation: "Vehicle Repair Estimate & MV-104",
       pageNumber: "Photos"
     },
@@ -110,9 +110,9 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
       title: "Age",
       category: "Demographics & Actuarial",
       impactType: "positive",
-      impactLabel: "39.4 Yrs Life Expectancy",
-      carrierArgument: "Adjuster factors plaintiff's age (42) to argue age-related spinal wear while discounting long-term future pain and suffering multiplier calculations.",
-      rebuttal: "Age 42 represents ~39.4 years of remaining statistical life expectancy living with permanent radicular deficits and cervical impairment, significantly elevating lifetime non-economic damages.",
+      impactLabel: "39 Yrs Life Expectancy",
+      carrierArgument: "Adjuster uses plaintiff's age (42) to attribute spinal wear to natural aging while seeking to compress multiplier ranges and limit future pain and suffering damages calculations.",
+      rebuttal: "At age 42, plaintiff faces ~39 years of remaining statistical life expectancy living with permanent radiculopathy, cervical deficits, and chronic pain, significantly expanding lifetime non-economic general damages.",
       citation: "CDC Life Expectancy Tables (Age 42)",
       pageNumber: "Life-Table"
     },
@@ -122,19 +122,19 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
       category: "Jurisdiction & Jury Risk",
       impactType: "positive",
       impactLabel: "Kings County NY (High Carrier Risk)",
-      carrierArgument: "Carrier evaluates venue risk index and local verdict variance, attempting to enforce pre-suit settlement discounts prior to index filing in plaintiff-favorable forums.",
-      rebuttal: "Kings County (Brooklyn), NY is one of the highest-rated plaintiff-favorable venues nationally, with high jury verdict medians and NY statutory 9% pre-judgment interest creating substantial trial exposure.",
+      carrierArgument: "Carrier factors county venue risk and seeks an aggressive pre-suit discount before an index number is filed in this historically plaintiff-favorable New York jurisdiction.",
+      rebuttal: "Kings County (Brooklyn), NY is one of the highest-rated plaintiff-verdict forums in the nation; combined with New York's 9% statutory pre-judgment interest from verdict, carrier faces severe financial risk if the matter proceeds to trial.",
       citation: "Kings County Supreme Court Venue Index",
       pageNumber: "Court-NY"
     },
     {
       id: "cpf-8",
-      title: "Whether a surgery used anchors or was percutaneous",
+      title: "Surgical Hardware Distinction",
       category: "Surgical Severity Scoring",
       impactType: "positive",
       impactLabel: "Hardware & Anchor Tier (Max Points)",
-      carrierArgument: "Claims algorithms (Colossus) assign substantially lower point severity scores to percutaneous / needle / endoscopic decompression procedures compared to open surgeries utilizing hardware, fixation plates, or suture anchors.",
-      rebuttal: "Operative planning specifies open surgical decompression with rigid hardware fixation and anchors if interventional failure persists, placing the claim in the maximum surgical severity algorithmic point tier.",
+      carrierArgument: "Claims software (Colossus/Guidewire) assigns significantly lower severity point tiers to percutaneous / needle / endoscopic decompression procedures compared to open surgeries requiring rigid hardware instrumentation, fusion plates, or suture anchors.",
+      rebuttal: "Surgical recommendation specifies an open anterior cervical discectomy and fusion (ACDF) with rigid instrumentation and anchors upon conservative care failure, placing the claim in the maximum surgical severity algorithmic point tier.",
       citation: "Dr. Grossman Surgical Recommendation (Page 92)",
       pageNumber: "92"
     }
@@ -828,7 +828,7 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                             Settlement Intelligence └── Carrier Position
                           </span>
                         </div>
-                        <h4 className="text-base font-bold text-slate-900 mt-0.5">Carrier Position & Claims Model Analysis</h4>
+                        <h4 className="text-base font-bold text-slate-900 mt-0.5">Anticipated Carrier Position</h4>
                         <p className="text-xs text-slate-500">Anticipated insurer objections, software algorithms, and AI legal counter-rebuttals across core evaluation factors</p>
                       </div>
                     </div>
@@ -851,10 +851,10 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                               </span>
                             </div>
                             <span className={`text-[10px] font-bold px-2 py-0.5 rounded shrink-0 border ${factor.impactType === 'positive'
-                                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                                : factor.impactType === 'warning'
-                                  ? 'bg-amber-50 text-amber-800 border-amber-200'
-                                  : 'bg-rose-50 text-rose-800 border-rose-200'
+                              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                              : factor.impactType === 'warning'
+                                ? 'bg-amber-50 text-amber-800 border-amber-200'
+                                : 'bg-rose-50 text-rose-800 border-rose-200'
                               }`}>
                               {factor.impactLabel || 'Carrier Assessment'}
                             </span>

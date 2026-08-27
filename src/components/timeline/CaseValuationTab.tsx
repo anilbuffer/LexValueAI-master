@@ -728,7 +728,7 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
                 <div className="flex items-center gap-2">
                   <Cpu className="w-5 h-5 text-indigo-400" />
                   <h4 className="text-lg font-bold text-white tracking-tight">
-                    Carrier Position & Claims Model Analysis
+                    Anticipated Carrier Position
                   </h4>
                 </div>
                 <p className="text-xs text-slate-400 mt-0.5">
