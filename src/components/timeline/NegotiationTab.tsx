@@ -205,16 +205,6 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
               Multi-round offer tracking, statistical bracket analysis, and an AI Negotiation Assistant powered by your case records and carrier claim models.
             </p>
           </div>
-
-          <div className="shrink-0 flex items-center gap-2.5 flex-wrap">
-            <button
-              onClick={() => router.push(`${pathname}?tab=valuation`)}
-              className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200/80 shadow-sm transition-all cursor-pointer"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-teal-700" />
-              <span>Settlement Intelligence</span>
-            </button>
-          </div>
         </div>
 
         {/* Structured Flow Tree Breadcrumb Banner */}
@@ -518,13 +508,6 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
                     <Shield className="w-4 h-4 text-teal-700" />
                     <span>Quick Rebuttals</span>
                   </div>
-                  <button
-                    onClick={() => router.push(`${pathname}?tab=valuation`)}
-                    className="text-[11px] font-bold text-teal-700 hover:text-teal-900 cursor-pointer flex items-center gap-0.5"
-                  >
-                    <span>All 4 Parts</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </button>
                 </div>
 
                 <div className="space-y-2.5">

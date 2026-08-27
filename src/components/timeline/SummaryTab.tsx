@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import {
-  Calendar,
-  User,
-  Activity,
-  FileText,
-  Info,
-  ExternalLink,
   TrendingUp,
   TrendingDown,
   Shield,
@@ -15,7 +9,9 @@ import {
   ArrowRight,
   Sparkles,
   Cpu,
-  AlertTriangle
+  AlertTriangle,
+  FileText,
+  ExternalLink
 } from 'lucide-react'
 import { updateMockDocument, getMockCaseValuations } from '@/lib/mock-data'
 import { useRouter, usePathname } from 'next/navigation'
@@ -170,266 +166,12 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
     setEditingSection(null)
   }
 
-  // Define annotations
-  const annotations = [
-    {
-      term: "Anterior Cervical Discectomy and Fusion (ACDF) C5-C6 and C6-C7",
-      date: "Oct 15, 2018",
-      provider: "Dr. David Grossman",
-      symptoms: "Severe cervical spondylosis with radiculopathy at C5-C7.",
-      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf",
-      details: "Surgeon: Dr. David Grossman. Operative Report: ACDF C5-C7 with anterior plating and allograft.",
-      eventId: "event-8"
-    },
-    {
-      term: "Right shoulder arthroscopy with extensive debridement and SLAP repair",
-      date: "Nov 12, 2018",
-      provider: "Dr. Christopher Cline",
-      symptoms: "SLAP tear right shoulder.",
-      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf",
-      details: "Surgeon: Dr. Christopher Cline. Extensive debridement and SLAP repair performed.",
-      eventId: "event-9"
-    },
-    {
-      term: "Left knee arthroscopy with partial medial meniscectomy",
-      date: "Jun 15, 2018",
-      provider: "Dr. Christopher Cline",
-      symptoms: "Medial meniscus tear.",
-      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf",
-      details: "Surgeon: Dr. Christopher Cline. Partial medial meniscectomy. No complications.",
-      eventId: "event-3"
-    },
-    {
-      term: "motor vehicle accident (MVA)",
-      date: "Jun 08, 2018",
-      provider: "NYPD / EMS",
-      symptoms: "Neck and back pain",
-      sourceDocument: "NYPD_Police_Report_MV104.pdf",
-      details: "Rear-ended at steady red light by commercial driver at ~35 MPH.",
-      eventId: "event-1"
-    },
-    {
-      term: "rear-end collision",
-      date: "Jun 08, 2018",
-      provider: "NYPD / EMS",
-      symptoms: "Neck and back pain",
-      sourceDocument: "NYPD_Police_Report_MV104.pdf",
-      details: "Rear-ended at steady red light by commercial driver at ~35 MPH.",
-      eventId: "event-1"
-    },
-    {
-      term: "C5-C7 ACDF surgery",
-      date: "Oct 15, 2018",
-      provider: "Dr. David Grossman",
-      symptoms: "Severe cervical spondylosis with radiculopathy at C5-C7.",
-      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 85)",
-      details: "Surgeon: Dr. David Grossman. Operative Report: ACDF C5-C7 with anterior plating and allograft.",
-      eventId: "event-8"
-    },
-    {
-      term: "no history of neck pain",
-      date: "Prior to Jun 08, 2018",
-      provider: "Patient Self-Report",
-      symptoms: "Denies prior neck pain",
-      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15)",
-      details: "Initial Orthopedic Evaluation notes patient denied any prior neck pain or upper extremity symptoms.",
-      eventId: "event-1"
-    },
-    {
-      term: "pre-existing lower back complaints",
-      date: "Prior to Jun 08, 2018",
-      provider: "Dr. Christopher Cline",
-      symptoms: "Mild, occasional lower back pain",
-      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15)",
-      details: "Patient reported a history of mild, occasional lower back pain prior to the MVA.",
-      eventId: "event-1"
-    },
-    {
-      term: "not wearing the cervical orthosis",
-      date: "Jan 15, 2019",
-      provider: "Dr. Sarah Jenkins",
-      symptoms: "Non-compliance with post-operative care",
-      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 68)",
-      details: "Documentation states 'The patient has not been wearing the cervical orthosis brace.'",
-      eventId: "event-11"
-    },
-    {
-      term: "cervical and lumbar sprain/strain",
-      date: "Jun 08, 2018",
-      provider: "NYU Langone Emergency Dept",
-      symptoms: "Neck and back pain, radiating symptoms.",
-      sourceDocument: "NYU_ER_Discharge_Summary.pdf",
-      details: "Initial diagnosis at ER following the accident. Prescribed muscle relaxants and advised follow-up.",
-      eventId: "event-1"
-    },
-    {
-      term: "Cervical Spine MRI",
-      date: "Jul 12, 2018",
-      provider: "Dr. Alan Smith (Radiology)",
-      symptoms: "Persistent neck pain radiating to left arm",
-      sourceDocument: "MRI_Cervical_Spine_Report.pdf",
-      details: "Findings: Severe spondylosis, broad-based disc herniations at C5-C6 and C6-C7 compressing the thecal sac and bilateral nerve roots.",
-      eventId: "event-2"
-    },
-    {
-      term: "rear-ended",
-      date: "Jun 08, 2018",
-      provider: "NYPD / EMS",
-      symptoms: "Neck and back pain",
-      sourceDocument: "NYPD_Police_Report_MV104.pdf",
-      details: "Rear-ended at steady red light by commercial driver at ~35 MPH.",
-      eventId: "event-1"
-    },
-    {
-      term: "neck and back pain",
-      date: "Jun 08, 2018",
-      provider: "Patient Self-Report",
-      symptoms: "Immediate onset post-collision",
-      sourceDocument: "NYU_ER_Discharge_Summary.pdf",
-      details: "Patient reported immediate onset of neck and back pain, which subsequently radiated to her left arm and right leg.",
-      eventId: "event-1"
-    },
-    {
-      term: "emergency room",
-      date: "Jun 08, 2018",
-      provider: "NYU Langone",
-      symptoms: "Post-accident trauma evaluation",
-      sourceDocument: "NYU_ER_Discharge_Summary.pdf",
-      details: "Patient was evaluated in the emergency room on the day of the accident. X-rays were taken, diagnosed with sprain/strain.",
-      eventId: "event-1"
-    },
-    {
-      term: "Motor vehicle accident",
-      date: "Jun 08, 2018",
-      provider: "NYPD / EMS",
-      symptoms: "Neck and back pain",
-      sourceDocument: "NYPD_Police_Report_MV104.pdf",
-      details: "Rear-ended at steady red light by commercial driver at ~35 MPH.",
-      eventId: "event-1"
-    },
-    {
-      term: "mild, occasional lower back pain",
-      date: "Prior to Jun 08, 2018",
-      provider: "Dr. Christopher Cline",
-      symptoms: "Mild, occasional lower back pain",
-      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15)",
-      details: "Patient reported a history of mild, occasional lower back pain prior to the MVA.",
-      eventId: "event-1"
-    },
-    {
-      term: "denied any prior neck pain",
-      date: "Prior to Jun 08, 2018",
-      provider: "Patient Self-Report",
-      symptoms: "Denies prior neck pain",
-      sourceDocument: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15)",
-      details: "Initial Orthopedic Evaluation notes patient denied any prior neck pain or upper extremity symptoms.",
-      eventId: "event-1"
-    }
-  ]
-
-  const handleSourceClick = (e: React.MouseEvent, pageNumber?: string) => {
-    e.preventDefault()
+  const handleSourceClick = (e: React.MouseEvent, _pageNumber?: string) => {
     e.stopPropagation()
     router.push(`${pathname}?tab=chronology`)
   }
 
-  // Hover Annotation Component
-  const AnnotatedText = ({ text }: { text: string }) => {
-    // Sort annotations by length (longest first) to prevent partial matching issues
-    const sortedAnnotations = [...annotations].sort((a, b) => b.term.length - a.term.length)
 
-    let parts: { text: string; annotation?: any }[] = [{ text }]
-
-    sortedAnnotations.forEach(ann => {
-      const newParts: { text: string; annotation?: any }[] = []
-      parts.forEach(part => {
-        if (part.annotation) {
-          newParts.push(part)
-          return
-        }
-
-        const split = part.text.split(ann.term)
-        for (let i = 0; i < split.length; i++) {
-          if (split[i]) {
-            newParts.push({ text: split[i] })
-          }
-          if (i < split.length - 1) {
-            newParts.push({ text: ann.term, annotation: ann })
-          }
-        }
-      })
-      parts = newParts
-    })
-
-    const handleAnnotationClick = (e: React.MouseEvent, eventId: string) => {
-      e.preventDefault()
-      e.stopPropagation()
-      router.push(`${pathname}?tab=chronology&eventId=${eventId}`)
-    }
-
-    return (
-      <div className="whitespace-pre-wrap">
-        {parts.map((part, i) => {
-          if (part.annotation) {
-            const ann = part.annotation
-            return (
-              <span key={i} className="group/tooltip relative inline-block cursor-pointer border-b-2 border-teal-500/30 text-teal-700 bg-teal-50/50 transition-colors hover:bg-teal-100 font-medium rounded-sm px-0.5">
-                <span onClick={(e) => handleAnnotationClick(e, ann.eventId)}>{part.text}</span>
-                <span className="absolute top-full -left-2 mt-2 hidden group-hover/tooltip:block w-80 bg-white text-slate-800 text-xs font-sans rounded-xl p-0 z-[100] shadow-xl border border-slate-200 text-left leading-normal overflow-hidden transform transition-all duration-200 scale-95 group-hover/tooltip:scale-100 origin-top-left">
-                  <div className="bg-slate-50 border-b border-slate-100 p-3">
-                    <div className="font-bold text-[13px] text-slate-900 mb-1 leading-tight">{ann.term}</div>
-                    <div className="flex items-center text-teal-600 font-medium text-[11px] uppercase tracking-wider">
-                      <Calendar className="w-3 h-3 mr-1" /> {ann.date}
-                    </div>
-                  </div>
-
-                  <div className="p-3 space-y-2">
-                    <div className="flex items-start">
-                      <User className="w-3.5 h-3.5 text-slate-400 mt-0.5 mr-2 shrink-0" />
-                      <div>
-                        <span className="text-slate-500 font-medium block text-[11px] uppercase tracking-wider mb-0.5">Provider</span>
-                        <span className="text-slate-700">{ann.provider}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start">
-                      <Activity className="w-3.5 h-3.5 text-slate-400 mt-0.5 mr-2 shrink-0" />
-                      <div>
-                        <span className="text-slate-500 font-medium block text-[11px] uppercase tracking-wider mb-0.5">Symptoms / Findings</span>
-                        <span className="text-slate-700">{ann.symptoms}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start">
-                      <Info className="w-3.5 h-3.5 text-slate-400 mt-0.5 mr-2 shrink-0" />
-                      <div>
-                        <span className="text-slate-500 font-medium block text-[11px] uppercase tracking-wider mb-0.5">Relevant Details</span>
-                        <span className="text-slate-700">{ann.details}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-slate-50 border-t border-slate-100 p-2.5 px-3 flex justify-between items-center group/btn cursor-pointer hover:bg-slate-100 transition-colors" onClick={(e) => handleAnnotationClick(e, ann.eventId)}>
-                    <div className="flex items-center overflow-hidden mr-2">
-                      <FileText className="w-3.5 h-3.5 text-slate-400 mr-1.5 shrink-0" />
-                      <span className="text-slate-500 text-[11px] truncate">{ann.sourceDocument}</span>
-                    </div>
-                    <div className="flex items-center text-teal-600 font-medium text-[11px] whitespace-nowrap group-hover/btn:text-teal-700">
-                      View in Chronology <ExternalLink className="w-3 h-3 ml-1" />
-                    </div>
-                  </div>
-
-                  {/* Pointer */}
-                  <span className="absolute bottom-full left-6 border-8 border-transparent border-b-white drop-shadow-sm"></span>
-                </span>
-              </span>
-            )
-          }
-          return <span key={i}>{part.text}</span>
-        })}
-      </div>
-    )
-  }
 
   return (
     <div className="flex flex-col h-full animate-in fade-in slide-in-from-bottom-2 duration-500 bg-white font-sans">
@@ -510,8 +252,8 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                   className="w-full min-h-[140px] p-4 bg-white border-2 border-teal-500 rounded-xl outline-none focus:ring-0 text-slate-800 resize-y leading-relaxed text-[14px] shadow-inner"
                 />
               ) : (
-                <div className="text-slate-700 text-[15px] leading-relaxed font-normal">
-                  <AnnotatedText text={doc.plaintiffNarrative} />
+                <div className="text-slate-700 text-[15px] leading-relaxed font-normal whitespace-pre-wrap">
+                  {doc.plaintiffNarrative}
                 </div>
               )}
             </div>
@@ -549,8 +291,8 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                   className="w-full min-h-[140px] p-4 bg-white border-2 border-teal-500 rounded-xl outline-none focus:ring-0 text-slate-800 resize-y leading-relaxed text-[14px] shadow-inner"
                 />
               ) : (
-                <div className="text-slate-700 text-[15px] leading-relaxed font-normal">
-                  <AnnotatedText text={doc.defenseNarrative} />
+                <div className="text-slate-700 text-[15px] leading-relaxed font-normal whitespace-pre-wrap">
+                  {doc.defenseNarrative}
                 </div>
               )}
             </div>
@@ -582,7 +324,7 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                       Overall Standing: Strong Favorable
                     </span>
                     <button
-                      onClick={() => router.push(`${pathname}?tab=valuation`)}
+                      onClick={() => router.push(`${pathname}?tab=negotiation`)}
                       className="text-xs font-bold text-teal-900 hover:text-slate-900 bg-teal-300 hover:bg-teal-200 px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
                     >
                       <span>Full Negotiation Center</span>
@@ -1013,8 +755,8 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                     <h3 className="text-[12px] font-bold text-slate-700 uppercase tracking-widest m-0">{section.title}</h3>
                   </div>
 
-                  <div className="text-slate-700 text-[14px] leading-relaxed">
-                    <AnnotatedText text={section.content} />
+                  <div className="text-slate-700 text-[14px] leading-relaxed whitespace-pre-wrap">
+                    {section.content}
                   </div>
                 </div>
               ))}

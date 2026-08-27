@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useActionState, useEffect } from "react";
-import { Mail, Lock, ArrowRight, ShieldCheck, Scale, FileText, UserPlus, Eye, EyeOff, Sparkles, RefreshCcw, Phone, Users, Calendar, Heart, User, Activity, CheckCircle, Handshake, GraduationCap, DollarSign, Building2 } from "lucide-react";
+import { Mail, Lock, ArrowRight, ShieldCheck, Scale, FileText, UserPlus, Eye, EyeOff, Sparkles, RefreshCcw, Handshake } from "lucide-react";
 import { loginUser } from "@/app/actions/auth";
 import { useRouter } from "next/navigation";
 import loginBg from "../../../public/images/login.jpg";
@@ -19,7 +19,6 @@ const demoRoles: Role[] = [
   { id: 'attorney', title: 'Attorney', subtitle: 'Legal Desk', icon: Scale, email: 'mike@smithassociates.com' },
   { id: 'managing_partner', title: 'Managing Partner', subtitle: 'Firm Overview', icon: Handshake, email: 'harvey@smithassociates.com' },
   { id: 'admin', title: 'Super Admin', subtitle: 'System Control', icon: ShieldCheck, email: 'admin@lexvalue.com' },
-  { id: 'client', title: 'Client Portal', subtitle: 'Plaintiff View', icon: User, email: 'client@example.com' },
 ];
 
 export default function LoginPage() {
@@ -238,7 +237,7 @@ export default function LoginPage() {
               </div>
             </div>
             
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
               {demoRoles.map((role) => (
                 <button
                   key={role.id}
