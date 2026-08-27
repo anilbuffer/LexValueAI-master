@@ -146,7 +146,7 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
       } else if (lower.includes("weakness") || lower.includes("carrier") || lower.includes("colossus")) {
         aiResponse = `**Anticipated Claims Algorithm (Colossus / Guidewire) Vulnerabilities:**\n\n` +
           `1. **Interventional Injection Value Unit:** Colossus assigns maximum bodily injury points when fluoroscopy-guided epidural steroid injections are paired with radiating radiculopathy.\n` +
-          `2. **100% Zero Comparative Negligence:** Because the defendant commercial vehicle rear-ended our stopped client at a red light (MV-104), the adjuster cannot apply any comparative fault reduction.\n` +
+          `2. **Zero Comparative Negligence:** Because the defendant commercial vehicle rear-ended our stopped client at a red light (MV-104), the adjuster cannot apply any comparative fault reduction.\n` +
           `3. **Itemized Wage Loss:** The $4,200 verified lost wage ledger forces the claims algorithm above the soft-tissue multiplier ceiling.`;
         citation = "Colossus / ClaimOutcome Decision Table Analysis";
       } else {
@@ -230,12 +230,11 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
               Negotiations
             </span>
             <span className="text-slate-400 font-bold">│&nbsp;&nbsp;├──</span>
-            
+
             <button
               onClick={() => setActiveView('tracker')}
-              className={`px-3 py-1 font-sans rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
-                activeView === 'tracker' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
-              }`}
+              className={`px-3 py-1 font-sans rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${activeView === 'tracker' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
+                }`}
             >
               <Sliders className="w-3.5 h-3.5" /> Negotiation Tracker
             </button>
@@ -244,9 +243,8 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
 
             <button
               onClick={() => setActiveView('assistant')}
-              className={`px-3 py-1 font-sans rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
-                activeView === 'assistant' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
-              }`}
+              className={`px-3 py-1 font-sans rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${activeView === 'assistant' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
+                }`}
             >
               <Bot className="w-3.5 h-3.5 text-teal-400" /> AI Negotiation Assistant / Chat
               <span className={`text-[10px] px-1.5 py-0.2 rounded font-extrabold ${activeView === 'assistant' ? 'bg-teal-800 text-teal-200' : 'bg-teal-50 text-teal-700 border border-teal-200'}`}>

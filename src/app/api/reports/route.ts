@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     const toDateStr = url.searchParams.get('toDate');
 
     // Simulate basic mock numbers since full DB analytics are mocked
-    
+
     let metricsData = [
       {
         id: 'my_cases',
@@ -157,7 +157,7 @@ export async function GET(req: Request) {
       metricsData = metricsData.filter((m: any) => allowedAttorneyMetrics.includes(m.id));
     } else if (session.role === 'ADMIN') {
       const allowedAdminMetrics = [
-        'my_cases', 'pending', 'closed_cases', 'approved', 'returned', 
+        'my_cases', 'pending', 'closed_cases', 'approved', 'returned',
         'ai_usage', 'turnaround_time',
         'top_category', 'top_approved_category', 'top_rejected_category', 'top_closed_category',
         'top_managing_partner', 'top_attorney', 'top_paralegal'

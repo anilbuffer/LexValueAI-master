@@ -1,10 +1,27 @@
 import React, { useState, useEffect } from 'react'
-import { Calendar, User, Activity, FileText, Info, ExternalLink, TrendingUp, TrendingDown, Shield, Target, AlertTriangle, CheckCircle2, XCircle, ArrowRight, Sparkles, Scale, BookOpen, Cpu } from 'lucide-react'
+import {
+  Calendar,
+  User,
+  Activity,
+  FileText,
+  Info,
+  ExternalLink,
+  TrendingUp,
+  TrendingDown,
+  Shield,
+  Target,
+  CheckCircle2,
+  XCircle,
+  ArrowRight,
+  Sparkles,
+  Cpu,
+  AlertTriangle
+} from 'lucide-react'
 import { updateMockDocument, getMockCaseValuations } from '@/lib/mock-data'
 import { useRouter, usePathname } from 'next/navigation'
 
 type NarrativePerspective = 'Plaintiff Narrative' | 'Defense Narrative' | 'Settlement & Negotiation Analysis' | 'Structured'
-type SettlementSection = 'all' | 'analysis' | 'drivers' | 'defense' | 'carrier' | 'strategy'
+type SettlementSection = 'all' | 'drivers' | 'defense' | 'carrier' | 'strategy'
 
 export function SummaryTab({ caseData }: { caseData?: any }) {
   const [perspective, setPerspective] = useState<NarrativePerspective>('Plaintiff Narrative')
@@ -31,6 +48,99 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
   const defensePressure = val.defensePressure || []
   const strategy = val.negotiationStrategy || {}
   const carrierModel = val.carrierModel || {}
+
+  const DEFAULT_CARRIER_POSITION_FACTORS = [
+    {
+      id: "cpf-1",
+      title: "Degenerative findings",
+      category: "Causation & Radiography",
+      impactType: "negative",
+      impactLabel: "Alternative Causation Offset",
+      carrierArgument: "Carrier asserts disc desiccation, facet arthropathy, and spondylosis on MRI are pre-existing degenerative changes, applying an automated 25%–35% alternative-causation discount.",
+      rebuttal: "The records support that Debra was asymptomatic with zero cervical limitations prior to impact. Under the Eggshell Plaintiff Doctrine (PJI 2:282), the tortfeasor is legally liable for precipitating acute symptoms on dormant degeneration.",
+      citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 85)",
+      pageNumber: "85"
+    },
+    {
+      id: "cpf-2",
+      title: "Priors",
+      category: "Medical History & Prior Claims",
+      impactType: "positive",
+      impactLabel: "Zero Prior Cervical History",
+      carrierArgument: "Adjuster flags prior 2017 medical visit for lower back muscular fatigue, attempting to claim chronic pre-existing musculoskeletal vulnerability.",
+      rebuttal: "The 2017 record documented an isolated lumbar strain that resolved in 10 days with zero follow-up; plaintiff has zero prior cervical complaints, treatment, or imaging on record.",
+      citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 22)",
+      pageNumber: "22"
+    },
+    {
+      id: "cpf-3",
+      title: "Treatment gaps",
+      category: "Treatment Continuity",
+      impactType: "warning",
+      impactLabel: "17-Day Delay Addressed",
+      carrierArgument: "Carrier algorithms penalize the 17-day gap between collision (06/08/2018) and initial orthopedic consultation (06/25/2018) as evidence of mild injury or intervening event.",
+      rebuttal: "Plaintiff followed ER discharge protocol for rest and conservative care; when radiating radicular pain intensified, she promptly sought specialist care. Seamless continuous treatment followed with zero intervening trauma.",
+      citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15)",
+      pageNumber: "15"
+    },
+    {
+      id: "cpf-4",
+      title: "Conservative treatment",
+      category: "Care Modalities & Protocol",
+      impactType: "positive",
+      impactLabel: "Conservative Care Exhausted",
+      carrierArgument: "Carrier audits whether full conservative protocol (physical therapy, chiropractic, NSAIDs) was completed and exhausted before interventional escalation.",
+      rebuttal: "Plaintiff completed 24+ documented physical therapy sessions and 2 fluoroscopic cervical epidural steroid injections with only transient relief, establishing documented conservative treatment failure.",
+      citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 48)",
+      pageNumber: "48"
+    },
+    {
+      id: "cpf-5",
+      title: "Minimal impact claims",
+      category: "Biomechanics & Property Damage",
+      impactType: "warning",
+      impactLabel: "Low Delta-V Cap Rebutted",
+      carrierArgument: "Adjuster applies low-impact algorithm guidelines (sub-$2,000 bumper repair) claiming low speed cannot produce structural disc injury.",
+      rebuttal: "Modern energy-absorbing bumper isolators prevent cosmetic crushing by transferring crash kinetic energy directly through the chassis to the occupant's cervical spine, accounting for acute annular tearing.",
+      citation: "Vehicle Repair Estimate & MV-104",
+      pageNumber: "Photos"
+    },
+    {
+      id: "cpf-6",
+      title: "Age",
+      category: "Demographics & Actuarial",
+      impactType: "positive",
+      impactLabel: "39.4 Yrs Life Expectancy",
+      carrierArgument: "Adjuster factors plaintiff's age (42) to argue age-related spinal wear while discounting long-term future pain and suffering multiplier calculations.",
+      rebuttal: "Age 42 represents ~39.4 years of remaining statistical life expectancy living with permanent radicular deficits and cervical impairment, significantly elevating lifetime non-economic damages.",
+      citation: "CDC Life Expectancy Tables (Age 42)",
+      pageNumber: "Life-Table"
+    },
+    {
+      id: "cpf-7",
+      title: "Venue",
+      category: "Jurisdiction & Jury Risk",
+      impactType: "positive",
+      impactLabel: "Kings County NY (High Carrier Risk)",
+      carrierArgument: "Carrier evaluates venue risk index and local verdict variance, attempting to enforce pre-suit settlement discounts prior to index filing in plaintiff-favorable forums.",
+      rebuttal: "Kings County (Brooklyn), NY is one of the highest-rated plaintiff-favorable venues nationally, with high jury verdict medians and NY statutory 9% pre-judgment interest creating substantial trial exposure.",
+      citation: "Kings County Supreme Court Venue Index",
+      pageNumber: "Court-NY"
+    },
+    {
+      id: "cpf-8",
+      title: "Whether a surgery used anchors or was percutaneous",
+      category: "Surgical Severity Scoring",
+      impactType: "positive",
+      impactLabel: "Hardware & Anchor Tier (Max Points)",
+      carrierArgument: "Claims algorithms (Colossus) assign substantially lower point severity scores to percutaneous / needle / endoscopic decompression procedures compared to open surgeries utilizing hardware, fixation plates, or suture anchors.",
+      rebuttal: "Operative planning specifies open surgical decompression with rigid hardware fixation and anchors if interventional failure persists, placing the claim in the maximum surgical severity algorithmic point tier.",
+      citation: "Dr. Grossman Surgical Recommendation (Page 92)",
+      pageNumber: "92"
+    }
+  ]
+
+  const carrierPositionFactors = val.carrierPositionFactors || DEFAULT_CARRIER_POSITION_FACTORS
 
   // Get the primary document (mocked)
   const doc = caseData?.documents?.[0] || null
@@ -492,11 +602,10 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setSettlementSection('all')}
-                      className={`text-xs font-semibold px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${
-                        settlementSection === 'all'
-                          ? 'bg-teal-900 text-white font-bold'
-                          : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
-                      }`}
+                      className={`text-xs font-semibold px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${settlementSection === 'all'
+                        ? 'bg-teal-900 text-white font-bold'
+                        : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                        }`}
                     >
                       Show All (Complete Flow)
                     </button>
@@ -505,34 +614,9 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
 
                 <div className="flex items-center gap-1.5 text-xs text-slate-700 overflow-x-auto no-scrollbar py-0.5">
                   <button
-                    onClick={() => setSettlementSection('all')}
-                    className={`font-extrabold px-2.5 py-1 rounded-lg transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
-                      settlementSection === 'all'
-                        ? 'bg-teal-900 text-white shadow-xs'
-                        : 'bg-teal-50 hover:bg-teal-100 text-teal-950 border border-teal-200'
-                    }`}
-                  >
-                    <Sparkles className="w-3 h-3" />
-                    Settlement Intelligence
-                  </button>
-                  <span className="text-slate-300 font-bold">└──</span>
-                  
-                  <button
-                    onClick={() => setSettlementSection('analysis')}
-                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
-                      settlementSection === 'analysis' ? 'bg-teal-900 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
-                    }`}
-                  >
-                    <Scale className="w-3 h-3 text-teal-600" /> Settlement Analysis
-                  </button>
-
-                  <span className="text-slate-300 font-bold">└──</span>
-
-                  <button
                     onClick={() => setSettlementSection('drivers')}
-                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
-                      settlementSection === 'drivers' ? 'bg-teal-900 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
-                    }`}
+                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${settlementSection === 'drivers' ? 'bg-teal-900 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                      }`}
                   >
                     <TrendingUp className="w-3 h-3 text-emerald-600" /> Value Drivers ({valueDrivers.length})
                   </button>
@@ -541,9 +625,8 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
 
                   <button
                     onClick={() => setSettlementSection('defense')}
-                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
-                      settlementSection === 'defense' ? 'bg-teal-900 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
-                    }`}
+                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${settlementSection === 'defense' ? 'bg-teal-900 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                      }`}
                   >
                     <TrendingDown className="w-3 h-3 text-rose-600" /> Defense Pressure ({defensePressure.length})
                   </button>
@@ -552,112 +635,23 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
 
                   <button
                     onClick={() => setSettlementSection('carrier')}
-                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
-                      settlementSection === 'carrier' ? 'bg-teal-900 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
-                    }`}
+                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${settlementSection === 'carrier' ? 'bg-teal-900 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                      }`}
                   >
-                    <Cpu className="w-3 h-3 text-indigo-600" /> Carrier Position
+                    <Cpu className="w-3 h-3 text-indigo-600" /> Carrier Position ({carrierPositionFactors.length})
                   </button>
 
                   <span className="text-slate-300 font-bold">└──</span>
 
                   <button
                     onClick={() => setSettlementSection('strategy')}
-                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
-                      settlementSection === 'strategy' ? 'bg-teal-900 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
-                    }`}
+                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${settlementSection === 'strategy' ? 'bg-teal-900 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                      }`}
                   >
                     <Target className="w-3 h-3 text-teal-600" /> Negotiation Strategy
                   </button>
                 </div>
               </div>
-
-              {/* SECTION 1: SETTLEMENT ANALYSIS */}
-              {(settlementSection === 'all' || settlementSection === 'analysis') && (
-                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-5">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-teal-100 text-teal-900">
-                        Settlement Intelligence └── Settlement Analysis
-                      </span>
-                    </div>
-                    <span className="text-xs font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200">
-                      Target Corridor: $85,000 – $120,000
-                    </span>
-                  </div>
-
-                  {/* 4 Metric Cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="bg-slate-50/70 border border-teal-200/80 rounded-xl p-4 shadow-2xs">
-                      <span className="text-[10px] uppercase font-bold text-teal-700 tracking-wider block mb-1">
-                        Estimated Settlement Range
-                      </span>
-                      <div className="text-xl font-extrabold text-teal-950">
-                        $85,000 – $120,000
-                      </div>
-                      <p className="text-[11px] text-slate-500 mt-1">Target plaintiff recovery corridor</p>
-                    </div>
-
-                    <div className="bg-slate-50/70 border border-rose-200/80 rounded-xl p-4 shadow-2xs">
-                      <span className="text-[10px] uppercase font-bold text-rose-600 tracking-wider block mb-1">
-                        Likely Carrier Position
-                      </span>
-                      <div className="text-xl font-extrabold text-rose-950">
-                        $45,000 – $65,000
-                      </div>
-                      <p className="text-[11px] text-slate-500 mt-1">Simulated adjuster authority cap</p>
-                    </div>
-
-                    <div className="bg-slate-50/70 border border-indigo-200/80 rounded-xl p-4 shadow-2xs">
-                      <span className="text-[10px] uppercase font-bold text-indigo-600 tracking-wider block mb-1">
-                        Recommended Demand
-                      </span>
-                      <div className="text-xl font-extrabold text-indigo-950">
-                        $175,000
-                      </div>
-                      <p className="text-[11px] text-slate-500 mt-1">Strategic initial anchor</p>
-                    </div>
-
-                    <div className="bg-slate-50/70 border border-slate-200 rounded-xl p-4 shadow-2xs">
-                      <span className="text-[10px] uppercase font-bold text-slate-700 tracking-wider block mb-1">
-                        Confirmed Specials
-                      </span>
-                      <div className="text-xl font-extrabold text-slate-900">
-                        $31,400
-                      </div>
-                      <p className="text-[11px] text-slate-500 mt-1">Medicals ($27.2k) + Wages ($4.2k)</p>
-                    </div>
-                  </div>
-
-                  {/* Directional Leverage Spectrum Bar */}
-                  <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-200">
-                    <div className="flex items-center justify-between text-xs font-bold text-slate-700 mb-2">
-                      <span className="flex items-center gap-1.5">
-                        <Scale className="w-3.5 h-3.5 text-teal-700" /> Directional Leverage Balance
-                      </span>
-                      <span className="text-teal-800 font-bold bg-teal-50 px-2 py-0.5 rounded border border-teal-200 text-[11px]">
-                        Net Direction: Strong Positive Value
-                      </span>
-                    </div>
-
-                    <div className="h-3.5 bg-slate-100 rounded-full overflow-hidden flex relative shadow-inner">
-                      <div className="w-[15%] bg-rose-400 opacity-80 h-full" title="Defense Resistant"></div>
-                      <div className="w-[15%] bg-amber-300 h-full" title="Moderate Disputed"></div>
-                      <div className="w-[45%] bg-gradient-to-r from-teal-500 to-emerald-500 h-full relative" title="Strong Favorable (Current Posture)">
-                        <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-                      </div>
-                      <div className="w-[25%] bg-indigo-600 opacity-90 h-full" title="Dominant Surgical Leverage"></div>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-center text-[11px] mt-2.5 text-slate-500">
-                      <div className="text-left font-medium">15% Defense Exposure</div>
-                      <div className="text-left md:text-center font-medium">15% Disputed Causation</div>
-                      <div className="text-right md:text-center font-bold text-teal-900">45% High Recovery Corridor</div>
-                      <div className="text-right font-medium">25% Policy Limit Pressure</div>
-                    </div>
-                  </div>
-                </div>
-              )}
 
               {/* SECTION 2: VALUE DRIVERS */}
               {(settlementSection === 'all' || settlementSection === 'drivers') && (
@@ -706,8 +700,8 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                                 </div>
                               </div>
                               <span className={`text-[11px] font-bold px-2.5 py-1 rounded-md shrink-0 ${driver.impactLevel === 'High' || driver.impact?.includes('High')
-                                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold'
-                                  : 'bg-teal-50 text-teal-800 border border-teal-200'
+                                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold'
+                                : 'bg-teal-50 text-teal-800 border border-teal-200'
                                 }`}>
                                 {driver.impact || 'High Positive'}
                               </span>
@@ -823,7 +817,7 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
               {/* SECTION 4: CARRIER POSITION */}
               {(settlementSection === 'all' || settlementSection === 'carrier') && (
                 <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-3 flex-wrap gap-2">
                     <div className="flex items-center gap-2.5">
                       <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700">
                         <Cpu className="w-4 h-4" />
@@ -835,44 +829,79 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                           </span>
                         </div>
                         <h4 className="text-base font-bold text-slate-900 mt-0.5">Carrier Position & Claims Model Analysis</h4>
-                        <p className="text-xs text-slate-500">Anticipated insurer objections, software algorithms, and AI legal counter-rebuttals</p>
+                        <p className="text-xs text-slate-500">Anticipated insurer objections, software algorithms, and AI legal counter-rebuttals across core evaluation factors</p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-indigo-800 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-full flex items-center gap-1.5">
-                        <Cpu className="w-3.5 h-3.5 text-indigo-600" />
-                        Software: {carrierModel.softwarePredictedName || "Colossus / Guidewire ClaimCenter"}
-                      </span>
-                    </div>
+                    <span className="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-full">
+                      {carrierPositionFactors.length} Evaluation Factors
+                    </span>
                   </div>
 
                   {/* Anticipated Carrier Arguments Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {defensePressure.map((dp: any) => (
-                      <div key={dp.id} className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col justify-between">
+                    {carrierPositionFactors.map((factor: any) => (
+                      <div key={factor.id} className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white hover:border-indigo-300 hover:shadow-sm transition-all flex flex-col justify-between">
                         <div>
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-bold text-slate-800">{dp.title}</span>
-                            <span className="text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded">
-                              Carrier Objection
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-xs font-bold text-slate-900">{factor.title}</span>
+                              <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-200 text-slate-700">
+                                {factor.category}
+                              </span>
+                            </div>
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded shrink-0 border ${factor.impactType === 'positive'
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                                : factor.impactType === 'warning'
+                                  ? 'bg-amber-50 text-amber-800 border-amber-200'
+                                  : 'bg-rose-50 text-rose-800 border-rose-200'
+                              }`}>
+                              {factor.impactLabel || 'Carrier Assessment'}
                             </span>
                           </div>
-                          <p className="text-xs text-slate-700 leading-relaxed italic mb-3">
-                            "{dp.carrierArgument || dp.detail}"
-                          </p>
+
+                          <div className="mb-3 p-3 bg-white rounded-lg border border-slate-200/80">
+                            <span className="text-[10px] uppercase font-bold text-rose-700 block mb-1 flex items-center gap-1">
+                              <AlertTriangle className="w-3 h-3 text-rose-600" /> Carrier Claim / Algorithm Position:
+                            </span>
+                            <p className="text-xs text-slate-700 leading-relaxed italic">
+                              "{factor.carrierArgument}"
+                            </p>
+                          </div>
                         </div>
 
-                        <div className="pt-2.5 border-t border-slate-200/60 bg-white -mx-4 -mb-4 p-3.5 rounded-b-xl">
-                          <span className="text-[10px] uppercase font-bold text-teal-800 block mb-1 flex items-center gap-1">
-                            <Shield className="w-3.5 h-3.5 text-teal-600" /> AI Legal Counter-Rebuttal
-                          </span>
-                          <p className="text-xs text-slate-600 leading-relaxed">
-                            {dp.rebuttal}
-                          </p>
+                        <div>
+                          <div className="pt-2.5 border-t border-slate-200/60 bg-teal-50/40 -mx-4 -mb-4 p-3.5 rounded-b-xl">
+                            <span className="text-[10px] uppercase font-bold text-teal-800 block mb-1 flex items-center gap-1">
+                              <Shield className="w-3.5 h-3.5 text-teal-600" /> AI Legal Counter-Rebuttal
+                            </span>
+                            <p className="text-xs text-slate-700 leading-relaxed">
+                              {factor.rebuttal}
+                            </p>
+
+                            {factor.citation && (
+                              <div className="mt-2.5 pt-2 border-t border-teal-100 flex items-center justify-between text-[11px]">
+                                <span className="text-slate-500 flex items-center gap-1 font-medium">
+                                  <FileText className="w-3 h-3 text-teal-600" /> Source Reference:
+                                </span>
+                                <button
+                                  onClick={(e) => handleSourceClick(e, factor.pageNumber)}
+                                  className="font-semibold text-teal-700 hover:text-teal-900 bg-white hover:bg-teal-100 px-2 py-0.5 rounded border border-teal-200 transition-colors flex items-center gap-1 cursor-pointer"
+                                >
+                                  <span>{factor.citation}</span>
+                                  <ExternalLink className="w-3 h-3" />
+                                </button>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))}
+                  </div>
+
+                  <div className="mt-4 p-3 bg-indigo-50/60 rounded-xl border border-indigo-100 flex items-center gap-2 text-xs text-indigo-900 font-medium">
+                    <Sparkles className="w-4 h-4 text-indigo-600 shrink-0" />
+                    <span>AI claims modeling anticipates adjuster algorithmic discounts across degenerative changes, prior records, treatment gaps, conservative care, impact severity, age, venue, and surgical classification.</span>
                   </div>
                 </div>
               )}

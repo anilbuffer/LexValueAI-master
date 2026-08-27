@@ -144,7 +144,7 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
       } else if (lower.includes("weakness") || lower.includes("carrier") || lower.includes("colossus")) {
         aiResponse = `**Anticipated Claims Algorithm (Colossus / Guidewire) Vulnerabilities:**\n\n` +
           `1. **Interventional Injection Value Unit:** Colossus assigns maximum bodily injury points when fluoroscopy-guided epidural steroid injections are paired with radiating radiculopathy.\n` +
-          `2. **100% Zero Comparative Negligence:** Because the defendant commercial vehicle rear-ended our stopped client at a red light (MV-104), the adjuster cannot apply any comparative fault reduction.\n` +
+          `2. **Zero Comparative Negligence:** Because the defendant commercial vehicle rear-ended our stopped client at a red light (MV-104), the adjuster cannot apply any comparative fault reduction.\n` +
           `3. **Itemized Wage Loss:** The $4,200 verified lost wage ledger forces the claims algorithm above the soft-tissue multiplier ceiling.`;
         citation = "Colossus / ClaimOutcome Decision Table Analysis";
       } else {
@@ -200,7 +200,6 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
   const valueDrivers = baseVal.valueDrivers || [];
   const defensePressure = baseVal.defensePressure || [];
   const carrierModel = baseVal.carrierModel || {
-    softwarePredictedName: "Colossus / Guidewire ClaimCenter",
     discountFactorsApplied: []
   };
   const strategy = baseVal.negotiationStrategy || {};
@@ -277,12 +276,11 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
               Settlement Intelligence
             </span>
             <span className="text-slate-300 font-bold">└──</span>
-            
+
             <button
               onClick={() => setActiveSection('analysis')}
-              className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
-                activeSection === 'analysis' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
-              }`}
+              className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${activeSection === 'analysis' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
+                }`}
             >
               <Scale className="w-3 h-3" /> Settlement Analysis
             </button>
@@ -291,9 +289,8 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
 
             <button
               onClick={() => setActiveSection('drivers')}
-              className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
-                activeSection === 'drivers' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
-              }`}
+              className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${activeSection === 'drivers' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
+                }`}
             >
               <TrendingUp className="w-3 h-3" /> Value Drivers
             </button>
@@ -302,9 +299,8 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
 
             <button
               onClick={() => setActiveSection('defense')}
-              className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
-                activeSection === 'defense' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
-              }`}
+              className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${activeSection === 'defense' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
+                }`}
             >
               <TrendingDown className="w-3 h-3" /> Defense Pressure
             </button>
@@ -313,9 +309,8 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
 
             <button
               onClick={() => setActiveSection('carrier')}
-              className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
-                activeSection === 'carrier' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
-              }`}
+              className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${activeSection === 'carrier' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
+                }`}
             >
               <Cpu className="w-3 h-3" /> Carrier Position
             </button>
@@ -324,9 +319,8 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
 
             <button
               onClick={() => setActiveSection('strategy')}
-              className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
-                activeSection === 'strategy' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
-              }`}
+              className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all shrink-0 cursor-pointer flex items-center gap-1 ${activeSection === 'strategy' ? 'bg-teal-900 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200/80 text-slate-700'
+                }`}
             >
               <Target className="w-3 h-3" /> Negotiation Strategy
             </button>
@@ -338,22 +332,20 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
       <div className="bg-white border-b border-slate-200 px-5 md:px-8 py-2.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0">
         <button
           onClick={() => setActiveSection('all')}
-          className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-            activeSection === 'all'
-              ? 'bg-teal-900 text-white shadow-sm'
-              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-          }`}
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${activeSection === 'all'
+            ? 'bg-teal-900 text-white shadow-sm'
+            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
         >
           🌟 All Sections (Complete Flow)
         </button>
 
         <button
           onClick={() => setActiveSection('analysis')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-            activeSection === 'analysis'
-              ? 'bg-teal-900 text-white shadow-sm'
-              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-          }`}
+          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${activeSection === 'analysis'
+            ? 'bg-teal-900 text-white shadow-sm'
+            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
         >
           <Scale className="w-3.5 h-3.5" />
           1. Settlement Analysis
@@ -361,11 +353,10 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
 
         <button
           onClick={() => setActiveSection('drivers')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-            activeSection === 'drivers'
-              ? 'bg-teal-900 text-white shadow-sm'
-              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-          }`}
+          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${activeSection === 'drivers'
+            ? 'bg-teal-900 text-white shadow-sm'
+            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
         >
           <TrendingUp className="w-3.5 h-3.5" />
           2. Value Drivers ({valueDrivers.length})
@@ -373,11 +364,10 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
 
         <button
           onClick={() => setActiveSection('defense')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-            activeSection === 'defense'
-              ? 'bg-teal-900 text-white shadow-sm'
-              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-          }`}
+          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${activeSection === 'defense'
+            ? 'bg-teal-900 text-white shadow-sm'
+            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
         >
           <TrendingDown className="w-3.5 h-3.5" />
           3. Defense Pressure ({defensePressure.length})
@@ -385,11 +375,10 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
 
         <button
           onClick={() => setActiveSection('carrier')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-            activeSection === 'carrier'
-              ? 'bg-teal-900 text-white shadow-sm'
-              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-          }`}
+          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${activeSection === 'carrier'
+            ? 'bg-teal-900 text-white shadow-sm'
+            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
         >
           <Cpu className="w-3.5 h-3.5" />
           4. Carrier Position
@@ -397,11 +386,10 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
 
         <button
           onClick={() => setActiveSection('strategy')}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-            activeSection === 'strategy'
-              ? 'bg-teal-900 text-white shadow-sm'
-              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-          }`}
+          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${activeSection === 'strategy'
+            ? 'bg-teal-900 text-white shadow-sm'
+            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
         >
           <Target className="w-3.5 h-3.5" />
           5. Negotiation Strategy
@@ -416,7 +404,7 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
         {/* ========================================================================= */}
         {(activeSection === 'all' || activeSection === 'analysis') && (
           <div className="bg-white border border-slate-200 rounded-2xl p-6 md:p-7 shadow-sm space-y-6">
-            
+
             {/* Header / Flow Indicator */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-4">
               <div>
@@ -501,7 +489,7 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
                 <span className="text-[10px] uppercase font-bold text-slate-500 block mb-0.5">
                   Liability Assessment
                 </span>
-                <span className="text-xl font-black text-teal-800">100% Zero Comparative</span>
+                <span className="text-lg font-black text-teal-800">The Evidence Supports Zero Comparative</span>
                 <p className="text-[11px] text-slate-500 mt-1">
                   Stationary at red light (MV-104)
                 </p>
@@ -574,11 +562,10 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
                               <p className="text-xs text-slate-600 mt-1 leading-relaxed">{driver.detail}</p>
                             </div>
                           </div>
-                          <span className={`text-[11px] font-bold px-2.5 py-1 rounded-md shrink-0 ${
-                            driver.impactLevel === 'High' || driver.impact?.includes('High')
-                              ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold'
-                              : 'bg-teal-50 text-teal-800 border border-teal-200'
-                          }`}>
+                          <span className={`text-[11px] font-bold px-2.5 py-1 rounded-md shrink-0 ${driver.impactLevel === 'High' || driver.impact?.includes('High')
+                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold'
+                            : 'bg-teal-50 text-teal-800 border border-teal-200'
+                            }`}>
                             {driver.impactLevel ? `+${driver.impactLevel} Weight` : (driver.impact || '+High Weight')}
                           </span>
                         </div>
@@ -643,9 +630,8 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
                       return (
                         <div
                           key={pressure.id}
-                          className={`p-3.5 rounded-xl border transition-all ${
-                            isExpanded ? 'border-rose-300 bg-rose-50/20 shadow-md' : 'border-slate-200/80 bg-slate-50/40'
-                          }`}
+                          className={`p-3.5 rounded-xl border transition-all ${isExpanded ? 'border-rose-300 bg-rose-50/20 shadow-md' : 'border-slate-200/80 bg-slate-50/40'
+                            }`}
                         >
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex items-start gap-2.5">
@@ -655,9 +641,8 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
                               <div>
                                 <div className="flex items-center gap-2 flex-wrap">
                                   <h5 className="text-sm font-bold text-slate-900">{pressure.title}</h5>
-                                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
-                                    pressure.riskLevel === 'High' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'
-                                  }`}>
+                                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${pressure.riskLevel === 'High' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'
+                                    }`}>
                                     Damage Rank: {pressure.riskLevel || 'Moderate'}
                                   </span>
                                 </div>
@@ -789,7 +774,7 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
         {/* ========================================================================= */}
         {(activeSection === 'all' || activeSection === 'strategy') && (
           <div className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm space-y-8">
-            
+
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
               <div>
@@ -919,7 +904,7 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
 
             {/* SUB-MODULE A: NEGOTIATION TRACKER & ROUND PROGRESSION */}
             <div className="pt-6 border-t border-slate-200 space-y-6">
-              
+
               {/* Header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
@@ -1042,18 +1027,16 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
                   return (
                     <div
                       key={log.id || idx}
-                      className={`p-4 rounded-xl border transition-all ${
-                        isDemand
-                          ? 'bg-teal-50/30 border-teal-200 hover:border-teal-300'
-                          : 'bg-rose-50/30 border-rose-200 hover:border-rose-300'
-                      }`}
+                      className={`p-4 rounded-xl border transition-all ${isDemand
+                        ? 'bg-teal-50/30 border-teal-200 hover:border-teal-300'
+                        : 'bg-rose-50/30 border-rose-200 hover:border-rose-300'
+                        }`}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
-                              isDemand ? 'bg-teal-900 text-white' : 'bg-rose-800 text-white'
-                            }`}>
+                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${isDemand ? 'bg-teal-900 text-white' : 'bg-rose-800 text-white'
+                              }`}>
                               Round {log.roundNumber} • {isDemand ? 'Plaintiff Demand' : 'Carrier Offer'}
                             </span>
                             <span className="text-xs font-semibold text-slate-500">
@@ -1093,7 +1076,7 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
 
             {/* SUB-MODULE B: LIVE AI NEGOTIATION ASSISTANT / COPILOT */}
             <div className="pt-6 border-t border-slate-200 space-y-4">
-              
+
               <div className="flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2">
@@ -1141,11 +1124,10 @@ export function CaseValuationTab({ caseData }: { caseData: any }) {
                         </div>
                       )}
 
-                      <div className={`p-4 md:p-5 rounded-2xl shadow-sm text-xs leading-relaxed ${
-                        isAi
-                          ? 'bg-white border border-slate-200 text-slate-800'
-                          : 'bg-teal-900 text-white font-medium max-w-xl'
-                      }`}>
+                      <div className={`p-4 md:p-5 rounded-2xl shadow-sm text-xs leading-relaxed ${isAi
+                        ? 'bg-white border border-slate-200 text-slate-800'
+                        : 'bg-teal-900 text-white font-medium max-w-xl'
+                        }`}>
                         <div className="whitespace-pre-wrap font-sans">
                           {msg.content}
                         </div>

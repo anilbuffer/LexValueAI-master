@@ -332,7 +332,7 @@ Narrative: V1 was stopped at a steady red light. V2 rear-ended V1 at approximate
       { id: "sec-2-1", title: "COLLISION NARRATIVE", content: "V1 was stopped at a steady red light. V2 rear-ended V1 at approximately 35 MPH. Driver of V1 complained of neck and back pain at the scene and was transported via EMS to City General Hospital. Driver of V2 cited for following too closely." },
       { id: "sec-2-2", title: "INJURIES REPORTED", content: "Driver V1 (Johnson): Neck pain, back pain. Transported by ambulance." }
     ],
-    plaintiffNarrative: "The police report clearly establishes 100% liability on the defendant commercial driver who failed to stop and rear-ended the plaintiff at a high rate of speed.",
+    plaintiffNarrative: "The evidence supports full liability on the defendant commercial driver who failed to stop and rear-ended the plaintiff at a high rate of speed.",
     defenseNarrative: "Liability is generally conceded, however, the severity of the impact is contested. Speed estimates are unverified.",
     aiAnalysis: {
       flags: [],
@@ -661,10 +661,10 @@ export let mockDepositionOutlines = [
     gaps: ["Missing physical therapy progress flowsheets for Dec 2018.", "Missing left knee arthroscopy operative narrative."],
     inconsistencies: ["Billing notes show injection on 08/12 while chart narrative indicates consultation only."],
     questionLines: [
-      { 
-        topic: "Causation & MVA", 
+      {
+        topic: "Causation & MVA",
         category: "Causation",
-        suggestedQuestion: "Dr. Cline, within a reasonable degree of medical certainty, did the motor vehicle collision on June 8th directly cause the acute disc herniations at C5-C6 and C6-C7?", 
+        suggestedQuestion: "Dr. Cline, within a reasonable degree of medical certainty, did the motor vehicle collision on June 8th directly cause the acute disc herniations at C5-C6 and C6-C7?",
         citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 35)",
         pageNumber: "35",
         impeachment: "Reference his initial orthopedic intake narrative where he explicitly concluded traumatic onset rather than degenerative origin.",
@@ -673,10 +673,10 @@ export let mockDepositionOutlines = [
           ifNo: "Confront with his contemporaneous consultation notes on Page 35 declaring direct traumatic etiology."
         }
       },
-      { 
-        topic: "17-Day Initial Treatment Gap", 
+      {
+        topic: "17-Day Initial Treatment Gap",
         category: "Treatment Gaps",
-        suggestedQuestion: "Is it medically customary for a patient with acute cervical whiplash to attempt conservative rest for 1-2 weeks before seeking specialized orthopedic intervention?", 
+        suggestedQuestion: "Is it medically customary for a patient with acute cervical whiplash to attempt conservative rest for 1-2 weeks before seeking specialized orthopedic intervention?",
         citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15)",
         pageNumber: "15",
         impeachment: "Defense will argue the 17-day delay proves lack of acute trauma. Lock doctor into confirming delayed inflammatory escalation.",
@@ -685,10 +685,10 @@ export let mockDepositionOutlines = [
           ifNo: "Clarify whether patient's delayed presentation altered his diagnostic conclusion in any manner."
         }
       },
-      { 
-        topic: "Pre-Existing Degeneration vs. Acute Herniation", 
+      {
+        topic: "Pre-Existing Degeneration vs. Acute Herniation",
         category: "Prior Injuries",
-        suggestedQuestion: "Can you explain how a patient with asymptomatic age-related cervical spondylosis can suffer an acute traumatic disc herniation from sudden rear-end impact force?", 
+        suggestedQuestion: "Can you explain how a patient with asymptomatic age-related cervical spondylosis can suffer an acute traumatic disc herniation from sudden rear-end impact force?",
         citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 85)",
         pageNumber: "85",
         impeachment: "Establish the Eggshell Plaintiff medical principle: trauma superimposed upon dormant degenerative architecture.",
@@ -697,10 +697,10 @@ export let mockDepositionOutlines = [
           ifNo: "Ask if he documented any prior complaints of radiating left arm pain before the accident date."
         }
       },
-      { 
-        topic: "Billing & Chart Inconsistencies", 
+      {
+        topic: "Billing & Chart Inconsistencies",
         category: "Inconsistencies",
-        suggestedQuestion: "Doctor, can you clarify why the billing ledger reflects a procedure code for a right shoulder injection on August 12 while the progress note refers only to conservative physical therapy?", 
+        suggestedQuestion: "Doctor, can you clarify why the billing ledger reflects a procedure code for a right shoulder injection on August 12 while the progress note refers only to conservative physical therapy?",
         citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 66)",
         pageNumber: "66",
         impeachment: "Cross-reference billing ledger line item with clinical note on Page 66 to resolve clerical discrepancy before defense raises it.",
@@ -720,10 +720,10 @@ export let mockDepositionOutlines = [
     gaps: ["Pre-2018 baseline cervical radiographic studies."],
     inconsistencies: ["Conflicting diagnostic date codes on surgical pre-authorization."],
     questionLines: [
-      { 
-        topic: "Surgical Necessity & Biomechanical Causation", 
+      {
+        topic: "Surgical Necessity & Biomechanical Causation",
         category: "Causation",
-        suggestedQuestion: "In your neurosurgical opinion, why was conservative physical therapy and epidural injections insufficient, necessitating the two-level ACDF surgery?", 
+        suggestedQuestion: "In your neurosurgical opinion, why was conservative physical therapy and epidural injections insufficient, necessitating the two-level ACDF surgery?",
         citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 55, 85)",
         pageNumber: "55, 85",
         impeachment: "Operative report documents severe neural foraminal stenosis with active nerve root impingement that failed 4 months of conservative care.",
@@ -732,10 +732,10 @@ export let mockDepositionOutlines = [
           ifNo: "Confront with EMG/NCV findings documenting active chronic right C6 radiculopathy."
         }
       },
-      { 
-        topic: "Adjacent Segment Disease & Future Care", 
+      {
+        topic: "Adjacent Segment Disease & Future Care",
         category: "Treatment Gaps",
-        suggestedQuestion: "Given the two-level fusion at C5-C7, what is the statistical probability of adjacent segment degeneration at C4-C5 over the patient's remaining life expectancy?", 
+        suggestedQuestion: "Given the two-level fusion at C5-C7, what is the statistical probability of adjacent segment degeneration at C4-C5 over the patient's remaining life expectancy?",
         citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 85)",
         pageNumber: "85",
         impeachment: "Peer-reviewed literature establishes a 25% 10-year risk of adjacent segment breakdown following multi-level cervical fusion.",
@@ -744,15 +744,15 @@ export let mockDepositionOutlines = [
           ifNo: "Ask if he disagrees with published spinal biomechanics data on altered cervical kinematics."
         }
       },
-      { 
-        topic: "Prior Asymptomatic Status", 
+      {
+        topic: "Prior Asymptomatic Status",
         category: "Prior Injuries",
-        suggestedQuestion: "Did you review the plaintiff's pre-accident primary care records, and did you find any evidence of prior cervical radiculopathy or treatment?", 
+        suggestedQuestion: "Did you review the plaintiff's pre-accident primary care records, and did you find any evidence of prior cervical radiculopathy or treatment?",
         citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15)",
         pageNumber: "15",
         impeachment: "Primary care chart from 2010 to 2018 contains zero neck complaints or neuro evaluations.",
         branching: {
-          ifYes: "Lock in that the plaintiff was 100% neurologically intact and asymptomatic prior to the collision.",
+          ifYes: "Lock in that the records support the plaintiff was completely neurologically intact and asymptomatic prior to the collision.",
           ifNo: "Present Page 15 of the intake history showing zero prior cervical complaints."
         }
       }
@@ -767,10 +767,10 @@ export let mockDepositionOutlines = [
     gaps: ["17-day period prior to initial specialist presentation."],
     inconsistencies: ["Self-reported post-op brace compliance vs. chart note."],
     questionLines: [
-      { 
-        topic: "17-Day Treatment Gap Explanation", 
+      {
+        topic: "17-Day Treatment Gap Explanation",
         category: "Treatment Gaps",
-        suggestedQuestion: "Why did you wait 17 days following the accident before making your first appointment with the orthopedic specialist Dr. Cline?", 
+        suggestedQuestion: "Why did you wait 17 days following the accident before making your first appointment with the orthopedic specialist Dr. Cline?",
         citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15)",
         pageNumber: "15",
         impeachment: "Defense will claim the gap indicates the injury occurred elsewhere. Plaintiff must clearly explain initial conservative self-care.",
@@ -779,10 +779,10 @@ export let mockDepositionOutlines = [
           ifNo: "Reiterate that no other accident or injury occurred during those 17 days."
         }
       },
-      { 
-        topic: "Prior Lumbar Fatigue vs. Cervical Trauma", 
+      {
+        topic: "Prior Lumbar Fatigue vs. Cervical Trauma",
         category: "Prior Injuries",
-        suggestedQuestion: "Before June 8, 2018, had you ever sought treatment, taken prescription medication, or missed work due to neck pain or arm numbness?", 
+        suggestedQuestion: "Before June 8, 2018, had you ever sought treatment, taken prescription medication, or missed work due to neck pain or arm numbness?",
         citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15, 22)",
         pageNumber: "15, 22",
         impeachment: "Defense counsel will attempt to conflate a single 2017 mild lower back strain note with the acute cervical disc rupture.",
@@ -791,10 +791,10 @@ export let mockDepositionOutlines = [
           ifNo: "Re-confirm she had never experienced cervical symptoms in her life."
         }
       },
-      { 
-        topic: "Cervical Orthosis Compliance", 
+      {
+        topic: "Cervical Orthosis Compliance",
         category: "Inconsistencies",
-        suggestedQuestion: "The medical chart on January 15, 2019 notes you were not wearing your cervical collar during that specific exam. Can you explain why?", 
+        suggestedQuestion: "The medical chart on January 15, 2019 notes you were not wearing your cervical collar during that specific exam. Can you explain why?",
         citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 68)",
         pageNumber: "68",
         impeachment: "Defense will allege surgical failure was caused by patient non-compliance with the post-operative brace.",
@@ -803,10 +803,10 @@ export let mockDepositionOutlines = [
           ifNo: "Establish that her surgeon confirmed solid bony fusion on subsequent radiographic imaging regardless."
         }
       },
-      { 
-        topic: "Immediate Crash Impact & Onset", 
+      {
+        topic: "Immediate Crash Impact & Onset",
         category: "Causation",
-        suggestedQuestion: "What physical sensations did you experience in your neck and upper body at the exact moment of the rear-end collision?", 
+        suggestedQuestion: "What physical sensations did you experience in your neck and upper body at the exact moment of the rear-end collision?",
         citation: "NYPD_Police_Report_MV104.pdf (Page 1)",
         pageNumber: "1",
         impeachment: "Lock in immediate violent flexion-extension whiplash motion and sharp burning sensation.",
@@ -826,22 +826,22 @@ export let mockDepositionOutlines = [
     gaps: ["DME exam performed prior to second surgical intervention."],
     inconsistencies: ["Defense claim of low speed vs. physical bumper crushing."],
     questionLines: [
-      { 
-        topic: "Commercial Driver Distraction & Speed", 
+      {
+        topic: "Commercial Driver Distraction & Speed",
         category: "Causation",
-        suggestedQuestion: "Isn't it true that you were traveling at approximately 35 MPH when you rear-ended the plaintiff's stopped vehicle at a steady red light?", 
+        suggestedQuestion: "Isn't it true that you were traveling at approximately 35 MPH when you rear-ended the plaintiff's stopped vehicle at a steady red light?",
         citation: "NYPD_Police_Report_MV104.pdf (Section 2-1)",
         pageNumber: "1-2",
         impeachment: "Police report MV-104 documents 35 MPH speed estimate and traffic citation for 'Following Too Closely'.",
         branching: {
-          ifYes: "Establish 100% unimpeachable liability and high kinetic transfer.",
+          ifYes: "Establish that the evidence supports unimpeachable liability and high kinetic transfer.",
           ifNo: "Present the police citation and photos showing compressed rear bumper crush zones."
         }
       },
-      { 
-        topic: "DME Pre-Surgical Examination Timing", 
+      {
+        topic: "DME Pre-Surgical Examination Timing",
         category: "Inconsistencies",
-        suggestedQuestion: "Doctor, your defense report claims the plaintiff was 'fully resolved,' yet your one-time physical exam occurred before her ACDF spine surgery, correct?", 
+        suggestedQuestion: "Doctor, your defense report claims the plaintiff was 'fully resolved,' yet your one-time physical exam occurred before her ACDF spine surgery, correct?",
         citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 85)",
         pageNumber: "85",
         impeachment: "DME report date was Oct 1, 2018; surgical fusion occurred Oct 15, 2018. The examiner never evaluated the post-surgical patient.",
@@ -850,10 +850,10 @@ export let mockDepositionOutlines = [
           ifNo: "Confront with the respective dates on the face of both documents."
         }
       },
-      { 
-        topic: "Absence of Prior Cervical Complaints", 
+      {
+        topic: "Absence of Prior Cervical Complaints",
         category: "Prior Injuries",
-        suggestedQuestion: "In your review of all 8 years of pre-collision primary care records, did you find a single documented complaint of cervical radiculopathy?", 
+        suggestedQuestion: "In your review of all 8 years of pre-collision primary care records, did you find a single documented complaint of cervical radiculopathy?",
         citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15)",
         pageNumber: "15",
         impeachment: "Confront defense expert with the complete absence of prior neck treatment in the medical history.",
@@ -950,7 +950,7 @@ export let mockCaseValuations = [
         riskLevel: "High",
         detail: "Radiologist notes mild age-related spondylosis and facet arthropathy on cervical imaging.",
         carrierArgument: "Carrier asserts disc pathology is pre-existing degeneration rather than collision-induced trauma.",
-        rebuttal: "Under the Eggshell Plaintiff Doctrine, the defense takes the plaintiff as they find them. Debra was 100% asymptomatic and working without restriction prior to the collision. The impact converted a dormant degenerative state into an acute symptomatic condition.",
+        rebuttal: "Under the Eggshell Plaintiff Doctrine, the defense takes the plaintiff as they find them. The records support that Debra was entirely asymptomatic and working without restriction prior to the collision. The impact converted a dormant degenerative state into an acute symptomatic condition.",
         citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 85)",
         pageNumber: "85"
       },
@@ -981,8 +981,97 @@ export let mockCaseValuations = [
         pageNumber: "Photos"
       }
     ],
+    carrierPositionFactors: [
+      {
+        id: "cpf-1",
+        title: "Degenerative findings",
+        category: "Causation & Radiography",
+        impactType: "negative",
+        impactLabel: "Alternative Causation Offset",
+        carrierArgument: "Carrier asserts disc desiccation, facet arthropathy, and spondylosis on MRI are pre-existing degenerative changes, applying an automated 25%–35% alternative-causation discount.",
+        rebuttal: "The records support that Debra was asymptomatic with zero cervical limitations prior to impact. Under the Eggshell Plaintiff Doctrine (PJI 2:282), the tortfeasor is legally liable for precipitating acute symptoms on dormant degeneration.",
+        citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 85)",
+        pageNumber: "85"
+      },
+      {
+        id: "cpf-2",
+        title: "Priors",
+        category: "Medical History & Prior Claims",
+        impactType: "positive",
+        impactLabel: "Zero Prior Cervical History",
+        carrierArgument: "Adjuster flags prior 2017 medical visit for lower back muscular fatigue, attempting to claim chronic pre-existing musculoskeletal vulnerability.",
+        rebuttal: "The 2017 record documented an isolated lumbar strain that resolved in 10 days with zero follow-up; plaintiff has zero prior cervical complaints, treatment, or imaging on record.",
+        citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 22)",
+        pageNumber: "22"
+      },
+      {
+        id: "cpf-3",
+        title: "Treatment gaps",
+        category: "Treatment Continuity",
+        impactType: "warning",
+        impactLabel: "17-Day Delay Addressed",
+        carrierArgument: "Carrier algorithms penalize the 17-day gap between collision (06/08/2018) and initial orthopedic consultation (06/25/2018) as evidence of mild injury or intervening event.",
+        rebuttal: "Plaintiff followed ER discharge protocol for rest and conservative care; when radiating radicular pain intensified, she promptly sought specialist care. Seamless continuous treatment followed with zero intervening trauma.",
+        citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 15)",
+        pageNumber: "15"
+      },
+      {
+        id: "cpf-4",
+        title: "Conservative treatment",
+        category: "Care Modalities & Protocol",
+        impactType: "positive",
+        impactLabel: "Conservative Care Exhausted",
+        carrierArgument: "Carrier audits whether full conservative protocol (physical therapy, chiropractic, NSAIDs) was completed and exhausted before interventional escalation.",
+        rebuttal: "Plaintiff completed 24+ documented physical therapy sessions and 2 fluoroscopic cervical epidural steroid injections with only transient relief, establishing documented conservative treatment failure.",
+        citation: "PD00302BDEAC13B19_Meds_Redacted.pdf (Page 48)",
+        pageNumber: "48"
+      },
+      {
+        id: "cpf-5",
+        title: "Minimal impact claims",
+        category: "Biomechanics & Property Damage",
+        impactType: "warning",
+        impactLabel: "Low Delta-V Cap Rebutted",
+        carrierArgument: "Adjuster applies low-impact algorithm guidelines (sub-$2,000 bumper repair) claiming low speed cannot produce structural disc injury.",
+        rebuttal: "Modern energy-absorbing bumper isolators prevent cosmetic crushing by transferring crash kinetic energy directly through the chassis to the occupant's cervical spine, accounting for acute annular tearing.",
+        citation: "Vehicle Repair Estimate & MV-104",
+        pageNumber: "Photos"
+      },
+      {
+        id: "cpf-6",
+        title: "Age",
+        category: "Demographics & Actuarial",
+        impactType: "positive",
+        impactLabel: "39.4 Yrs Life Expectancy",
+        carrierArgument: "Adjuster factors plaintiff's age (42) to argue age-related spinal wear while discounting long-term future pain and suffering multiplier calculations.",
+        rebuttal: "Age 42 represents ~39.4 years of remaining statistical life expectancy living with permanent radicular deficits and cervical impairment, significantly elevating lifetime non-economic damages.",
+        citation: "CDC Life Expectancy Tables (Age 42)",
+        pageNumber: "Life-Table"
+      },
+      {
+        id: "cpf-7",
+        title: "Venue",
+        category: "Jurisdiction & Jury Risk",
+        impactType: "positive",
+        impactLabel: "Kings County NY (High Carrier Risk)",
+        carrierArgument: "Carrier evaluates venue risk index and local verdict variance, attempting to enforce pre-suit settlement discounts prior to index filing in plaintiff-favorable forums.",
+        rebuttal: "Kings County (Brooklyn), NY is one of the highest-rated plaintiff-favorable venues nationally, with high jury verdict medians and NY statutory 9% pre-judgment interest creating substantial trial exposure.",
+        citation: "Kings County Supreme Court Venue Index",
+        pageNumber: "Court-NY"
+      },
+      {
+        id: "cpf-8",
+        title: "Surgical Hardware Distinction",
+        category: "Surgical Severity Scoring",
+        impactType: "positive",
+        impactLabel: "Hardware & Anchor Tier (Max Points)",
+        carrierArgument: "Claims algorithms (Colossus) assign substantially lower point severity scores to percutaneous / needle / endoscopic decompression procedures compared to open surgeries utilizing hardware, fixation plates, or suture anchors.",
+        rebuttal: "Operative planning specifies open surgical decompression with rigid hardware fixation and anchors if interventional failure persists, placing the claim in the maximum surgical severity algorithmic point tier.",
+        citation: "Dr. Grossman Surgical Recommendation (Page 92)",
+        pageNumber: "92"
+      }
+    ],
     carrierModel: {
-      softwarePredictedName: "Colossus / Guidewire ClaimCenter",
       discountFactorsApplied: [
         { factor: "17-Day Gap Penalty", impact: "Moderate Negative", reason: "Automated reduction for uncorroborated gap between accident and initial specialist visit." },
         { factor: "Pre-Existing Degeneration Offset", impact: "Moderate Negative", reason: "Alternative causation reduction applied to cervical soft tissue & disc injury rating." },
@@ -1007,7 +1096,7 @@ export let mockCaseValuations = [
         "Neutralize low property damage arguments using biomechanical bumper isolator elasticity mechanics."
       ],
       keyLeveragePoints: [
-        "Unimpeached liability: 100% adverse driver fault at steady red light eliminates comparative risk.",
+        "Unimpeached liability: The evidence supports adverse driver fault at steady red light, eliminating comparative risk.",
         "Verified economic specials ($31,400) creates a strong mathematical floor for settlement discussions.",
         "Documented functional limitations provide compelling trial narrative for non-economic pain and suffering.",
         "Eggshell plaintiff doctrine completely overcomes adjuster's pre-existing spondylosis deductions under NY law."
@@ -1261,7 +1350,7 @@ export let mockSettlementOutcomes: MockSettlementOutcome[] = [
     settlementRatio: 3.07,
     timeToSettleDays: 165,
     closedDate: new Date("2026-06-12T14:00:00Z"),
-    primaryValueDrivers: ["Confirmed L4-L5 herniation on MRI", "Fluoroscopic ESI procedures", "100% Commercial liability"],
+    primaryValueDrivers: ["Confirmed L4-L5 herniation on MRI", "Fluoroscopic ESI procedures", "Evidence supports commercial liability"],
     primaryDefenseWeaknesses: ["14-day gap after urgent care", "Degenerative spondylolisthesis note"],
     notes: "Settled at mediator pre-trial conference after rebuttal of pre-existing degeneration with eggshell doctrine."
   },
