@@ -116,20 +116,6 @@ export function CaseDetailsForm({ formData, setFormData, formErrors, setFormErro
           />
           {formErrors.dateOfInjury && <span className="text-xs text-rose-500 font-semibold">{formErrors.dateOfInjury}</span>}
         </div>
-        <div className="space-y-1.5 md:col-span-2">
-          <label htmlFor="propertyDamagePhoto" className="text-sm font-semibold text-slate-900 block">Property Damage Photo <span className="text-slate-400 font-medium">(Optional)</span></label>
-          <input
-            id="propertyDamagePhoto"
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              if (e.target.files && e.target.files.length > 0) {
-                setFormData({ ...formData, propertyDamagePhoto: e.target.files[0] })
-              }
-            }}
-            className="block w-full px-4 py-2.5 border border-slate-200 bg-white rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-600 transition-all cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
-          />
-        </div>
 
         <div className="md:col-span-2 pt-8 border-t border-slate-100">
           <div className="mb-6">

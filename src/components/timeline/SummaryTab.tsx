@@ -13,7 +13,7 @@ import {
   FileText,
   ExternalLink
 } from 'lucide-react'
-import { updateMockDocument, getMockCaseValuations } from '@/lib/mock-data'
+import { getMockCaseValuations } from '@/lib/mock-data'
 import { useRouter, usePathname } from 'next/navigation'
 
 type NarrativePerspective = 'Plaintiff Narrative' | 'Defense Narrative' | 'Settlement & Negotiation Analysis' | 'Structured'
@@ -22,8 +22,6 @@ type SettlementSection = 'all' | 'drivers' | 'defense' | 'carrier' | 'strategy'
 export function SummaryTab({ caseData }: { caseData?: any }) {
   const [perspective, setPerspective] = useState<NarrativePerspective>('Plaintiff Narrative')
   const [settlementSection, setSettlementSection] = useState<SettlementSection>('all')
-  const [editingSection, setEditingSection] = useState<string | null>(null)
-  const [editContent, setEditContent] = useState("")
   const [valuations, setValuations] = useState<any[]>([])
 
   const router = useRouter()
@@ -141,30 +139,7 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
   // Get the primary document (mocked)
   const doc = caseData?.documents?.[0] || null
 
-  const handleEditClick = (sectionId: string, currentContent: string) => {
-    setEditingSection(sectionId)
-    setEditContent(currentContent)
-  }
 
-  const handleSaveClick = (sectionId: string) => {
-    if (doc) {
-      if (sectionId === 'plaintiff') {
-        updateMockDocument(doc.id, { plaintiffNarrative: editContent })
-        doc.plaintiffNarrative = editContent
-      } else if (sectionId === 'defense') {
-        updateMockDocument(doc.id, { defenseNarrative: editContent })
-        doc.defenseNarrative = editContent
-      } else if (doc.summarySections) {
-        const updatedSections = doc.summarySections.map((s: any) =>
-          s.id === sectionId ? { ...s, content: editContent } : s
-        )
-        updateMockDocument(doc.id, { summarySections: updatedSections })
-        const target = doc.summarySections.find((s: any) => s.id === sectionId)
-        if (target) target.content = editContent
-      }
-    }
-    setEditingSection(null)
-  }
 
   const handleSourceClick = (e: React.MouseEvent, _pageNumber?: string) => {
     e.stopPropagation()
@@ -228,34 +203,11 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                   <span className="w-3 h-3 rounded-full bg-teal-600"></span>
                   <h3 className="text-[13px] font-bold text-slate-800 uppercase tracking-widest m-0">Plaintiff Narrative (Case Presentation)</h3>
                 </div>
-                {editingSection !== 'plaintiff' ? (
-                  <button
-                    onClick={() => handleEditClick('plaintiff', doc.plaintiffNarrative)}
-                    className="text-teal-600 hover:text-teal-700 text-[13px] font-bold px-3 py-1 rounded-lg border border-teal-200 hover:bg-teal-50 transition-colors"
-                  >
-                    Edit
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleSaveClick('plaintiff')}
-                    className="text-white bg-teal-600 hover:bg-teal-700 text-[13px] font-bold px-4 py-1 rounded-lg shadow-sm transition-colors"
-                  >
-                    Save Changes
-                  </button>
-                )}
               </div>
 
-              {editingSection === 'plaintiff' ? (
-                <textarea
-                  value={editContent}
-                  onChange={(e) => setEditContent(e.target.value)}
-                  className="w-full min-h-[140px] p-4 bg-white border-2 border-teal-500 rounded-xl outline-none focus:ring-0 text-slate-800 resize-y leading-relaxed text-[14px] shadow-inner"
-                />
-              ) : (
-                <div className="text-slate-700 text-[15px] leading-relaxed font-normal whitespace-pre-wrap">
-                  {doc.plaintiffNarrative}
-                </div>
-              )}
+              <div className="text-slate-700 text-[15px] leading-relaxed font-normal whitespace-pre-wrap">
+                {doc.plaintiffNarrative}
+              </div>
             </div>
           )}
 
@@ -267,34 +219,11 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                   <span className="w-3 h-3 rounded-full bg-rose-500"></span>
                   <h3 className="text-[13px] font-bold text-slate-800 uppercase tracking-widest m-0">Defense Narrative (Anticipated Counterarguments)</h3>
                 </div>
-                {editingSection !== 'defense' ? (
-                  <button
-                    onClick={() => handleEditClick('defense', doc.defenseNarrative)}
-                    className="text-teal-600 hover:text-teal-700 text-[13px] font-bold px-3 py-1 rounded-lg border border-teal-200 hover:bg-teal-50 transition-colors"
-                  >
-                    Edit
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleSaveClick('defense')}
-                    className="text-white bg-teal-600 hover:bg-teal-700 text-[13px] font-bold px-4 py-1 rounded-lg shadow-sm transition-colors"
-                  >
-                    Save Changes
-                  </button>
-                )}
               </div>
 
-              {editingSection === 'defense' ? (
-                <textarea
-                  value={editContent}
-                  onChange={(e) => setEditContent(e.target.value)}
-                  className="w-full min-h-[140px] p-4 bg-white border-2 border-teal-500 rounded-xl outline-none focus:ring-0 text-slate-800 resize-y leading-relaxed text-[14px] shadow-inner"
-                />
-              ) : (
-                <div className="text-slate-700 text-[15px] leading-relaxed font-normal whitespace-pre-wrap">
-                  {doc.defenseNarrative}
-                </div>
-              )}
+              <div className="text-slate-700 text-[15px] leading-relaxed font-normal whitespace-pre-wrap">
+                {doc.defenseNarrative}
+              </div>
             </div>
           )}
 

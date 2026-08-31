@@ -30,7 +30,6 @@ export default function NewCasePage() {
     type: "",
     dateOfInjury: "",
     customPrompt: "",
-    propertyDamagePhoto: null as File | null,
   })
 
   const [files, setFiles] = useState<TempFile[]>([])
