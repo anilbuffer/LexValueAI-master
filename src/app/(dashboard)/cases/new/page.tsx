@@ -5,8 +5,32 @@ import { useRouter } from "next/navigation"
 import { ArrowLeft, Loader2, Check, ShieldCheck, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { CaseDetailsForm } from "@/components/cases/CaseDetailsForm"
-import { DocumentUploadArea, TempFile } from "@/components/cases/DocumentUploadArea"
-import { getMockCases } from "@/lib/mock-data"
+import { DocumentUploadArea, TempFile, PhotoFile, PropertyDamageMetadata } from "@/components/cases/DocumentUploadArea"
+import { getMockCases, createMockCase, createMockPropertyDamage, mockFirm } from "@/lib/mock-data"
+
+const SAMPLE_DAMAGE_PHOTOS: PhotoFile[] = [
+  {
+    id: "photo-sample-1",
+    file: new File([""], "front_bumper_damage.jpg", { type: "image/jpeg" }),
+    previewUrl: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?w=600&auto=format&fit=crop&q=80",
+    status: "done",
+    progress: 100
+  },
+  {
+    id: "photo-sample-2",
+    file: new File([""], "side_impact_damage.jpg", { type: "image/jpeg" }),
+    previewUrl: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=600&auto=format&fit=crop&q=80",
+    status: "done",
+    progress: 100
+  },
+  {
+    id: "photo-sample-3",
+    file: new File([""], "rear_collision_damage.jpg", { type: "image/jpeg" }),
+    previewUrl: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&auto=format&fit=crop&q=80",
+    status: "done",
+    progress: 100
+  }
+]
 
 export default function NewCasePage() {
   const router = useRouter()
@@ -32,8 +56,20 @@ export default function NewCasePage() {
     customPrompt: "",
   })
 
+  // Document & Photo state
+  const [documentType, setDocumentType] = useState<string>('property_damage')
   const [files, setFiles] = useState<TempFile[]>([])
   const [isDragging, setIsDragging] = useState(false)
+
+  // Property Damage Photos state with 3 sample vehicle photos
+  const [damagePhotos, setDamagePhotos] = useState<PhotoFile[]>(SAMPLE_DAMAGE_PHOTOS)
+  const [photoMetadata, setPhotoMetadata] = useState<PropertyDamageMetadata>({
+    description: "",
+    photoDate: new Date().toISOString().split('T')[0],
+    source: "Attorney Upload"
+  })
+  const [photoSubStep, setPhotoSubStep] = useState<'select_type' | 'upload_photos' | 'review_photos'>('select_type')
+
   const [formErrors, setFormErrors] = useState<any>({})
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -49,7 +85,6 @@ export default function NewCasePage() {
   const uploadTempFile = async (tf: TempFile) => {
     setFiles(prev => prev.map(f => f.id === tf.id ? { ...f, status: 'uploading' } : f));
     
-    // Simulate upload progress
     let progress = 0;
     const interval = setInterval(() => {
       progress += Math.random() * 20;
@@ -64,7 +99,7 @@ export default function NewCasePage() {
 
   const processSelectedFiles = (allFiles: File[]) => {
     const pdfFiles = allFiles.filter(file => file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'))
-    if (pdfFiles.length !== allFiles.length) toast.error("Only PDF files are supported.")
+    if (pdfFiles.length !== allFiles.length) toast.error("Only PDF files are supported for document upload.")
     const validSizeFiles = pdfFiles.filter(file => file.size <= 200 * 1024 * 1024)
     if (validSizeFiles.length !== pdfFiles.length) toast.error("Some files exceed the 200MB limit and were skipped.")
 
@@ -87,10 +122,71 @@ export default function NewCasePage() {
     newTempFiles.forEach(tf => uploadTempFile(tf));
   }
 
-  const handleDrop = (e: React.DragEvent) => {
+  // Handle Photo selection and drag-and-drop
+  const processSelectedPhotos = (allFiles: File[]) => {
+    const imageFiles = allFiles.filter(file => 
+      file.type.startsWith('image/') || 
+      /\.(jpg|jpeg|png|heic|webp)$/i.test(file.name)
+    )
+
+    if (imageFiles.length !== allFiles.length) {
+      toast.error("Some non-image files were skipped. Accepted formats: JPG, PNG, HEIC.")
+    }
+
+    const validSizePhotos = imageFiles.filter(file => file.size <= 25 * 1024 * 1024)
+    if (validSizePhotos.length !== imageFiles.length) {
+      toast.error("Some photos exceed the 25MB limit per photo.")
+    }
+
+    const newPhotoFiles: PhotoFile[] = validSizePhotos.map(f => ({
+      id: Math.random().toString(36).substring(2) + Date.now().toString(36),
+      file: f,
+      previewUrl: URL.createObjectURL(f),
+      status: 'done',
+      progress: 100
+    }))
+
+    if (newPhotoFiles.length > 0) {
+      setDamagePhotos(prev => [...prev, ...newPhotoFiles])
+      setPhotoSubStep('review_photos')
+      toast.success(`${newPhotoFiles.length} photo(s) added!`)
+    }
+  }
+
+  const handlePhotoInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      processSelectedPhotos(Array.from(e.target.files))
+    }
+  }
+
+  const handlePhotoDrop = (e: React.DragEvent) => {
     e.preventDefault()
     setIsDragging(false)
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      processSelectedPhotos(Array.from(e.dataTransfer.files))
+    }
+  }
+
+  const removePhoto = (id: string) => {
+    setDamagePhotos(prev => {
+      const target = prev.find(p => p.id === id)
+      if (target?.previewUrl && target.previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(target.previewUrl)
+      }
+      const remaining = prev.filter(p => p.id !== id)
+      if (remaining.length === 0 && photoSubStep === 'review_photos') {
+        setPhotoSubStep('upload_photos')
+      }
+      return remaining
+    })
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+    if (documentType === 'property_damage') {
+      handlePhotoDrop(e)
+    } else if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       processSelectedFiles(Array.from(e.dataTransfer.files))
     }
   }
@@ -150,31 +246,104 @@ export default function NewCasePage() {
         toast.error("Please fill the required fields")
       }
     } else if (currentStep === 2) {
-      if (files.some(f => f.status === 'uploading')) {
-        toast.error("Please wait for all files to finish uploading.");
-        return;
+      if (documentType === 'property_damage') {
+        if (photoSubStep === 'select_type') {
+          if (damagePhotos.length > 0) {
+            setPhotoSubStep('review_photos')
+          } else {
+            setPhotoSubStep('upload_photos')
+          }
+        } else if (photoSubStep === 'upload_photos') {
+          if (damagePhotos.length === 0) {
+            toast.error("Please select at least one Property Damage Photo or change document type.")
+            return
+          }
+          setPhotoSubStep('review_photos')
+        } else if (photoSubStep === 'review_photos') {
+          setCurrentStep(3)
+        }
+      } else {
+        if (files.some(f => f.status === 'uploading')) {
+          toast.error("Please wait for all files to finish uploading.")
+          return
+        }
+        setCurrentStep(3)
       }
-      setCurrentStep(3)
     }
   }
 
   const handleBack = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1)
+    if (currentStep === 2) {
+      if (documentType === 'property_damage') {
+        if (photoSubStep === 'review_photos') {
+          setPhotoSubStep('upload_photos')
+          return
+        } else if (photoSubStep === 'upload_photos') {
+          setPhotoSubStep('select_type')
+          return
+        }
+      }
+      setCurrentStep(1)
+    } else if (currentStep > 1) {
+      setCurrentStep(currentStep - 1)
+    }
   }
 
   const handleSubmit = async () => {
     setIsSubmitting(true)
 
-    // Simulate API creation
+    const newCaseId = `case-${Date.now()}`
+    const createdCase = {
+      id: newCaseId,
+      referenceId: formData.referenceId,
+      title: formData.title,
+      client: formData.client,
+      clientEmail: formData.clientEmail,
+      clientPhone: formData.clientPhone,
+      clientAge: Number(formData.clientAge),
+      clientGender: formData.clientGender,
+      clientAddress: formData.clientAddress,
+      type: formData.type,
+      dateOfInjury: new Date(formData.dateOfInjury),
+      status: "ACTIVE",
+      flags: 0,
+      customPrompt: formData.customPrompt,
+      approvalStatus: "APPROVED",
+      rejectionReason: null,
+      scanProgress: 100,
+      scanStage: "COMPLETED",
+      firmId: mockFirm.id,
+      createdByUserId: "user-1",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      documents: [],
+      assignedUsers: []
+    }
+
+    createMockCase(createdCase)
+
+    if (damagePhotos.length > 0) {
+      createMockPropertyDamage({
+        id: `pd-${Date.now()}`,
+        caseId: newCaseId,
+        firmId: mockFirm.id,
+        photos: damagePhotos.map(p => p.previewUrl),
+        description: photoMetadata.description || "Property damage photos uploaded during case creation.",
+        repairEstimate: 8500.00,
+        vehicleInfo: `${formData.title || 'Vehicle'} Damage`,
+        createdAt: new Date()
+      })
+    }
+
     setTimeout(() => {
-      toast.success('Case created and files processing successfully!')
+      toast.success('Case created and photos saved successfully!')
       router.push('/cases')
     }, 1000)
   }
 
   const steps = [
     { id: 1, title: 'Case Details', desc: 'Basic information' },
-    { id: 2, title: 'Upload Files', desc: 'Medical records' },
+    { id: 2, title: 'Upload Files', desc: 'Medical records & photos' },
     { id: 3, title: 'AI Analysis', desc: 'Custom instructions' }
   ]
 
@@ -237,7 +406,7 @@ export default function NewCasePage() {
                 />
               )}
 
-              {/* STEP 2: Document Upload */}
+              {/* STEP 2: Document Upload & Property Damage Photos */}
               {currentStep === 2 && (
                 <DocumentUploadArea
                   files={files}
@@ -247,6 +416,17 @@ export default function NewCasePage() {
                   handleDrop={handleDrop}
                   handleFileInput={handleFileInput}
                   removeFile={removeFile}
+                  documentType={documentType}
+                  setDocumentType={setDocumentType}
+                  damagePhotos={damagePhotos}
+                  photoMetadata={photoMetadata}
+                  setPhotoMetadata={setPhotoMetadata}
+                  photoSubStep={photoSubStep}
+                  setPhotoSubStep={setPhotoSubStep}
+                  handlePhotoInput={handlePhotoInput}
+                  removePhoto={removePhoto}
+                  handlePhotoDrop={handlePhotoDrop}
+                  onSaveAndContinue={handleNext}
                 />
               )}
 
@@ -302,16 +482,16 @@ export default function NewCasePage() {
               </div>
 
               <div className="flex items-center gap-4">
-
-
                 {currentStep < 3 ? (
                   <button
                     type="button"
                     onClick={handleNext}
-                    disabled={currentStep === 2 && files.some(f => f.status === 'uploading')}
+                    disabled={currentStep === 2 && documentType !== 'property_damage' && files.some(f => f.status === 'uploading')}
                     className="h-12 flex justify-center items-center px-5 border border-transparent rounded-lg text-sm font-medium text-white bg-teal-900 hover:bg-teal-950 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-900 transition-all cursor-pointer group disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                    Next Step
+                    {currentStep === 2 && documentType === 'property_damage' && photoSubStep === 'review_photos'
+                      ? "Save & Continue"
+                      : "Continue"}
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                 ) : (
