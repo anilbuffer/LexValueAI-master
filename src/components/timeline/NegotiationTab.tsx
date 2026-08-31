@@ -605,6 +605,32 @@ export function NegotiationTab({ caseData }: { caseData: any }) {
                       </div>
                     )}
 
+                    {/* Photo Evidence Thumbnails */}
+                    {(msg as any).hasPhotoEvidence && (
+                      <div className="mt-3 space-y-2">
+                        <div className="grid grid-cols-4 gap-1.5 max-w-xs">
+                          {[
+                            "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=600&auto=format&fit=crop&q=80",
+                            "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=600&auto=format&fit=crop&q=80",
+                            "https://images.unsplash.com/photo-1563720223185-11003d516935?w=600&auto=format&fit=crop&q=80",
+                            "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&auto=format&fit=crop&q=80"
+                          ].map((url, idx) => (
+                            <div key={idx} className="aspect-square rounded-lg overflow-hidden border border-slate-200 bg-slate-100 shadow-2xs">
+                              <img src={url} alt={`Evidence photo ${idx + 1}`} className="w-full h-full object-cover" />
+                            </div>
+                          ))}
+                        </div>
+                        <button
+                          onClick={() => {
+                            router.push(`${pathname}?tab=case_documents`);
+                          }}
+                          className="text-[11px] font-bold text-teal-600 hover:text-teal-800 hover:underline block cursor-pointer"
+                        >
+                          View All Photos (15)
+                        </button>
+                      </div>
+                    )}
+
                     {/* Citation & Copy Actions */}
                     {isAi && (
                       <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">

@@ -1461,6 +1461,24 @@ export let mockNegotiationChatHistory = [
     sender: "ai",
     content: "Welcome to your AI Negotiation Assistant. I have indexed this case's medical chronology, objective MRI findings, $31,400 economic specials, and Travelers' algorithmic discount patterns.\n\nHow would you like to proceed with Round 3 strategy? You can ask me to calculate bracket midpoints, draft a formal counter-demand letter, or craft a targeted legal rebuttal.",
     createdAt: new Date("2026-08-18T16:15:00Z"),
+  },
+  {
+    id: "neg-chat-2",
+    caseId: "case-1",
+    firmId: "firm-1",
+    sender: "user",
+    content: "What does the property damage evidence show?",
+    createdAt: new Date("2026-08-18T16:16:00Z"),
+  },
+  {
+    id: "neg-chat-3",
+    caseId: "case-1",
+    firmId: "firm-1",
+    sender: "ai",
+    content: "The photos show minor front-end damage to the bumper and grille area. This may be used by the adjuster to argue low impact. You may want to address how this does not align with the medical evidence of injury.",
+    citation: "Property Damage Photos (15 uploaded)",
+    hasPhotoEvidence: true,
+    createdAt: new Date("2026-08-18T16:16:30Z"),
   }
 ];
 

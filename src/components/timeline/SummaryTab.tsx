@@ -538,6 +538,34 @@ export function SummaryTab({ caseData }: { caseData?: any }) {
                             <p className="text-xs text-slate-700 leading-relaxed italic">
                               "{factor.carrierArgument}"
                             </p>
+
+                            {/* Supporting Evidence Photo Grid matching Card 4 */}
+                            {(factor.title?.toLowerCase().includes('impact') || factor.title?.toLowerCase().includes('property') || factor.title?.toLowerCase().includes('causation')) && (
+                              <div className="mt-2.5 pt-2.5 border-t border-slate-100">
+                                <span className="text-[11px] font-bold text-slate-700 block mb-1.5">Supporting Evidence</span>
+                                <div className="grid grid-cols-4 gap-1.5 max-w-xs">
+                                  {[
+                                    "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=600&auto=format&fit=crop&q=80",
+                                    "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=600&auto=format&fit=crop&q=80",
+                                    "https://images.unsplash.com/photo-1563720223185-11003d516935?w=600&auto=format&fit=crop&q=80",
+                                    "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&auto=format&fit=crop&q=80"
+                                  ].map((url, i) => (
+                                    <div key={i} className="aspect-square rounded-lg overflow-hidden border border-slate-200 bg-slate-100 shadow-2xs">
+                                      <img src={url} alt={`Evidence photo ${i + 1}`} className="w-full h-full object-cover" />
+                                    </div>
+                                  ))}
+                                </div>
+                                <button 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    router.push(`${pathname}?tab=case_documents`);
+                                  }}
+                                  className="text-[11px] font-bold text-teal-600 hover:text-teal-800 hover:underline mt-1.5 block cursor-pointer"
+                                >
+                                  View All Photos (15)
+                                </button>
+                              </div>
+                            )}
                           </div>
                         </div>
 

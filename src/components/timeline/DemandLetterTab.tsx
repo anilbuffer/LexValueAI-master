@@ -145,6 +145,42 @@ We look forward to your prompt response.`)
             <p className="mb-2 text-slate-600">Very truly yours,</p>
             <p className="font-bold font-sans text-slate-800">{firm?.name}</p>
           </div>
+
+          {/* Attached Exhibit Section matching Card 6 */}
+          <div className="mt-8 pt-6 border-t border-slate-200 bg-slate-50/80 rounded-2xl p-5 border border-slate-200">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Exhibit Section</h4>
+                <p className="text-xs text-slate-500 mt-0.5">Property damage photos from the vehicle attached to this demand.</p>
+              </div>
+              <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                Attached to Demand
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+              {[
+                { url: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=600&auto=format&fit=crop&q=80", name: "Front Bumper" },
+                { url: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=600&auto=format&fit=crop&q=80", name: "Grille Impact" },
+                { url: "https://images.unsplash.com/photo-1563720223185-11003d516935?w=600&auto=format&fit=crop&q=80", name: "Quarter Panel" },
+                { url: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&auto=format&fit=crop&q=80", name: "Rear Bumper" }
+              ].map((img, idx) => (
+                <div key={idx} className="aspect-square rounded-xl overflow-hidden border border-slate-200 bg-white shadow-2xs group relative">
+                  <img src={img.url} alt={img.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                  <div className="absolute bottom-0 inset-x-0 bg-slate-950/70 p-1 text-[10px] text-white truncate text-center">
+                    {img.name}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-600 flex items-start gap-2 shadow-2xs">
+              <span className="text-teal-700 font-bold">↳</span>
+              <p className="text-xs text-slate-600">
+                These photos help demonstrate the impact conditions at the time of the accident.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
