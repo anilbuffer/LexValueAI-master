@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
-import { Sparkles, Activity, FileQuestion, Flag, Handshake, Mail, UserCheck } from "lucide-react"
+import { Sparkles, Activity, FileQuestion, Flag, Handshake, Mail, UserCheck, Folder } from "lucide-react"
 import { getUserRole } from "@/app/actions/auth"
 import { ChronologyTab } from "@/components/timeline/ChronologyTab"
 import { SummaryTab } from "@/components/timeline/SummaryTab"
@@ -9,10 +9,11 @@ import { CaseIntelligenceBlock } from "@/components/timeline/CaseIntelligenceBlo
 import { NegotiationTab } from "@/components/timeline/NegotiationTab"
 import { DemandLetterTab } from "@/components/timeline/DemandLetterTab"
 import { DepositionOutlineTab } from "@/components/timeline/DepositionOutlineTab"
+import { CaseDocumentsTab } from "@/components/timeline/CaseDocumentsTab"
 import { RightSidebar } from "@/components/timeline/RightSidebar"
 import { useSearchParams } from "next/navigation"
 
-type TabType = 'flags' | 'chronology' | 'summary' | 'gaps' | 'negotiation' | 'demand_letter' | 'deposition_outline'
+type TabType = 'flags' | 'chronology' | 'summary' | 'gaps' | 'case_documents' | 'negotiation' | 'demand_letter' | 'deposition_outline'
 
 export function TimelineTabs({ caseData }: { caseData: any }) {
   const searchParams = useSearchParams()
@@ -26,7 +27,7 @@ export function TimelineTabs({ caseData }: { caseData: any }) {
 
   useEffect(() => {
     const tabParam = searchParams.get('tab') as TabType
-    if (tabParam && ['flags', 'chronology', 'summary', 'gaps', 'negotiation', 'demand_letter', 'deposition_outline'].includes(tabParam)) {
+    if (tabParam && ['flags', 'chronology', 'summary', 'gaps', 'case_documents', 'negotiation', 'demand_letter', 'deposition_outline'].includes(tabParam)) {
       setActiveTab(tabParam)
     }
   }, [searchParams])
@@ -91,6 +92,19 @@ export function TimelineTabs({ caseData }: { caseData: any }) {
         </button>
 
         <button
+          onClick={() => setActiveTab('case_documents')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[14px] font-semibold transition-all whitespace-nowrap cursor-pointer border ${activeTab === 'case_documents'
+            ? 'bg-teal-900 text-white border-teal-900 shadow-md'
+            : 'bg-white text-slate-500 border-slate-200/50 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800 shadow-sm'
+            }`}
+        >
+          <div className={`${activeTab === 'case_documents' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'} p-1 rounded-md transition-colors`}>
+            <Folder className="w-4 h-4" />
+          </div>
+          Case Documents
+        </button>
+
+        <button
           onClick={() => setActiveTab('negotiation')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[14px] font-semibold transition-all whitespace-nowrap cursor-pointer border ${activeTab === 'negotiation'
             ? 'bg-teal-900 text-white border-teal-900 shadow-md'
@@ -137,6 +151,7 @@ export function TimelineTabs({ caseData }: { caseData: any }) {
           {activeTab === 'chronology' && <ChronologyTab caseData={caseData} />}
           {activeTab === 'summary' && <SummaryTab caseData={caseData} />}
           {activeTab === 'gaps' && <GapsTab caseData={caseData} role={role} />}
+          {activeTab === 'case_documents' && <CaseDocumentsTab caseData={caseData} />}
           {activeTab === 'negotiation' && <NegotiationTab caseData={caseData} />}
           {activeTab === 'demand_letter' && <DemandLetterTab caseData={caseData} role={role} />}
           {activeTab === 'deposition_outline' && <DepositionOutlineTab caseData={caseData} />}
