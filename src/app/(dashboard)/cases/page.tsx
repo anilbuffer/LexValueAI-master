@@ -340,6 +340,10 @@ export default function CasesPage() {
                       <option value="Personal Injury">Personal Injury</option>
                       <option value="Medical Malpractice">Medical Malpractice</option>
                       <option value="Criminal">Criminal</option>
+                      <option value="Medical Records">Medical Records</option>
+                      <option value="Accident / Police Report">Accident / Police Report</option>
+                      <option value="Insurance Documents">Insurance Documents</option>
+                      <option value="Property Damage Photos">Property Damage Photos</option>
                       <option value="Other">Other</option>
                     </select>
 

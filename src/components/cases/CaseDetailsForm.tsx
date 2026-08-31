@@ -100,6 +100,10 @@ export function CaseDetailsForm({ formData, setFormData, formErrors, setFormErro
             <option value="Personal Injury" className="text-slate-900">Personal Injury</option>
             <option value="Medical Malpractice" className="text-slate-900">Medical Malpractice</option>
             <option value="Criminal" className="text-slate-900">Criminal</option>
+            <option value="Medical Records" className="text-slate-900">Medical Records</option>
+            <option value="Accident / Police Report" className="text-slate-900">Accident / Police Report</option>
+            <option value="Insurance Documents" className="text-slate-900">Insurance Documents</option>
+            <option value="Property Damage Photos" className="text-slate-900">Property Damage</option>
             <option value="Other" className="text-slate-900">Other</option>
           </select>
           {formErrors.type && <span className="text-xs text-rose-500 font-semibold">{formErrors.type}</span>}

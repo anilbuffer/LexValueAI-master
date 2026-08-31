@@ -803,6 +803,21 @@ export function CaseDocumentsTab({ caseData }: { caseData?: any }) {
               </button>
             </div>
 
+            {/* Category Selection Dropdown */}
+            <div className="mb-4 space-y-1">
+              <label className="text-xs font-bold text-slate-700 block">Document / File Category <span className="text-rose-500">*</span></label>
+              <select
+                defaultValue={uploadType === 'photo' ? 'property_damage' : 'medical'}
+                className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white text-slate-800 font-medium focus:outline-none focus:border-teal-600 cursor-pointer"
+              >
+                <option value="medical">Medical Records</option>
+                <option value="police">Accident / Police Report</option>
+                <option value="insurance">Insurance Documents</option>
+                <option value="property_damage">Property Damage Photos</option>
+                <option value="other">Other Documents</option>
+              </select>
+            </div>
+
             <div 
               onClick={handleSimulateUpload}
               className="border-2 border-dashed border-teal-200 hover:border-teal-600 bg-teal-50/40 rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:bg-teal-50/70"
