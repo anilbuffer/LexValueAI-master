@@ -35,7 +35,7 @@ export default async function PortalPage({ params }: { params: Promise<{ caseId:
   };
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto w-full">
+    <div className="p-6 space-y-6 w-full">
       {/* Welcome Banner */}
       <div className="bg-gradient-to-r from-teal-900 to-teal-700 rounded-xl p-8 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">

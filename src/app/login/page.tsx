@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useActionState, useEffect } from "react";
-import { Mail, Lock, ArrowRight, ShieldCheck, Scale, FileText, UserPlus, Eye, EyeOff, Sparkles, RefreshCcw, Handshake } from "lucide-react";
+import { Mail, Lock, ArrowRight, ShieldCheck, Scale, FileText, UserPlus, Eye, EyeOff, Sparkles, RefreshCcw, Handshake, Globe } from "lucide-react";
 import { loginUser } from "@/app/actions/auth";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import loginBg from "../../../public/images/login.jpg";
 
 type Role = {
@@ -18,7 +19,8 @@ const demoRoles: Role[] = [
   { id: 'paralegal', title: 'Paralegal', subtitle: 'Case Prep', icon: FileText, email: 'rachel@smithassociates.com' },
   { id: 'attorney', title: 'Attorney', subtitle: 'Legal Desk', icon: Scale, email: 'mike@smithassociates.com' },
   { id: 'managing_partner', title: 'Managing Partner', subtitle: 'Firm Overview', icon: Handshake, email: 'harvey@smithassociates.com' },
-  { id: 'admin', title: 'Super Admin', subtitle: 'System Control', icon: ShieldCheck, email: 'admin@lexvalue.com' },
+  { id: 'admin', title: 'Admin', subtitle: 'Firm Management', icon: ShieldCheck, email: 'admin@lexvalue.com' },
+  { id: 'superadmin', title: 'Superadmin', subtitle: 'Platform Control', icon: Globe, email: 'super@lexvalue.com' },
 ];
 
 export default function LoginPage() {
@@ -57,8 +59,10 @@ export default function LoginPage() {
       } else {
         localStorage.removeItem('lexvalue-remembered-email');
       }
-      if (email === 'client@example.com') {
+      if (state.role === 'PLAINTIFF') {
         router.push("/portal");
+      } else if (state.role === 'SUPERADMIN') {
+        router.push("/superadmin");
       } else {
         router.push("/");
       }
@@ -197,10 +201,10 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-3">
-              <a href="#" className="w-full h-12 flex justify-center items-center px-4 border border-teal-100 rounded-lg text-sm font-medium text-teal-800 bg-teal-50 hover:bg-teal-100 transition-all cursor-pointer">
+              <Link href="/register" className="w-full h-12 flex justify-center items-center px-4 border border-teal-100 rounded-lg text-sm font-medium text-teal-800 bg-teal-50 hover:bg-teal-100 transition-all cursor-pointer">
                 <UserPlus className="w-5 h-5 mr-2 text-teal-600" />
                 Create an account
-              </a>
+              </Link>
             </div>
           </form>
         </div>
@@ -224,7 +228,7 @@ export default function LoginPage() {
 
         {/* Main Content Container */}
         <div className="relative z-20 flex flex-col h-full justify-between">
-          
+
           {/* Top Section - Roles */}
           <div className="w-full max-w-5xl">
             <div className="flex items-center justify-between mb-6">
@@ -236,22 +240,22 @@ export default function LoginPage() {
                 Auto-fills demo credentials
               </div>
             </div>
-            
-            <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
+
+            <div className="grid grid-cols-2 xl:grid-cols-5 gap-3">
               {demoRoles.map((role) => (
                 <button
                   key={role.id}
                   onClick={() => handleRoleSelect(role)}
                   type="button"
                   className={`flex items-center gap-3 p-3 rounded-xl border transition-all text-left group
-                    ${selectedRole?.id === role.id 
-                      ? 'border-teal-400 bg-teal-900/50 shadow-[0_0_15px_rgba(45,212,191,0.2)]' 
+                    ${selectedRole?.id === role.id
+                      ? 'border-teal-400 bg-teal-900/50 shadow-[0_0_15px_rgba(45,212,191,0.2)]'
                       : 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20'
                     }`}
                 >
                   <div className={`p-2.5 rounded-lg transition-colors flex-shrink-0
-                    ${selectedRole?.id === role.id 
-                      ? 'bg-teal-500 text-white' 
+                    ${selectedRole?.id === role.id
+                      ? 'bg-teal-500 text-white'
                       : 'bg-white/10 text-teal-100 group-hover:text-white group-hover:bg-white/20'
                     }`}>
                     <role.icon className="w-5 h-5" />
@@ -268,8 +272,8 @@ export default function LoginPage() {
           {/* Bottom Section - Hero Text */}
           <div className="max-w-3xl pb-4">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-teal-300 text-sm font-medium mb-8 backdrop-blur-sm transition-all duration-300">
-               {selectedRole ? <selectedRole.icon className="w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
-               {selectedRole ? `${selectedRole.title} & ${selectedRole.subtitle}` : 'Agency Executive & Admin'}
+              {selectedRole ? <selectedRole.icon className="w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
+              {selectedRole ? `${selectedRole.title} & ${selectedRole.subtitle}` : 'Agency Executive & Admin'}
             </div>
 
             <h1 className="text-5xl md:text-6xl font-extrabold uppercase tracking-wide text-white leading-tight mb-6">
@@ -295,7 +299,7 @@ export default function LoginPage() {
               </div>
             </div>
           </div>
-          
+
         </div>
 
         {/* Small Floating Badge (Bottom Right) */}

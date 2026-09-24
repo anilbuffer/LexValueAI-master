@@ -13,6 +13,10 @@ export default async function PortalLayout({
   const session = await getSession()
   if (!session) redirect('/login')
 
+  if (session.role === 'SUPERADMIN') {
+    redirect('/superadmin')
+  }
+
   const firm = getMockFirm();
   const timeoutInMinutes = firm?.sessionTimeout || 30;
 

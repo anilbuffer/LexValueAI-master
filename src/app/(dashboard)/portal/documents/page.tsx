@@ -17,7 +17,7 @@ export default async function PortalDocumentsPage() {
   const uploadedDocuments = getMockClientUploadedDocuments(caseData.firmId, caseId);
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto w-full">
+    <div className="p-6 space-y-6 w-full">
       <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
         <FileText className="w-6 h-6 text-teal-600" />
         <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Documents</h1>

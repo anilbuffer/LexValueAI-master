@@ -1,11 +1,10 @@
 import { getSession } from "@/lib/auth"
 import { redirect } from "next/navigation"
-import Sidebar from "@/components/Sidebar"
+import SuperadminSidebar from "@/components/SuperadminSidebar"
 import Header from "@/components/Header"
-import { getMockFirm } from "@/lib/mock-data"
 import IdleTimeoutProvider from "@/components/IdleTimeoutProvider"
 
-export default async function DashboardLayout({
+export default async function SuperadminLayout({
   children,
 }: {
   children: React.ReactNode
@@ -13,21 +12,16 @@ export default async function DashboardLayout({
   const session = await getSession()
   if (!session) redirect('/login')
 
-  if (session.role === 'SUPERADMIN') {
-    redirect('/superadmin')
-  }
-
-  // Fetch the firm's session timeout setting to enforce global idle timeout
-  const firm = getMockFirm();
-
-  const timeoutInMinutes = firm?.sessionTimeout || 30;
+  // Prevent non-superadmin access (SUPERADMIN must be defined in auth roles, default redirect otherwise)
+  // For now, if role is not SUPERADMIN we could redirect to / but let's assume session.role === 'SUPERADMIN' 
+  // is going to be set up.
+  if (session.role !== 'SUPERADMIN') redirect('/')
 
   return (
-    <IdleTimeoutProvider timeoutInMinutes={timeoutInMinutes}>
+    <IdleTimeoutProvider timeoutInMinutes={30}>
       <div className="min-h-screen bg-slate-100 flex font-sans">
         <div className="sticky top-0 h-screen shrink-0 z-50">
-          <Sidebar
-            role={session.role}
+          <SuperadminSidebar
             user={{ firstName: session.firstName, lastName: session.lastName }}
           />
         </div>

@@ -19,7 +19,7 @@ export default async function PortalCasesPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto w-full">
+    <div className="p-6 space-y-6 w-full">
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
@@ -36,7 +36,7 @@ export default async function PortalCasesPage() {
             <div className="p-5">
               <div className="flex justify-between items-start mb-3">
                 <h3 className="font-bold text-slate-800 group-hover:text-teal-700 transition-colors line-clamp-1">{c.title}</h3>
-                <span className="px-2 py-1 bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider rounded border border-slate-200">
+                <span className="px-2 py-1 bg-slate-100 text-slate-600 text-[10px font-bold uppercase tracking-wider rounded border border-slate-200">
                   {c.referenceId}
                 </span>
               </div>

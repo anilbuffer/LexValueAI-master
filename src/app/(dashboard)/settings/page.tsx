@@ -230,7 +230,7 @@ export default function SettingsPage() {
 
   return (
     <div className="flex-1 overflow-y-auto p-4 sm:p-8 animate-fade-in-up">
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="p-6 space-y-8 w-full">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

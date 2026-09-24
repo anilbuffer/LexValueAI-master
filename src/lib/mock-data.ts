@@ -28,7 +28,24 @@ export const mockUser = {
   updatedAt: new Date("2026-08-01T00:00:00Z"),
 };
 
+export const superadminUser = {
+  id: "user-super",
+  firstName: "Super",
+  lastName: "Admin",
+  email: "super@lexvalue.com",
+  phone: "555-0000",
+  passwordHash: "mocked-hash",
+  role: "SUPERADMIN",
+  isActive: true,
+  firmId: "super-firm",
+  managingPartnerId: null,
+  attorneyId: null,
+  createdAt: new Date("2020-01-01T00:00:00Z"),
+  updatedAt: new Date("2026-08-01T00:00:00Z"),
+};
+
 export let mockUsers = [
+  superadminUser,
   mockUser,
   {
     id: "user-2",
