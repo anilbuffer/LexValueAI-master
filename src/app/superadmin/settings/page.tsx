@@ -71,21 +71,21 @@ export default function SettingsPage() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[#14233a]">First Name</label>
-                  <input type="text" defaultValue="Super" className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" />
+                  <label className="text-sm font-bold text-[#14233a]">First Name</label>
+                  <input type="text" defaultValue="Super" className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[#14233a]">Last Name</label>
-                  <input type="text" defaultValue="Admin" className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" />
+                  <label className="text-sm font-bold text-[#14233a]">Last Name</label>
+                  <input type="text" defaultValue="Admin" className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" />
                 </div>
                 <div className="space-y-1.5 md:col-span-2">
-                  <label className="text-xs font-bold text-[#14233a]">Email Address</label>
-                  <input type="email" defaultValue="admin@lexvalue.ai" className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" />
+                  <label className="text-sm font-bold text-[#14233a]">Email Address</label>
+                  <input type="email" defaultValue="admin@lexvalue.ai" className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[#14233a]">Update Password</label>
+                  <label className="text-sm font-bold text-[#14233a]">Update Password</label>
                   <div className="relative">
-                    <input type={showPassword ? "text" : "password"} placeholder="••••••••" className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm pr-10" />
+                    <input type={showPassword ? "text" : "password"} placeholder="••••••••" className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm pr-10" />
                     <button 
                       type="button" 
                       onClick={() => setShowPassword(!showPassword)}
@@ -96,9 +96,9 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[#14233a]">Confirm New Password</label>
+                  <label className="text-sm font-bold text-[#14233a]">Confirm New Password</label>
                   <div className="relative">
-                    <input type={showPassword ? "text" : "password"} placeholder="••••••••" className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm pr-10" />
+                    <input type={showPassword ? "text" : "password"} placeholder="••••••••" className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm pr-10" />
                   </div>
                 </div>
               </div>
@@ -118,8 +118,8 @@ export default function SettingsPage() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[#14233a]">Default Trial Period</label>
-                  <select className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm appearance-none">
+                  <label className="text-sm font-bold text-[#14233a]">Default Trial Period</label>
+                  <select className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm appearance-none">
                     <option>7 Days</option>
                     <option>14 Days</option>
                     <option>30 Days</option>
@@ -127,8 +127,8 @@ export default function SettingsPage() {
                   </select>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[#14233a]">Default Plan Tier</label>
-                  <select className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm appearance-none">
+                  <label className="text-sm font-bold text-[#14233a]">Default Plan Tier</label>
+                  <select className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm appearance-none">
                     <option>Starter</option>
                     <option>Professional</option>
                     <option>Enterprise</option>
@@ -246,7 +246,7 @@ export default function SettingsPage() {
                     <p className="text-sm font-bold text-[#14233a]">Idle Session Timeout</p>
                     <p className="text-xs text-slate-500 mt-1">Automatically log out users after inactivity to maintain HIPAA compliance.</p>
                   </div>
-                  <select className="w-full sm:w-64 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm appearance-none">
+                  <select className="w-full sm:w-64 px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm appearance-none">
                     <option>15 Minutes</option>
                     <option>30 Minutes (Recommended)</option>
                     <option>1 Hour</option>
@@ -272,7 +272,7 @@ export default function SettingsPage() {
                   <p className="text-sm font-bold text-[#14233a]">Case Data Retention</p>
                   <p className="text-xs text-slate-500 mt-1">How long to keep data globally after a case is closed.</p>
                 </div>
-                <select defaultValue="7 Years (Standard)" className="w-full sm:w-64 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm appearance-none">
+                <select defaultValue="7 Years (Standard)" className="w-full sm:w-64 px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm appearance-none">
                   <option>3 Years</option>
                   <option>5 Years</option>
                   <option>7 Years (Standard)</option>
@@ -293,12 +293,12 @@ export default function SettingsPage() {
               </div>
               
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#14233a]">Superadmin IP Whitelisting</label>
+                <label className="text-sm font-bold text-[#14233a]">Superadmin IP Whitelisting</label>
                 <p className="text-xs text-slate-500 mb-2">Restrict superadmin portal access to specific IP addresses. One per line. Leave empty for open access.</p>
                 <textarea 
                   rows={4}
                   defaultValue="192.168.1.1&#10;10.0.0.5"
-                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm font-mono focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
+                  className="w-full px-4 py-2.5 text-sm font-mono text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
                   placeholder="e.g. 192.168.1.1"
                 ></textarea>
               </div>

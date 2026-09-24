@@ -64,55 +64,55 @@ export default function CreateFirmPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-900">First Name <span className="text-red-500">*</span></label>
+              <label className="text-sm font-bold text-[#14233a]">First Name <span className="text-red-500">*</span></label>
               <input 
                 type="text"
                 name="firstName"
                 placeholder="e.g. John"
                 value={formData.firstName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all text-slate-900 placeholder:text-slate-400 bg-white"
+                className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
                 required
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-900">Last Name <span className="text-red-500">*</span></label>
+              <label className="text-sm font-bold text-[#14233a]">Last Name <span className="text-red-500">*</span></label>
               <input 
                 type="text"
                 name="lastName"
                 placeholder="e.g. Doe"
                 value={formData.lastName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all text-slate-900 placeholder:text-slate-400 bg-white"
+                className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
                 required
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-900">Email Address <span className="text-red-500">*</span></label>
+              <label className="text-sm font-bold text-[#14233a]">Email Address <span className="text-red-500">*</span></label>
               <input 
                 type="email"
                 name="email"
                 placeholder="e.g. johndoe@gmail.com"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all text-slate-900 placeholder:text-slate-400 bg-white"
+                className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
                 required
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-900">Phone Number <span className="text-red-500">*</span></label>
+              <label className="text-sm font-bold text-[#14233a]">Phone Number <span className="text-red-500">*</span></label>
               <input 
                 type="tel"
                 name="personalPhone"
                 placeholder="+1-555-0199"
                 value={formData.personalPhone}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all text-slate-900 placeholder:text-slate-400 bg-white"
+                className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
                 required
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-900">Password <span className="text-red-500">*</span></label>
+              <label className="text-sm font-bold text-[#14233a]">Password <span className="text-red-500">*</span></label>
               <div className="relative">
                 <input 
                   type={showPassword ? "text" : "password"}
@@ -120,7 +120,7 @@ export default function CreateFirmPage() {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all text-slate-900 placeholder:text-slate-400 bg-white pr-10"
+                  className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm pr-10"
                   required
                 />
                 <button 
@@ -133,7 +133,7 @@ export default function CreateFirmPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-900">Confirm Password <span className="text-red-500">*</span></label>
+              <label className="text-sm font-bold text-[#14233a]">Confirm Password <span className="text-red-500">*</span></label>
               <div className="relative">
                 <input 
                   type={showConfirmPassword ? "text" : "password"}
@@ -141,7 +141,7 @@ export default function CreateFirmPage() {
                   placeholder="••••••••"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all text-slate-900 placeholder:text-slate-400 bg-white pr-10"
+                  className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm pr-10"
                   required
                 />
                 <button 
@@ -173,61 +173,61 @@ export default function CreateFirmPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-900">Firm Name <span className="text-red-500">*</span></label>
+              <label className="text-sm font-bold text-[#14233a]">Firm Name <span className="text-red-500">*</span></label>
               <input 
                 type="text"
                 name="firmName"
                 placeholder="e.g. LexValue Partners LLC"
                 value={formData.firmName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all text-slate-900 placeholder:text-slate-400 bg-white"
+                className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
                 required
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-900">Tax ID / EIN</label>
+              <label className="text-sm font-bold text-[#14233a]">Tax ID / EIN</label>
               <input 
                 type="text"
                 name="taxId"
                 placeholder="XX-XXXXXXX"
                 value={formData.taxId}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all text-slate-900 placeholder:text-slate-400 bg-white"
+                className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-900">Support Email <span className="text-red-500">*</span></label>
+              <label className="text-sm font-bold text-[#14233a]">Support Email <span className="text-red-500">*</span></label>
               <input 
                 type="email"
                 name="supportEmail"
                 placeholder="e.g. admin@lexvaluepartners.com"
                 value={formData.supportEmail}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all text-slate-900 placeholder:text-slate-400 bg-white"
+                className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
                 required
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-900">Phone Number <span className="text-red-500">*</span></label>
+              <label className="text-sm font-bold text-[#14233a]">Phone Number <span className="text-red-500">*</span></label>
               <input 
                 type="tel"
                 name="firmPhone"
                 placeholder="+1 (555) 123-4567"
                 value={formData.firmPhone}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all text-slate-900 placeholder:text-slate-400 bg-white"
+                className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
                 required
               />
             </div>
             <div className="space-y-2 md:col-span-2">
-              <label className="text-sm font-semibold text-slate-900">Firm Address</label>
+              <label className="text-sm font-bold text-[#14233a]">Firm Address</label>
               <textarea 
                 name="firmAddress"
                 placeholder="123 Legal Way, Suite 500, New York, NY 10001"
                 rows={3}
                 value={formData.firmAddress}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all text-slate-900 placeholder:text-slate-400 bg-white resize-y"
+                className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm resize-y"
               ></textarea>
             </div>
           </div>

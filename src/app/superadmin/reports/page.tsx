@@ -29,9 +29,22 @@ export default function ReportsPage() {
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Platform Analytics</h1>
           <p className="text-slate-500 mt-1">Superadmin overview of all firms, cases, and revenue.</p>
         </div>
-        <button className="flex items-center gap-2 px-5 py-2.5 bg-[#0f766e] hover:bg-[#0d655e] text-white rounded-lg font-semibold transition-colors shadow-sm">
-          <Download className="w-4 h-4" /> Export Report
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-2.5 shadow-sm">
+            <span className="text-sm font-medium text-slate-500">Date:</span>
+            <select className="text-sm text-slate-700 bg-transparent outline-none cursor-pointer font-medium">
+              <option>Last 7 Days</option>
+              <option>Last 30 Days</option>
+              <option>This Month</option>
+              <option>Last Month</option>
+              <option>This Year</option>
+              <option>All Time</option>
+            </select>
+          </div>
+          <button className="flex items-center gap-2 px-5 py-2.5 bg-[#0f766e] hover:bg-[#0d655e] text-white rounded-lg font-semibold transition-colors shadow-sm">
+            <Download className="w-4 h-4" /> Export Report
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -132,7 +145,7 @@ export default function ReportsPage() {
           <div className="flex gap-2">
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input type="text" placeholder="Search firms..." className="pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-lg outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500" />
+              <input type="text" placeholder="Search firms..." className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" />
             </div>
             <button className="p-2 border border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-50 rounded-lg transition-colors">
               <Filter className="w-4 h-4" />

@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 import { Plus, Search, Filter, Eye, Edit2, Trash2, Calendar, ShieldCheck, Mail, Building2, CreditCard, ToggleRight, ToggleLeft } from "lucide-react";
 
 const mockFirms = [
@@ -45,6 +48,12 @@ const mockFirms = [
 ];
 
 export default function FirmsPage() {
+  const [firms, setFirms] = useState(mockFirms);
+
+  const handleToggleStatus = (id: string) => {
+    setFirms(prev => prev.map(firm => firm.id === id ? { ...firm, status: !firm.status } : firm));
+  };
+
   return (
     <div className="p-6 space-y-6 bg-slate-50/30 min-h-screen w-full">
 
@@ -61,7 +70,7 @@ export default function FirmsPage() {
             <input
               type="text"
               placeholder="Search firms..."
-              className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 text-sm bg-white"
+              className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
             />
           </div>
           <button className="flex items-center gap-2 px-4 py-2.5 border border-slate-200 rounded-lg text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 transition-colors">
@@ -95,7 +104,7 @@ export default function FirmsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100/80 bg-white">
-              {mockFirms.map((firm) => (
+              {firms.map((firm) => (
                 <tr key={firm.id} className="hover:bg-slate-50/50 transition-colors group">
 
                   {/* Firm Col */}
@@ -139,7 +148,10 @@ export default function FirmsPage() {
 
                   {/* Status Col */}
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2.5">
+                    <div 
+                      className="flex items-center gap-2.5 cursor-pointer"
+                      onClick={() => handleToggleStatus(firm.id)}
+                    >
                       {firm.status ? (
                         <>
                           <div className="w-9 h-5 rounded-full bg-emerald-500 relative flex items-center px-0.5 shadow-inner">
@@ -191,7 +203,7 @@ export default function FirmsPage() {
       {/* Pagination Footer */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500 mt-2 px-2">
         <div>
-          Showing 1 to {mockFirms.length} of {mockFirms.length} entries
+          Showing 1 to {firms.length} of {firms.length} entries
         </div>
         <div className="flex items-center gap-1">
           <button className="w-8 h-8 flex items-center justify-center rounded border border-slate-200 hover:bg-slate-50 text-slate-400">

@@ -123,7 +123,7 @@ export default function BillingPage() {
               <div className="flex gap-3">
                 <div className="relative w-72">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input type="text" placeholder="Search firms..." className="w-full pl-9 pr-4 py-2.5 text-sm font-medium border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 bg-white shadow-sm transition-all" />
+                  <input type="text" placeholder="Search firms..." className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" />
                 </div>
                 <button className="flex items-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 transition-colors shadow-sm">
                   <Filter className="w-4 h-4 text-slate-400" /> Filter
@@ -203,7 +203,7 @@ export default function BillingPage() {
               <div className="flex gap-3">
                 <div className="relative w-72">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input type="text" placeholder="Search invoices..." className="w-full pl-9 pr-4 py-2.5 text-sm font-medium border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 bg-white shadow-sm transition-all" />
+                  <input type="text" placeholder="Search invoices..." className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" />
                 </div>
                 <button className="flex items-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 transition-colors shadow-sm">
                   <Filter className="w-4 h-4 text-slate-400" /> Filter

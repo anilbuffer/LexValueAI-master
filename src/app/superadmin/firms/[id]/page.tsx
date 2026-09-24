@@ -2,22 +2,58 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   ArrowLeft, Building2, Mail, Phone, MapPin, ShieldCheck, CreditCard, Activity, Edit2, Scale, FileText, Handshake,
   Search, Filter, CheckCircle2, ChevronDown, Trash2, Calendar, Zap, Download, Eye, X, User
 } from "lucide-react";
 
-const mockFirmDetails = {
-  id: "1",
-  name: "Smith & Associates",
-  taxId: "XX-1234567",
-  supportEmail: "support@smithassociates.com",
-  phone: "+1 (555) 123-4567",
-  address: "123 Legal Way, Suite 500, New York, NY 10001",
-  plan: "Enterprise",
-  status: "Active",
-  createdAt: "Jan 12, 2024"
-};
+const allMockFirmsDetails = [
+  {
+    id: "1",
+    name: "Smith & Associates",
+    taxId: "XX-1234567",
+    supportEmail: "admin@smithassociates.com",
+    phone: "+1 (555) 123-4567",
+    address: "123 Legal Way, Suite 500, New York, NY 10001",
+    plan: "Enterprise",
+    status: "Active",
+    createdAt: "Sep 17, 2026"
+  },
+  {
+    id: "2",
+    name: "Johnson Legal Group",
+    taxId: "XX-2345678",
+    supportEmail: "admin@johnsonlegal.com",
+    phone: "+1 (555) 234-5678",
+    address: "456 Corporate Blvd, Chicago, IL 60601",
+    plan: "Professional",
+    status: "Active",
+    createdAt: "Aug 12, 2026"
+  },
+  {
+    id: "3",
+    name: "Miller & Partners",
+    taxId: "XX-3456789",
+    supportEmail: "admin@millerpartners.com",
+    phone: "+1 (555) 345-6789",
+    address: "789 Justice Ave, Los Angeles, CA 90012",
+    plan: "Starter",
+    status: "Inactive",
+    createdAt: "Jul 23, 2026"
+  },
+  {
+    id: "4",
+    name: "Davis & Co. Law",
+    taxId: "XX-4567890",
+    supportEmail: "admin@daviscolaw.com",
+    phone: "+1 (555) 456-7890",
+    address: "321 Main St, Houston, TX 77002",
+    plan: "Enterprise",
+    status: "Active",
+    createdAt: "Jun 05, 2026"
+  }
+];
 
 const mockUsers = [
   { id: 1, name: "Harvey Specter", role: "Managing Partner", email: "harvey@smithassociates.com" },
@@ -76,6 +112,11 @@ const mockCases = [
 ];
 
 export default function FirmDetailPage() {
+  const params = useParams();
+  const id = params?.id as string;
+  
+  const mockFirmDetails = allMockFirmsDetails.find(firm => firm.id === id) || allMockFirmsDetails[0];
+
   const [activeTab, setActiveTab] = useState("overview");
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [viewUser, setViewUser] = useState<any | null>(null);
@@ -145,7 +186,7 @@ export default function FirmDetailPage() {
               <div className="flex gap-3">
                 <div className="relative w-64">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input type="text" placeholder="Search cases..." className="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500 bg-white" />
+                  <input type="text" placeholder="Search cases..." className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" />
                 </div>
                 <button className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 transition-colors">
                   <Filter className="w-4 h-4 text-slate-400" /> Filter
@@ -401,7 +442,7 @@ export default function FirmDetailPage() {
                 <div className="flex gap-3">
                   <div className="relative w-72">
                     <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                    <input type="text" placeholder="Search invoices..." className="w-full pl-9 pr-4 py-2 text-sm font-medium border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 bg-white" />
+                    <input type="text" placeholder="Search invoices..." className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" />
                   </div>
                   <button className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-xl text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 transition-colors">
                     <Filter className="w-4 h-4 text-slate-400" /> Filter
@@ -480,7 +521,7 @@ export default function FirmDetailPage() {
                       type="text" 
                       readOnly 
                       value={viewUser.name.split(' ')[0] || ''} 
-                      className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 border border-slate-200 rounded-lg bg-slate-50/50 focus:outline-none" 
+                      className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" 
                     />
                   </div>
                 </div>
@@ -492,7 +533,7 @@ export default function FirmDetailPage() {
                       type="text" 
                       readOnly 
                       value={viewUser.name.split(' ').slice(1).join(' ') || ''} 
-                      className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 border border-slate-200 rounded-lg bg-slate-50/50 focus:outline-none" 
+                      className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" 
                     />
                   </div>
                 </div>
@@ -506,7 +547,7 @@ export default function FirmDetailPage() {
                     type="email" 
                     readOnly 
                     value={viewUser.email} 
-                    className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 border border-slate-200 rounded-lg bg-slate-50/50 focus:outline-none" 
+                    className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" 
                   />
                 </div>
               </div>
@@ -519,7 +560,7 @@ export default function FirmDetailPage() {
                     type="text" 
                     readOnly 
                     value="+1 (555) 000-0000"
-                    className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 border border-slate-200 rounded-lg bg-slate-50/50 focus:outline-none" 
+                    className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" 
                   />
                 </div>
               </div>
@@ -527,7 +568,7 @@ export default function FirmDetailPage() {
               <div className="space-y-1.5">
                 <label className="text-sm font-bold text-[#14233a]">Role <span className="text-red-500">*</span></label>
                 <div className="relative">
-                  <select disabled className="w-full px-4 py-2.5 text-sm text-slate-600 border border-slate-200 rounded-lg bg-slate-50/50 appearance-none">
+                  <select disabled className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm appearance-none">
                     <option>{viewUser.role}</option>
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
@@ -537,7 +578,7 @@ export default function FirmDetailPage() {
               <div className="space-y-1.5">
                 <label className="text-sm font-bold text-[#14233a]">Assign to Managing Partner <span className="text-red-500">*</span></label>
                 <div className="relative">
-                  <select disabled className="w-full px-4 py-2.5 text-sm text-slate-600 border border-slate-200 rounded-lg bg-slate-50/50 appearance-none">
+                  <select disabled className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm appearance-none">
                     <option>Harvey Specter</option>
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
@@ -547,7 +588,7 @@ export default function FirmDetailPage() {
               <div className="space-y-1.5">
                 <label className="text-sm font-bold text-[#14233a]">Assign to Attorney <span className="text-red-500">*</span></label>
                 <div className="relative">
-                  <select disabled className="w-full px-4 py-2.5 text-sm text-slate-600 border border-slate-200 rounded-lg bg-slate-50/50 appearance-none">
+                  <select disabled className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm appearance-none">
                     <option>Mike Ross</option>
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
