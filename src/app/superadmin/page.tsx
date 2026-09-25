@@ -49,16 +49,10 @@ export default function SuperadminDashboard() {
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">System Overview</h1>
           <p className="text-slate-500 mt-1">A snapshot of platform-wide activity and metrics.</p>
         </div>
-        <Link
-          href="/superadmin/reports"
-          className="flex items-center gap-2 bg-teal-50 hover:bg-teal-100 text-teal-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors border border-teal-100"
-        >
-          View full report <ChevronRight className="w-4 h-4" />
-        </Link>
       </div>
 
       {/* Top Metrics Grid (6 Cards) */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-2 gap-4">
 
         {/* Card 1 */}
         <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm relative overflow-hidden">
@@ -75,37 +69,8 @@ export default function SuperadminDashboard() {
           </p>
         </div>
 
+
         {/* Card 2 */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm relative overflow-hidden">
-          <Activity className="absolute -bottom-4 -right-2 w-24 h-24 text-amber-500/5 -rotate-12" />
-          <div className="flex justify-between items-start relative z-10">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Active Firms</p>
-            <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
-              <Activity className="w-4 h-4 text-amber-500" />
-            </div>
-          </div>
-          <p className="text-3xl font-bold text-slate-900 mt-2 relative z-10">18</p>
-          <p className="text-[10px] font-medium text-slate-500 mt-3 flex items-center gap-1.5 relative z-10">
-            <span className="bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded font-bold">Operational</span> across platform
-          </p>
-        </div>
-
-        {/* Card 3 */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm relative overflow-hidden">
-          <DollarSign className="absolute -bottom-4 -right-2 w-24 h-24 text-purple-500/5 -rotate-12" />
-          <div className="flex justify-between items-start relative z-10">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total MRR</p>
-            <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center">
-              <DollarSign className="w-4 h-4 text-purple-500" />
-            </div>
-          </div>
-          <p className="text-3xl font-bold text-slate-900 mt-2 relative z-10">$24k</p>
-          <p className="text-[10px] font-medium text-slate-500 mt-3 flex items-center gap-1.5 relative z-10">
-            <span className="bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded font-bold">+12%</span> vs last month
-          </p>
-        </div>
-
-        {/* Card 4 */}
         <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm relative overflow-hidden">
           <CheckCircle2 className="absolute -bottom-4 -right-2 w-24 h-24 text-emerald-500/5 -rotate-12" />
           <div className="flex justify-between items-start relative z-10">

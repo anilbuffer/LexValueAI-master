@@ -98,8 +98,7 @@ export default function FirmsPage() {
                 <th className="px-6 py-5 whitespace-nowrap">Admin</th>
                 <th className="px-6 py-5 whitespace-nowrap">Plan</th>
                 <th className="px-6 py-5 whitespace-nowrap">Users</th>
-                <th className="px-6 py-5 whitespace-nowrap">Joined Date</th>
-                <th className="px-6 py-5 whitespace-nowrap">Status</th>
+                <th className="px-6 py-5 whitespace-nowrap">Created Date</th>
                 <th className="px-6 py-5 whitespace-nowrap text-right">Action</th>
               </tr>
             </thead>
@@ -143,30 +142,6 @@ export default function FirmsPage() {
                     <div className="flex items-center gap-2 text-slate-500 text-xs">
                       <Calendar className="w-3.5 h-3.5 text-slate-400" />
                       {firm.joinedDate}
-                    </div>
-                  </td>
-
-                  {/* Status Col */}
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div
-                      className="flex items-center gap-2.5 cursor-pointer"
-                      onClick={() => handleToggleStatus(firm.id)}
-                    >
-                      {firm.status ? (
-                        <>
-                          <div className="w-9 h-5 rounded-full bg-emerald-500 relative flex items-center px-0.5 shadow-inner">
-                            <div className="w-4 h-4 rounded-full bg-white absolute right-0.5 shadow-sm"></div>
-                          </div>
-                          <span className="font-bold text-xs text-emerald-600 tracking-wide">Active</span>
-                        </>
-                      ) : (
-                        <>
-                          <div className="w-9 h-5 rounded-full bg-slate-200 relative flex items-center px-0.5 shadow-inner">
-                            <div className="w-4 h-4 rounded-full bg-white absolute left-0.5 shadow-sm"></div>
-                          </div>
-                          <span className="font-medium text-xs text-slate-500 tracking-wide">Inactive</span>
-                        </>
-                      )}
                     </div>
                   </td>
 

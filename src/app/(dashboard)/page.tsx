@@ -75,10 +75,6 @@ export default async function DashboardOverview() {
               {session.role === 'ADMIN' ? 'A snapshot of system-wide activity and metrics.' : (session.role === 'MANAGING_PARTNER' ? 'A snapshot of all-time activity across all team cases.' : 'A snapshot of your recent case activity and tasks.')}
             </p>
           </div>
-          <Link href="/reports" className="flex items-center gap-1.5 h-12 px-5 border border-teal-100 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-800 font-medium text-sm transition-all group cursor-pointer">
-            View full report
-            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
         </div>
 
         {/* Dynamic Metrics Cards Based on Role */}

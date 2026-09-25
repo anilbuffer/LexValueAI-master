@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Download, ShieldCheck, Zap, Building2, CheckCircle2, AlertCircle, Settings, Search, Filter, ArrowUpRight, Banknote, X, Send, Check, Mail } from "lucide-react";
+import { ShieldCheck, Zap, Building2, CheckCircle2, AlertCircle, Settings, Search, Filter, ArrowUpRight, Banknote, X, Send, Check, Mail } from "lucide-react";
 
 const mockSubscriptions = [
   { id: 1, firm: "Smith & Associates", tier: "Enterprise", price: "$499.00/mo", status: "Active", users: "12/15", nextBilling: "Oct 1, 2026" },
@@ -9,19 +9,9 @@ const mockSubscriptions = [
   { id: 4, firm: "Davis & Davis", tier: "Enterprise", price: "$499.00/mo", status: "Active", users: "14/15", nextBilling: "Oct 12, 2026" },
 ];
 
-const mockInvoices = [
-  { id: "INV-2026-08", firm: "Smith & Associates", date: "Aug 01, 2026, 10:30 AM", plan: "Enterprise", amount: "$499.00", status: "Paid" },
-  { id: "INV-2026-07", firm: "Johnson Legal Group", date: "Jul 05, 2026, 11:15 AM", plan: "Professional", amount: "$299.00", status: "Paid" },
-  { id: "INV-2026-06", firm: "Miller & Partners", date: "Jun 20, 2026, 09:45 AM", plan: "Starter", amount: "$99.00", status: "Unpaid" },
-  { id: "INV-2026-05", firm: "Davis & Davis", date: "May 01, 2026, 02:20 PM", plan: "Enterprise", amount: "$499.00", status: "Paid" },
-];
-
 export default function BillingPage() {
-  const [activeTab, setActiveTab] = useState("subscriptions");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
-  const [invoices, setInvoices] = useState(mockInvoices);
-  const [invoiceSearch, setInvoiceSearch] = useState("");
   const [billingToast, setBillingToast] = useState<string | null>(null);
   const [paymentRequestModal, setPaymentRequestModal] = useState<any | null>(null);
   const [requestNote, setRequestNote] = useState("");
@@ -29,26 +19,11 @@ export default function BillingPage() {
   const [subscriptionSearch, setSubscriptionSearch] = useState("");
 
   const safeSubscriptionSearch = typeof subscriptionSearch === "string" ? subscriptionSearch : "";
-  const safeInvoiceSearch = typeof invoiceSearch === "string" ? invoiceSearch : "";
   const safeSubscriptions = Array.isArray(subscriptions) ? subscriptions : mockSubscriptions;
-  const safeInvoices = Array.isArray(invoices) ? invoices : mockInvoices;
-
-  const handleOpenPaymentRequest = (invoice: any) => {
-    setRequestNote(`Your subscription invoice ${invoice.id} (${invoice.amount}) for the ${invoice.plan} plan is currently past due. Please process payment to maintain uninterrupted access to LexValue.`);
-    setPaymentRequestModal({
-      type: "invoice",
-      id: invoice.id,
-      firm: invoice.firm,
-      plan: invoice.plan,
-      amount: invoice.amount,
-      dueInfo: invoice.date,
-    });
-  };
 
   const handleOpenSubPaymentRequest = (sub: any) => {
     setRequestNote(`Your subscription for ${sub.firm} (${sub.price}) on the ${sub.tier} tier is currently past due (Next Billing was ${sub.nextBilling}). Please process payment immediately to maintain uninterrupted tenant access.`);
     setPaymentRequestModal({
-      type: "subscription",
       id: sub.id,
       firm: sub.firm,
       plan: sub.tier,
@@ -59,24 +34,11 @@ export default function BillingPage() {
 
   const handleConfirmSendRequest = () => {
     if (!paymentRequestModal) return;
-    if (paymentRequestModal.type === "subscription") {
-      setSubscriptions(prev =>
-        (Array.isArray(prev) ? prev : mockSubscriptions).map(s => s.id === paymentRequestModal.id ? { ...s, status: "Notice Sent" } : s)
-      );
-      setBillingToast(`Payment notice sent to ${paymentRequestModal.firm} for ${paymentRequestModal.amount}.`);
-    } else {
-      setInvoices(prev =>
-        (Array.isArray(prev) ? prev : mockInvoices).map(inv => inv.id === paymentRequestModal.id ? { ...inv, status: "Requested" } : inv)
-      );
-      setBillingToast(`Payment request sent to ${paymentRequestModal.firm} for ${paymentRequestModal.amount}.`);
-    }
+    setSubscriptions(prev =>
+      (Array.isArray(prev) ? prev : mockSubscriptions).map(s => s.id === paymentRequestModal.id ? { ...s, status: "Notice Sent" } : s)
+    );
+    setBillingToast(`Payment notice sent to ${paymentRequestModal.firm} for ${paymentRequestModal.amount}.`);
     setPaymentRequestModal(null);
-    setTimeout(() => setBillingToast(null), 3500);
-  };
-
-  const handleMarkAsPaid = (id: string, firmName: string) => {
-    setInvoices(prev => (Array.isArray(prev) ? prev : mockInvoices).map(inv => inv.id === id ? { ...inv, status: "Paid" } : inv));
-    setBillingToast(`Invoice ${id} for ${firmName} has been marked as Paid.`);
     setTimeout(() => setBillingToast(null), 3500);
   };
 
@@ -101,7 +63,7 @@ export default function BillingPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Global Billing & Subscriptions</h1>
-          <p className="text-slate-500 mt-2">Manage all tenant subscriptions, revenue metrics, and invoice history.</p>
+          <p className="text-slate-500 mt-2">Manage all tenant subscriptions and revenue metrics.</p>
         </div>
         <button
           onClick={() => { setModalTitle("Global Pricing Plans"); setIsModalOpen(true); }}
@@ -158,295 +120,128 @@ export default function BillingPage() {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="border-b border-slate-200">
-        <nav className="flex gap-8">
-          <button
-            onClick={() => setActiveTab("subscriptions")}
-            className={`pb-4 text-sm font-semibold border-b-2 transition-all ${activeTab === "subscriptions" ? "border-teal-600 text-teal-700" : "border-transparent text-slate-500 hover:text-slate-800"}`}
-          >
-            Tenant Subscriptions
-          </button>
-          <button
-            onClick={() => setActiveTab("invoices")}
-            className={`pb-4 text-sm font-semibold border-b-2 transition-all ${activeTab === "invoices" ? "border-teal-600 text-teal-700" : "border-transparent text-slate-500 hover:text-slate-800"}`}
-          >
-            Global Invoice History
-          </button>
-        </nav>
-      </div>
-
-      {/* Tab Content */}
-      <div className="pt-2 pb-24">
-
-        {/* Subscription Management */}
-        {activeTab === "subscriptions" && (
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                <h2 className="text-lg font-bold text-slate-900">Firm Subscriptions</h2>
-                <p className="text-sm text-slate-500 mt-1">Manage billing plans and monitor usage limits for all tenants.</p>
-              </div>
-              <div className="flex gap-3">
-                <div className="relative w-72">
-                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input
-                    type="text"
-                    placeholder="Search firms..."
-                    value={safeSubscriptionSearch}
-                    onChange={(e) => setSubscriptionSearch(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
-                  />
-                </div>
-                <button className="flex items-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 transition-colors shadow-sm">
-                  <Filter className="w-4 h-4 text-slate-400" /> Filter
-                </button>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-slate-600">
-                  <thead className="bg-slate-50/50 text-xs uppercase tracking-widest font-semibold text-slate-500 border-b border-slate-200">
-                    <tr>
-                      <th className="px-6 py-5">FIRM</th>
-                      <th className="px-6 py-5">TIER LEVEL</th>
-                      <th className="px-6 py-5">PRICING</th>
-                      <th className="px-6 py-5">SEATS USED</th>
-                      <th className="px-6 py-5">STATUS</th>
-                      <th className="px-6 py-5">NEXT BILLING</th>
-                      <th className="px-6 py-5 text-right">ACTION</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {safeSubscriptions
-                      .filter((sub) => {
-                        if (!safeSubscriptionSearch.trim()) return true;
-                        const q = safeSubscriptionSearch.toLowerCase();
-                        return (
-                          (sub.firm && sub.firm.toLowerCase().includes(q)) ||
-                          (sub.tier && sub.tier.toLowerCase().includes(q)) ||
-                          (sub.status && sub.status.toLowerCase().includes(q))
-                        );
-                      })
-                      .map((sub) => (
-                        <tr key={sub.id} className="hover:bg-slate-50/80 transition-colors group">
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0">
-                                <Building2 className="w-4 h-4 text-slate-500" />
-                              </div>
-                              <span className="font-bold text-slate-900">{sub.firm}</span>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-1.5 font-semibold text-slate-700">
-                              {sub.tier === "Enterprise" && <Zap className="w-3.5 h-3.5 text-teal-600" />}
-                              {sub.tier}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 font-medium text-slate-900">{sub.price}</td>
-                          <td className="px-6 py-4">
-                            <span className="text-slate-600 font-medium">{sub.users}</span>
-                          </td>
-                          <td className="px-6 py-4">
-                            <span
-                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${
-                                sub.status === "Active"
-                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                  : sub.status === "Notice Sent" || sub.status === "Requested"
-                                  ? "bg-amber-50 text-amber-700 border-amber-200"
-                                  : "bg-red-50 text-red-700 border-red-200"
-                              }`}
-                            >
-                              <span
-                                className={`w-1.5 h-1.5 rounded-full ${
-                                  sub.status === "Active"
-                                    ? "bg-emerald-500"
-                                    : sub.status === "Notice Sent" || sub.status === "Requested"
-                                    ? "bg-amber-500"
-                                    : "bg-red-500"
-                                }`}
-                              />
-                              {sub.status}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 font-medium text-slate-600">
-                            <div>
-                              <div>{sub.nextBilling}</div>
-                              {sub.status === "Past Due" && (
-                                <div className="text-[11px] font-semibold text-red-500">Overdue</div>
-                              )}
-                              {(sub.status === "Notice Sent" || sub.status === "Requested") && (
-                                <div className="text-[11px] font-semibold text-amber-600">Notice Sent</div>
-                              )}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-right whitespace-nowrap">
-                            <div className="flex items-center justify-end gap-2">
-                              {sub.status !== "Active" && (
-                                <>
-                                  <button
-                                    onClick={() => handleOpenSubPaymentRequest(sub)}
-                                    title="Send payment request to firm"
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-teal-700 hover:bg-teal-800 rounded-lg transition-colors shadow-sm"
-                                  >
-                                    <Send className="w-3.5 h-3.5" />
-                                    <span>
-                                      {sub.status === "Notice Sent" || sub.status === "Requested"
-                                        ? "Resend Notice"
-                                        : "Request Payment"}
-                                    </span>
-                                  </button>
-                                  <button
-                                    onClick={() => handleMarkSubAsPaid(sub.id, sub.firm)}
-                                    title="Mark subscription as Paid & Active"
-                                    className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors"
-                                  >
-                                    <Check className="w-3.5 h-3.5" />
-                                    <span>Mark Paid</span>
-                                  </button>
-                                </>
-                              )}
-                              <button
-                                onClick={() => {
-                                  setModalTitle(`Manage Subscription: ${sub.firm}`);
-                                  setIsModalOpen(true);
-                                }}
-                                className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-bold text-[#0f766e] bg-teal-50 border border-teal-100 rounded-lg hover:bg-teal-100 transition-colors"
-                              >
-                                Manage
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+      {/* Subscription Management */}
+      <div className="space-y-6 pb-24">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h2 className="text-lg font-bold text-slate-900">Firm Subscriptions</h2>
+            <p className="text-sm text-slate-500 mt-1">Manage billing plans and monitor usage limits for all tenants.</p>
           </div>
-        )}
-
-        {/* Invoice History */}
-        {activeTab === "invoices" && (
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                <h2 className="text-lg font-bold text-slate-900">Global Billing History</h2>
-                <p className="text-sm text-slate-500 mt-1">View and download past invoices across all firms.</p>
-              </div>
-              <div className="flex gap-3">
-                <div className="relative w-72">
-                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input
-                    type="text"
-                    placeholder="Search invoices..."
-                    value={safeInvoiceSearch}
-                    onChange={(e) => setInvoiceSearch(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
-                  />
-                </div>
-                <button className="flex items-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 transition-colors shadow-sm">
-                  <Filter className="w-4 h-4 text-slate-400" /> Filter
-                </button>
-              </div>
+          <div className="flex gap-3">
+            <div className="relative w-72">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search firms..."
+                value={safeSubscriptionSearch}
+                onChange={(e) => setSubscriptionSearch(e.target.value)}
+                className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
+              />
             </div>
-
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-slate-600">
-                  <thead className="bg-white text-xs uppercase tracking-widest font-semibold text-slate-400 border-b border-slate-100">
-                    <tr>
-                      <th className="px-6 py-5">INVOICE ID</th>
-                      <th className="px-6 py-5">FIRM</th>
-                      <th className="px-6 py-5">DATE & TIME</th>
-                      <th className="px-6 py-5">PLAN</th>
-                      <th className="px-6 py-5">AMOUNT</th>
-                      <th className="px-6 py-5">STATUS</th>
-                      <th className="px-6 py-5 text-right">ACTION</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100/80">
-                    {safeInvoices
-                      .filter((inv) => {
-                        if (!safeInvoiceSearch.trim()) return true;
-                        const q = safeInvoiceSearch.toLowerCase();
-                        return (
-                          (inv.id && inv.id.toLowerCase().includes(q)) ||
-                          (inv.firm && inv.firm.toLowerCase().includes(q)) ||
-                          (inv.plan && inv.plan.toLowerCase().includes(q)) ||
-                          (inv.status && inv.status.toLowerCase().includes(q))
-                        );
-                      })
-                      .map((invoice) => (
-                        <tr key={invoice.id} className="hover:bg-slate-50/50 transition-colors">
-                          <td className="px-6 py-5 font-bold text-slate-900">{invoice.id}</td>
-                          <td className="px-6 py-5 font-semibold text-slate-700">{invoice.firm}</td>
-                          <td className="px-6 py-5 text-slate-500 font-medium">{invoice.date}</td>
-                          <td className="px-6 py-5 font-medium text-slate-700">{invoice.plan}</td>
-                          <td className="px-6 py-5 font-bold text-slate-900">{invoice.amount}</td>
-                          <td className="px-6 py-5 whitespace-nowrap">
-                            <span
-                              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border ${
-                                invoice.status === "Paid"
-                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                  : invoice.status === "Requested"
-                                  ? "bg-amber-50 text-amber-700 border-amber-200"
-                                  : "bg-rose-50 text-rose-700 border-rose-200"
-                              }`}
-                            >
-                              <span
-                                className={`w-1.5 h-1.5 rounded-full ${
-                                  invoice.status === "Paid"
-                                    ? "bg-emerald-500"
-                                    : invoice.status === "Requested"
-                                    ? "bg-amber-500"
-                                    : "bg-rose-500"
-                                }`}
-                              />
-                              {invoice.status}
-                            </span>
-                          </td>
-                          <td className="px-6 py-5 text-right whitespace-nowrap">
-                            <div className="flex items-center justify-end gap-2">
-                              {invoice.status !== "Paid" && (
-                                <>
-                                  <button
-                                    onClick={() => handleOpenPaymentRequest(invoice)}
-                                    title="Send payment request to firm"
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-teal-700 hover:bg-teal-800 rounded-lg transition-colors shadow-sm"
-                                  >
-                                    <Send className="w-3.5 h-3.5" />
-                                    <span>{invoice.status === "Requested" ? "Resend Request" : "Request Payment"}</span>
-                                  </button>
-                                  <button
-                                    onClick={() => handleMarkAsPaid(invoice.id, invoice.firm)}
-                                    title="Mark invoice as Paid"
-                                    className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors"
-                                  >
-                                    <Check className="w-3.5 h-3.5" />
-                                    <span>Mark Paid</span>
-                                  </button>
-                                </>
-                              )}
-                              <button
-                                title="Download Invoice"
-                                className="inline-flex items-center justify-center w-8 h-8 text-slate-400 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:text-slate-600 transition-colors shadow-sm"
-                              >
-                                <Download className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <button className="flex items-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 transition-colors shadow-sm">
+              <Filter className="w-4 h-4 text-slate-400" /> Filter
+            </button>
           </div>
-        )}
+        </div>
 
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm text-slate-600">
+              <thead className="bg-slate-50/50 text-xs uppercase tracking-widest font-semibold text-slate-500 border-b border-slate-200">
+                <tr>
+                  <th className="px-6 py-5">FIRM</th>
+                  <th className="px-6 py-5">TIER LEVEL</th>
+                  <th className="px-6 py-5">PRICING</th>
+                  <th className="px-6 py-5">SEATS USED</th>
+                  <th className="px-6 py-5">NEXT BILLING</th>
+                  <th className="px-6 py-5 text-right">ACTION</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {safeSubscriptions
+                  .filter((sub) => {
+                    if (!safeSubscriptionSearch.trim()) return true;
+                    const q = safeSubscriptionSearch.toLowerCase();
+                    return (
+                      (sub.firm && sub.firm.toLowerCase().includes(q)) ||
+                      (sub.tier && sub.tier.toLowerCase().includes(q)) ||
+                      (sub.status && sub.status.toLowerCase().includes(q))
+                    );
+                  })
+                  .map((sub) => (
+                    <tr key={sub.id} className="hover:bg-slate-50/80 transition-colors group">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0">
+                            <Building2 className="w-4 h-4 text-slate-500" />
+                          </div>
+                          <span className="font-bold text-slate-900">{sub.firm}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-1.5 font-semibold text-slate-700">
+                          {sub.tier === "Enterprise" && <Zap className="w-3.5 h-3.5 text-teal-600" />}
+                          {sub.tier}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 font-medium text-slate-900">{sub.price}</td>
+                      <td className="px-6 py-4">
+                        <span className="text-slate-600 font-medium">{sub.users}</span>
+                      </td>
+                      <td className="px-6 py-4 font-medium text-slate-600">
+                        <div>
+                          <div>{sub.nextBilling}</div>
+                          {sub.status === "Past Due" && (
+                            <div className="text-[11px] font-semibold text-red-500">Overdue</div>
+                          )}
+                          {(sub.status === "Notice Sent" || sub.status === "Requested") && (
+                            <div className="text-[11px] font-semibold text-amber-600">Notice Sent</div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-right whitespace-nowrap">
+                        <div className="flex items-center justify-end gap-2">
+                          {sub.status !== "Active" && (
+                            <>
+                              <button
+                                onClick={() => handleOpenSubPaymentRequest(sub)}
+                                title="Send payment request to firm"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-teal-700 hover:bg-teal-800 rounded-lg transition-colors shadow-sm"
+                              >
+                                <Send className="w-3.5 h-3.5" />
+                                <span>
+                                  {sub.status === "Notice Sent" || sub.status === "Requested"
+                                    ? "Resend Notice"
+                                    : "Request Payment"}
+                                </span>
+                              </button>
+                              <button
+                                onClick={() => handleMarkSubAsPaid(sub.id, sub.firm)}
+                                title="Mark subscription as Paid & Active"
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors"
+                              >
+                                <Check className="w-3.5 h-3.5" />
+                                <span>Mark Paid</span>
+                              </button>
+                            </>
+                          )}
+                          <button
+                            onClick={() => {
+                              setModalTitle(`Manage Subscription: ${sub.firm}`);
+                              setIsModalOpen(true);
+                            }}
+                            className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-bold text-[#0f766e] bg-teal-50 border border-teal-100 rounded-lg hover:bg-teal-100 transition-colors"
+                          >
+                            Manage
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       {/* Slide-over Modal */}
@@ -495,12 +290,10 @@ export default function BillingPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-slate-900">
-                    {paymentRequestModal.type === "subscription" ? "Request Subscription Payment" : "Request Payment"}
+                    Request Subscription Payment
                   </h3>
                   <p className="text-xs text-slate-500 mt-0.5">
-                    {paymentRequestModal.type === "subscription"
-                      ? "Send past due payment notice to firm billing contact."
-                      : "Send official payment request to firm billing contact."}
+                    Send past due payment notice to firm billing contact.
                   </p>
                 </div>
               </div>
@@ -519,11 +312,9 @@ export default function BillingPage() {
                   <span className="font-bold text-slate-900">{paymentRequestModal.firm}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block">
-                    {paymentRequestModal.type === "subscription" ? "Due Date" : "Invoice ID"}
-                  </span>
+                  <span className="text-slate-400 block">Due Date</span>
                   <span className="font-bold text-slate-900">
-                    {paymentRequestModal.type === "subscription" ? paymentRequestModal.dueInfo : paymentRequestModal.id}
+                    {paymentRequestModal.dueInfo}
                   </span>
                 </div>
                 <div>
@@ -564,9 +355,7 @@ export default function BillingPage() {
                 className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-teal-700 hover:bg-teal-800 rounded-lg transition-colors shadow-sm"
               >
                 <Send className="w-3.5 h-3.5" />
-                <span>
-                  {paymentRequestModal.type === "subscription" ? "Send Payment Notice" : "Send Payment Request"}
-                </span>
+                <span>Send Payment Notice</span>
               </button>
             </div>
           </div>
@@ -575,3 +364,4 @@ export default function BillingPage() {
     </div>
   );
 }
+
