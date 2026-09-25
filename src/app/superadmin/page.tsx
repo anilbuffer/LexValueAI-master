@@ -58,7 +58,7 @@ export default function SuperadminDashboard() {
       </div>
 
       {/* Top Metrics Grid (6 Cards) */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
 
         {/* Card 1 */}
         <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm relative overflow-hidden">
@@ -122,7 +122,7 @@ export default function SuperadminDashboard() {
       </div>
 
       {/* Middle Section: Top Firms & Live Queue */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Top Performing Firms */}
         <div className="lg:col-span-1 bg-white rounded-xl border border-slate-200 shadow-sm p-6">
