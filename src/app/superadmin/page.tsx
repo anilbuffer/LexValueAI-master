@@ -119,37 +119,6 @@ export default function SuperadminDashboard() {
             <span className="bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded font-bold">+15</span> verified today
           </p>
         </div>
-
-        {/* Card 5 */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm relative overflow-hidden">
-          <XCircle className="absolute -bottom-4 -right-2 w-24 h-24 text-red-500/5 -rotate-12" />
-          <div className="flex justify-between items-start relative z-10">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Suspended</p>
-            <div className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center">
-              <XCircle className="w-4 h-4 text-red-500" />
-            </div>
-          </div>
-          <p className="text-3xl font-bold text-slate-900 mt-2 relative z-10">1</p>
-          <p className="text-[10px] font-medium text-slate-500 mt-3 flex items-center gap-1.5 relative z-10">
-            <span className="bg-red-50 text-red-600 px-1.5 py-0.5 rounded font-bold">Action req</span> by superadmin
-          </p>
-        </div>
-
-        {/* Card 6 */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm relative overflow-hidden">
-          <Server className="absolute -bottom-4 -right-2 w-24 h-24 text-emerald-500/5 -rotate-12" />
-          <div className="flex justify-between items-start relative z-10">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Server Uptime</p>
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
-              <Server className="w-4 h-4 text-emerald-500" />
-            </div>
-          </div>
-          <p className="text-3xl font-bold text-slate-900 mt-2 relative z-10">99.9%</p>
-          <p className="text-[10px] font-medium text-slate-500 mt-3 flex items-center gap-1.5 relative z-10">
-            <span className="bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded font-bold">+0</span> downtime
-          </p>
-        </div>
-
       </div>
 
       {/* Middle Section: Top Firms & Live Queue */}
