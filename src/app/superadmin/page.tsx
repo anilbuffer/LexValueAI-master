@@ -122,7 +122,7 @@ export default function SuperadminDashboard() {
       </div>
 
       {/* Middle Section: Top Firms & Live Queue */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 
         {/* Top Performing Firms */}
         <div className="lg:col-span-1 bg-white rounded-xl border border-slate-200 shadow-sm p-6">
