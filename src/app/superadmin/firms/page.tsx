@@ -148,7 +148,7 @@ export default function FirmsPage() {
 
                   {/* Status Col */}
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div 
+                    <div
                       className="flex items-center gap-2.5 cursor-pointer"
                       onClick={() => handleToggleStatus(firm.id)}
                     >
@@ -179,18 +179,6 @@ export default function FirmsPage() {
                       >
                         <Eye className="w-3 h-3 text-slate-500" /> View
                       </Link>
-
-                      <button
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-white bg-[#008080] border border-[#008080] rounded-lg hover:bg-[#006666] transition-all shadow-sm"
-                      >
-                        <Edit2 className="w-3 h-3" /> Edit
-                      </button>
-
-                      <button
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-red-600 border border-red-200 bg-red-50 rounded-lg hover:bg-red-100 hover:border-red-300 transition-all shadow-sm"
-                      >
-                        <Trash2 className="w-3 h-3" /> Delete
-                      </button>
                     </div>
                   </td>
                 </tr>

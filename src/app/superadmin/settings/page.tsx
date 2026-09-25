@@ -1,313 +1,366 @@
 "use client";
 
 import { useState } from "react";
-import { Sliders, Server, Shield, Database, Save, User, Building2, Eye, EyeOff } from "lucide-react";
+import { Save, User, Globe, ShieldCheck, Clock, Lock, CheckCircle2, Database, AlertTriangle } from "lucide-react";
 
-const mockPermissions = [
-  { id: 1, feature: "Firm Settings", superadmin: true, admin: true, partner: false, attorney: false, paralegal: false },
-  { id: 2, feature: "Billing & Invoices", superadmin: true, admin: true, partner: false, attorney: false, paralegal: false },
-  { id: 3, feature: "Manage Users", superadmin: true, admin: true, partner: true, attorney: false, paralegal: false },
-  { id: 4, feature: "Delete Cases", superadmin: true, admin: true, partner: true, attorney: false, paralegal: false },
-  { id: 5, feature: "Create/Edit Cases", superadmin: true, admin: true, partner: true, attorney: true, paralegal: true },
-  { id: 6, feature: "View All Firm Cases", superadmin: true, admin: true, partner: true, attorney: false, paralegal: false },
-];
+export default function SuperadminSettingsPage() {
+  const [formData, setFormData] = useState({
+    // Superadmin Profile
+    adminFirstName: "Pawan",
+    adminLastName: "Kumar",
+    adminEmail: "admin@lexvalue.ai",
+    adminPhone: "+1 (555) 912-3840",
+    roleTitle: "Master Superadmin",
 
-export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState("general");
-  const [showPassword, setShowPassword] = useState(false);
+    // Platform Identity
+    platformName: "LexValue.ai",
+    companyEntity: "LexValue AI Technologies Inc.",
+    supportEmail: "support@lexvalue.ai",
+    complianceEmail: "compliance@lexvalue.ai",
+    headquarters: "One World Trade Center, Suite 8500, New York, NY 10007",
+    primaryCurrency: "USD ($)",
+
+    // Global Tenant & Platform Security
+    sessionTimeout: "30",
+    enforceMfaAllTenants: true,
+    strictHipaaLogging: true,
+    autoBackupDaily: true,
+    requireTenantApproval: false,
+    maintenanceMode: false
+  });
+
+  const [isSaving, setIsSaving] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+    setTimeout(() => {
+      setIsSaving(false);
+      setShowSuccessToast(true);
+      setTimeout(() => setShowSuccessToast(false), 3000);
+    }, 600);
+  };
 
   return (
-    <div className="p-6 space-y-8 min-h-screen bg-slate-50/30 w-full">
+    <div className="p-6 md:p-8 space-y-6 min-h-screen bg-slate-50/30 w-full max-w-5xl mx-auto">
+      {/* Toast Notification */}
+      {showSuccessToast && (
+        <div className="fixed top-6 right-6 z-[9999] flex items-center gap-2 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-800 text-sm animate-in fade-in slide-in-from-top-2">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <span>Platform settings saved successfully.</span>
+        </div>
+      )}
+
+      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#14233a] tracking-tight">Global Platform Settings</h1>
-          <p className="text-slate-500 mt-2">Manage superadmin configurations, platform security, and compliance preferences.</p>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Superadmin Settings</h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Manage global platform identity, master credentials, security rules, and tenant compliance policies.
+          </p>
         </div>
-        <button className="flex items-center gap-2 bg-[#0f766e] hover:bg-[#0d655e] text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-sm">
-          <Save className="w-4 h-4" /> Save Changes
+        <button
+          onClick={handleSave}
+          disabled={isSaving}
+          className="h-11 flex justify-center items-center px-5 border border-transparent rounded-lg text-sm font-medium text-white bg-[#0f3d3e] hover:bg-[#0b2e2f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-900 transition-all cursor-pointer group disabled:opacity-70 disabled:cursor-not-allowed shadow-sm"
+        >
+          {isSaving ? (
+            <span className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Saving...
+            </span>
+          ) : (
+            <span className="flex items-center gap-2">
+              <Save className="w-4 h-4" />
+              Save Changes
+            </span>
+          )}
         </button>
       </div>
 
-      {/* Tabs */}
-      <div className="border-b border-slate-200">
-        <nav className="flex gap-8 overflow-x-auto">
-          <button 
-            onClick={() => setActiveTab("general")}
-            className={`pb-4 text-sm font-semibold border-b-2 whitespace-nowrap transition-all ${activeTab === "general" ? "border-teal-600 text-teal-700" : "border-transparent text-slate-500 hover:text-slate-800"}`}
-          >
-            General Profile & Settings
-          </button>
-          <button 
-            onClick={() => setActiveTab("permissions")}
-            className={`pb-4 text-sm font-semibold border-b-2 whitespace-nowrap transition-all ${activeTab === "permissions" ? "border-teal-600 text-teal-700" : "border-transparent text-slate-500 hover:text-slate-800"}`}
-          >
-            Role & Permission Matrix
-          </button>
-          <button 
-            onClick={() => setActiveTab("security")}
-            className={`pb-4 text-sm font-semibold border-b-2 whitespace-nowrap transition-all ${activeTab === "security" ? "border-teal-600 text-teal-700" : "border-transparent text-slate-500 hover:text-slate-800"}`}
-          >
-            Security & Compliance
-          </button>
-        </nav>
-      </div>
-
-      {/* Tab Content */}
-      <div className="pt-2 pb-24">
-        
-        {/* General Profile & Settings */}
-        {activeTab === "general" && (
-          <div className="space-y-6">
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
-              <div className="flex gap-4 mb-8">
-                <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center shrink-0">
-                  <User className="w-6 h-6 text-slate-700" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-[#14233a]">Superadmin Profile Details</h3>
-                  <p className="text-sm text-slate-500">Manage your personal credentials and contact information.</p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-bold text-[#14233a]">First Name</label>
-                  <input type="text" defaultValue="Super" className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-bold text-[#14233a]">Last Name</label>
-                  <input type="text" defaultValue="Admin" className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" />
-                </div>
-                <div className="space-y-1.5 md:col-span-2">
-                  <label className="text-sm font-bold text-[#14233a]">Email Address</label>
-                  <input type="email" defaultValue="admin@lexvalue.ai" className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm" />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-bold text-[#14233a]">Update Password</label>
-                  <div className="relative">
-                    <input type={showPassword ? "text" : "password"} placeholder="••••••••" className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm pr-10" />
-                    <button 
-                      type="button" 
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                    >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-bold text-[#14233a]">Confirm New Password</label>
-                  <div className="relative">
-                    <input type={showPassword ? "text" : "password"} placeholder="••••••••" className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm pr-10" />
-                  </div>
-                </div>
-              </div>
+      <form onSubmit={handleSave} className="space-y-6">
+        {/* 1. Superadmin Profile */}
+        <div className="bg-white rounded-2xl border border-slate-200/70 shadow-sm p-6 relative overflow-hidden">
+          <div className="flex items-center gap-4 mb-6 border-b border-slate-100 pb-4">
+            <div className="p-3 bg-slate-50 text-slate-700 rounded-xl border border-slate-100">
+              <User className="w-6 h-6 text-slate-600" />
             </div>
-
-            {/* Global Firms Settings */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
-              <div className="flex gap-4 mb-8">
-                <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center shrink-0">
-                  <Building2 className="w-6 h-6 text-slate-700" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-[#14233a]">Global Firms Settings</h3>
-                  <p className="text-sm text-slate-500">Configure default limitations, integrations, and global toggles for all tenant firms.</p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-bold text-[#14233a]">Default Trial Period</label>
-                  <select className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm appearance-none">
-                    <option>7 Days</option>
-                    <option>14 Days</option>
-                    <option>30 Days</option>
-                    <option>No Trial</option>
-                  </select>
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-bold text-[#14233a]">Default Plan Tier</label>
-                  <select className="w-full px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm appearance-none">
-                    <option>Starter</option>
-                    <option>Professional</option>
-                    <option>Enterprise</option>
-                  </select>
-                </div>
-                
-                <div className="mt-4 pt-4 border-t border-slate-100 md:col-span-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-bold text-[#14233a]">Auto-suspend Overdue Firms</p>
-                    <p className="text-xs text-slate-500 mt-1">Automatically restrict access to firms with overdue invoices exceeding 15 days.</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                    <input type="checkbox" className="sr-only peer" defaultChecked />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0f766e]"></div>
-                  </label>
-                </div>
-
-                <div className="pt-4 border-t border-slate-100 md:col-span-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-bold text-[#14233a]">Allow Firm Self-Registration</p>
-                    <p className="text-xs text-slate-500 mt-1">Enable public sign-up page for new firms to register themselves.</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                    <input type="checkbox" className="sr-only peer" />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0f766e]"></div>
-                  </label>
-                </div>
-              </div>
+            <div>
+              <h2 className="text-lg font-bold text-slate-800 leading-tight tracking-tight">Superadmin Profile</h2>
+              <p className="text-sm text-slate-500 mt-1">Master account identity and emergency contact credentials.</p>
             </div>
           </div>
-        )}
 
-        {/* Role & Permission Matrix */}
-        {activeTab === "permissions" && (
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="p-8 border-b border-slate-100 flex gap-4">
-              <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center shrink-0">
-                <Sliders className="w-6 h-6 text-slate-700" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-[#14233a]">Global Permission Matrix</h3>
-                <p className="text-sm text-slate-500 mt-1">Configure default access control parameters universally across all tenant firms.</p>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-900 block">
+                First Name <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="adminFirstName"
+                value={formData.adminFirstName}
+                onChange={handleChange}
+                className="block w-full py-2.5 px-4 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent bg-white transition-all text-sm"
+                placeholder="e.g. Super"
+                required
+              />
             </div>
-            
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-slate-600">
-                <thead className="bg-slate-50/50 text-xs uppercase tracking-widest font-semibold text-slate-500 border-b border-slate-200">
-                  <tr>
-                    <th className="px-8 py-5 border-r border-slate-100">FEATURE / ACTION</th>
-                    <th className="px-4 py-5 text-center">SUPERADMIN</th>
-                    <th className="px-4 py-5 text-center">FIRM ADMIN</th>
-                    <th className="px-4 py-5 text-center">PARTNER</th>
-                    <th className="px-4 py-5 text-center">ATTORNEY</th>
-                    <th className="px-4 py-5 text-center">PARALEGAL</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {mockPermissions.map(perm => (
-                    <tr key={perm.id} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="px-8 py-4 font-bold text-[#14233a] border-r border-slate-100">{perm.feature}</td>
-                      <td className="px-4 py-4 text-center">
-                        <input type="checkbox" defaultChecked={perm.superadmin} className="w-4 h-4 text-[#0f766e] rounded border-slate-300 focus:ring-[#0f766e]" disabled />
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                        <input type="checkbox" defaultChecked={perm.admin} className="w-4 h-4 text-[#0f766e] rounded border-slate-300 focus:ring-[#0f766e]" />
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                        <input type="checkbox" defaultChecked={perm.partner} className="w-4 h-4 text-[#0f766e] rounded border-slate-300 focus:ring-[#0f766e]" />
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                        <input type="checkbox" defaultChecked={perm.attorney} className="w-4 h-4 text-[#0f766e] rounded border-slate-300 focus:ring-[#0f766e]" />
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                        <input type="checkbox" defaultChecked={perm.paralegal} className="w-4 h-4 text-[#0f766e] rounded border-slate-300 focus:ring-[#0f766e]" />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-900 block">
+                Last Name <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="adminLastName"
+                value={formData.adminLastName}
+                onChange={handleChange}
+                className="block w-full py-2.5 px-4 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent bg-white transition-all text-sm"
+                placeholder="e.g. Admin"
+                required
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-900 block">Master Admin Email</label>
+              <input
+                type="email"
+                value={formData.adminEmail}
+                readOnly
+                disabled
+                className="block w-full py-2.5 px-4 border border-slate-200 rounded-lg text-slate-500 bg-slate-50/70 cursor-not-allowed focus:outline-none transition-all text-sm"
+              />
+              <p className="text-xs text-slate-400 mt-1">Master superadmin email cannot be altered directly.</p>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-900 block">
+                Emergency Admin Phone <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="tel"
+                name="adminPhone"
+                value={formData.adminPhone}
+                onChange={handleChange}
+                className="block w-full py-2.5 px-4 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent bg-white transition-all text-sm"
+                placeholder="+1 (555) 912-3840"
+                required
+              />
             </div>
           </div>
-        )}
+        </div>
 
-        {/* Security & Compliance */}
-        {activeTab === "security" && (
-          <div className="space-y-6">
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
-              <div className="flex gap-4 mb-8">
-                <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center shrink-0">
-                  <Shield className="w-6 h-6 text-slate-700" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-[#14233a]">Security & Access</h3>
-                  <p className="text-sm text-slate-500">HIPAA compliance and authentication policies applied globally.</p>
-                </div>
-              </div>
-              
-              <div className="space-y-8">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-bold text-[#14233a]">Enforce Two-Factor Authentication (2FA)</p>
-                    <p className="text-xs text-slate-500 mt-1">Mandate 2FA for all users across all tenant firms to ensure platform security.</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                    <input type="checkbox" className="sr-only peer" defaultChecked />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0f766e]"></div>
-                  </label>
-                </div>
-                
-                <hr className="border-slate-100" />
-                
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-bold text-[#14233a]">Idle Session Timeout</p>
-                    <p className="text-xs text-slate-500 mt-1">Automatically log out users after inactivity to maintain HIPAA compliance.</p>
-                  </div>
-                  <select className="w-full sm:w-64 px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm appearance-none">
-                    <option>15 Minutes</option>
-                    <option>30 Minutes (Recommended)</option>
-                    <option>1 Hour</option>
-                    <option>2 Hours</option>
-                  </select>
-                </div>
-              </div>
+        {/* 2. Platform Identity & Operations */}
+        <div className="bg-white rounded-2xl border border-slate-200/70 shadow-sm p-6 relative overflow-hidden">
+          <div className="flex items-center gap-4 mb-6 border-b border-slate-100 pb-4">
+            <div className="p-3 bg-slate-50 text-slate-700 rounded-xl border border-slate-100">
+              <Globe className="w-6 h-6 text-slate-600" />
             </div>
-
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
-              <div className="flex gap-4 mb-8">
-                <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center shrink-0">
-                  <Database className="w-6 h-6 text-slate-700" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-[#14233a]">Data Retention & AI Preferences</h3>
-                  <p className="text-sm text-slate-500">Manage how case data is globally stored and processed by AI.</p>
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <p className="text-sm font-bold text-[#14233a]">Case Data Retention</p>
-                  <p className="text-xs text-slate-500 mt-1">How long to keep data globally after a case is closed.</p>
-                </div>
-                <select defaultValue="7 Years (Standard)" className="w-full sm:w-64 px-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm appearance-none">
-                  <option>3 Years</option>
-                  <option>5 Years</option>
-                  <option>7 Years (Standard)</option>
-                  <option>Indefinitely</option>
-                </select>
-              </div>
+            <div>
+              <h2 className="text-lg font-bold text-slate-800 leading-tight tracking-tight">Platform Identity</h2>
+              <p className="text-sm text-slate-500 mt-1">Global branding, legal entity, and operational contact endpoints.</p>
             </div>
-
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
-              <div className="flex gap-4 mb-8">
-                <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center shrink-0">
-                  <Server className="w-6 h-6 text-slate-700" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-[#14233a]">Network Restrictions</h3>
-                  <p className="text-sm text-slate-500">Global firewall rules and IP constraints for the platform.</p>
-                </div>
-              </div>
-              
-              <div className="space-y-1.5">
-                <label className="text-sm font-bold text-[#14233a]">Superadmin IP Whitelisting</label>
-                <p className="text-xs text-slate-500 mb-2">Restrict superadmin portal access to specific IP addresses. One per line. Leave empty for open access.</p>
-                <textarea 
-                  rows={4}
-                  defaultValue="192.168.1.1&#10;10.0.0.5"
-                  className="w-full px-4 py-2.5 text-sm font-mono text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
-                  placeholder="e.g. 192.168.1.1"
-                ></textarea>
-              </div>
-            </div>
-
           </div>
-        )}
 
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-900 block">
+                Platform Name <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="platformName"
+                value={formData.platformName}
+                onChange={handleChange}
+                className="block w-full py-2.5 px-4 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent bg-white transition-all text-sm"
+                placeholder="LexValue.ai"
+                required
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-900 block">Legal Operating Entity</label>
+              <input
+                type="text"
+                name="companyEntity"
+                value={formData.companyEntity}
+                onChange={handleChange}
+                className="block w-full py-2.5 px-4 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent bg-white transition-all text-sm"
+                placeholder="LexValue AI Technologies Inc."
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-900 block">
+                Platform Support Email <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="email"
+                name="supportEmail"
+                value={formData.supportEmail}
+                onChange={handleChange}
+                className="block w-full py-2.5 px-4 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent bg-white transition-all text-sm"
+                placeholder="support@lexvalue.ai"
+                required
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-900 block">
+                HIPAA & Compliance Contact Email <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="email"
+                name="complianceEmail"
+                value={formData.complianceEmail}
+                onChange={handleChange}
+                className="block w-full py-2.5 px-4 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent bg-white transition-all text-sm"
+                placeholder="compliance@lexvalue.ai"
+                required
+              />
+            </div>
+
+            <div className="space-y-1.5 md:col-span-2">
+              <label className="text-sm font-semibold text-slate-900 block">Corporate Headquarters</label>
+              <textarea
+                rows={2}
+                name="headquarters"
+                value={formData.headquarters}
+                onChange={handleChange}
+                className="block w-full py-2.5 px-4 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent bg-white transition-all text-sm resize-none"
+                placeholder="One World Trade Center, Suite 8500, New York, NY 10007"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Global Security & Multi-Tenant Compliance */}
+        <div className="bg-white rounded-2xl border border-slate-200/70 shadow-sm p-6 relative overflow-hidden">
+          <div className="flex items-center gap-4 mb-6 border-b border-slate-100 pb-4">
+            <div className="p-3 bg-slate-50 text-slate-700 rounded-xl border border-slate-100">
+              <ShieldCheck className="w-6 h-6 text-slate-600" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-slate-800 leading-tight tracking-tight">Global Security & Tenant Compliance</h2>
+              <p className="text-sm text-slate-500 mt-1">Platform-wide HIPAA Security Rule policies and tenant isolation controls.</p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {/* Global Idle Session Timeout */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50/60 rounded-xl border border-slate-200/70 gap-4">
+              <div className="flex gap-3">
+                <Clock className="w-5 h-5 text-slate-400 mt-0.5" />
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">Platform Idle Session Timeout</h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Universal logout duration across all tenant accounts for HIPAA Security Rule CFR § 164.312.
+                  </p>
+                </div>
+              </div>
+              <select
+                name="sessionTimeout"
+                value={formData.sessionTimeout}
+                onChange={handleChange}
+                className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-semibold text-slate-700 outline-none focus:border-teal-500 shadow-sm cursor-pointer"
+              >
+                <option value="15">15 Minutes (Strict HIPAA)</option>
+                <option value="30">30 Minutes (Recommended)</option>
+                <option value="60">60 Minutes</option>
+              </select>
+            </div>
+
+            {/* Mandatory 2FA for all firms */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50/60 rounded-xl border border-slate-200/70 gap-4">
+              <div className="flex gap-3">
+                <Lock className="w-5 h-5 text-slate-400 mt-0.5" />
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">Enforce Mandatory 2FA for All Tenant Admins</h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Require two-factor authentication (TOTP hardware/app) across all registered tenant law firms.
+                  </p>
+                </div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.enforceMfaAllTenants}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, enforceMfaAllTenants: e.target.checked }))}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-700"></div>
+              </label>
+            </div>
+
+            {/* Immutable HIPAA Audit Logging */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50/60 rounded-xl border border-slate-200/70 gap-4">
+              <div className="flex gap-3">
+                <ShieldCheck className="w-5 h-5 text-emerald-600 mt-0.5" />
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">Immutable 7-Year HIPAA Audit Log Retention</h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Enforce WORM (Write Once, Read Many) tamper-evident storage for all medical chronology views.
+                  </p>
+                </div>
+              </div>
+              <span className="inline-flex items-center gap-1 text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full">
+                Active & Enforced
+              </span>
+            </div>
+
+            {/* Automated Daily Snapshots */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50/60 rounded-xl border border-slate-200/70 gap-4">
+              <div className="flex gap-3">
+                <Database className="w-5 h-5 text-slate-400 mt-0.5" />
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">Automated Daily Database Snapshots</h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Encrypted daily RDS PostgreSQL snapshots with multi-region disaster recovery replication.
+                  </p>
+                </div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.autoBackupDaily}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, autoBackupDaily: e.target.checked }))}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-700"></div>
+              </label>
+            </div>
+
+            {/* Maintenance Mode */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-amber-50/50 rounded-xl border border-amber-200/70 gap-4">
+              <div className="flex gap-3">
+                <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5" />
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">Platform Maintenance Mode</h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Temporarily restrict tenant user logins for critical database upgrades or infrastructure patches.
+                  </p>
+                </div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.maintenanceMode}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, maintenanceMode: e.target.checked }))}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
   );
 }

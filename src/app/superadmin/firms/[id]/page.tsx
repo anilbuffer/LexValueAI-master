@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
-  ArrowLeft, Building2, Mail, Phone, MapPin, ShieldCheck, CreditCard, Activity, Edit2, Scale, FileText, Handshake,
+  ArrowLeft, Building2, Mail, Phone, MapPin, ShieldCheck, CreditCard, Hexagon, Edit2, Scale, FileText, Handshake,
   Search, Filter, CheckCircle2, ChevronDown, Trash2, Calendar, Zap, Download, Eye, X, User
 } from "lucide-react";
 
@@ -62,10 +62,15 @@ const mockUsers = [
   { id: 4, name: "Donna Paulsen", role: "Admin", email: "donna@smithassociates.com" },
 ];
 
-const mockActivity = [
-  { id: 1, action: "User Login", user: "Mike Ross", time: "10 mins ago", details: "Logged in successfully" },
-  { id: 2, action: "Case Created", user: "Harvey Specter", time: "2 hours ago", details: "Created case 'Pearson vs Hardman'" },
-  { id: 3, action: "System Update", user: "Donna Paulsen", time: "1 day ago", details: "Updated firm billing settings" },
+const firmAuditLogs = [
+  { id: 1, user: "Pawan Kumar", email: "pawan@lexvalue.ai", role: "Paralegal", action: "USER_LOGOUT", details: "User pawan@lexvalue.ai logged out successfully.", timestamp: "Sep 24, 2026 03:50 PM" },
+  { id: 2, user: "Nabneet Kaur", email: "nabneet@lexvalue.ai", role: "Attorney", action: "USER_LOGOUT", details: "User nabneet@lexvalue.ai logged out successfully.", timestamp: "Sep 24, 2026 03:22 PM" },
+  { id: 3, user: "Nabneet Kaur", email: "nabneet@lexvalue.ai", role: "Attorney", action: "USER_LOGIN", details: "User nabneet@lexvalue.ai logged in successfully", timestamp: "Sep 24, 2026 03:22 PM" },
+  { id: 4, user: "Pawan Kumar", email: "pawan@lexvalue.ai", role: "Paralegal", action: "USER_LOGIN", details: "User pawan@lexvalue.ai logged in successfully", timestamp: "Sep 24, 2026 03:03 PM" },
+  { id: 5, user: "Pawan Kumar", email: "pawan@lexvalue.ai", role: "Paralegal", action: "USER_LOGOUT", details: "User pawan@lexvalue.ai logged out successfully.", timestamp: "Sep 24, 2026 02:28 PM" },
+  { id: 6, user: "Pawan Kumar", email: "pawan@lexvalue.ai", role: "Paralegal", action: "CASE_CREATED", details: 'Case "People of the State of New York v. Unknown Perpetrators" created', timestamp: "Sep 24, 2026 12:26 PM" },
+  { id: 7, user: "Harvey Specter", email: "harvey@smithassociates.com", role: "Managing Partner", action: "PHI_EXPORT_GENERATED", details: "Exported HIPAA-protected Medical Chronology for Case #NY-2026-441", timestamp: "Sep 24, 2026 10:14 AM" },
+  { id: 8, user: "Mike Ross", email: "mike@smithassociates.com", role: "Attorney", action: "CASE_VALUATION_CALCULATED", details: "Generated settlement valuation bracket for Case #MVA-8812", timestamp: "Sep 23, 2026 04:45 PM" },
 ];
 
 const mockCases = [
@@ -121,6 +126,9 @@ export default function FirmDetailPage() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [viewUser, setViewUser] = useState<any | null>(null);
   const [viewCase, setViewCase] = useState<any | null>(null);
+  const [auditSearchTerm, setAuditSearchTerm] = useState("");
+  const [auditRoleFilter, setAuditRoleFilter] = useState("all");
+  const [isAuditFilterOpen, setIsAuditFilterOpen] = useState(false);
 
   return (
     <div className="p-6 space-y-6 min-h-screen bg-slate-50/30 w-full">
@@ -164,10 +172,10 @@ export default function FirmDetailPage() {
             Users & Roles
           </button>
           <button
-            onClick={() => setActiveTab("activity")}
-            className={`pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === "activity" ? "border-teal-600 text-teal-700" : "border-transparent text-slate-500 hover:text-slate-700"}`}
+            onClick={() => setActiveTab("audit")}
+            className={`pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === "audit" ? "border-teal-600 text-teal-700" : "border-transparent text-slate-500 hover:text-slate-700"}`}
           >
-            Activity Log
+            Audit Log
           </button>
         </nav>
       </div>
@@ -334,23 +342,122 @@ export default function FirmDetailPage() {
           </div>
         )}
 
-        {/* Activity Log Tab */}
-        {activeTab === "activity" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-            <h3 className="text-lg font-semibold text-slate-900 mb-6">Recent Firm Activity</h3>
-            <div className="space-y-6">
-              {mockActivity.map(activity => (
-                <div key={activity.id} className="flex gap-4">
-                  <div className="mt-1">
-                    <div className="w-2 h-2 rounded-full bg-teal-500"></div>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-900">{activity.action}</p>
-                    <p className="text-sm text-slate-600 mt-0.5">{activity.details}</p>
-                    <p className="text-xs text-slate-400 mt-1">{activity.user} • {activity.time}</p>
-                  </div>
+        {/* Audit Log Tab */}
+        {activeTab === "audit" && (
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            {/* Header */}
+            <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Audit Log</h2>
+                <p className="text-sm text-slate-500 mt-1">Track user activity and system events.</p>
+              </div>
+              
+              <div className="flex items-center gap-3 w-full md:w-auto relative">
+                <div className="relative w-full md:w-64">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search logs..."
+                    value={auditSearchTerm}
+                    onChange={(e) => setAuditSearchTerm(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
+                  />
                 </div>
-              ))}
+                <div className="relative">
+                  <button 
+                    onClick={() => setIsAuditFilterOpen(!isAuditFilterOpen)}
+                    className={`flex items-center gap-2 px-4 py-2 border rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                      auditRoleFilter !== 'all' 
+                        ? 'border-teal-500 bg-teal-50 text-teal-700' 
+                        : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    <Filter className="w-4 h-4" /> Filter {auditRoleFilter !== 'all' && `(${auditRoleFilter})`}
+                  </button>
+
+                  {isAuditFilterOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl border border-slate-200 shadow-lg py-1.5 z-20">
+                      <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100">
+                        Filter By Role
+                      </div>
+                      {["all", "Managing Partner", "Attorney", "Paralegal", "Admin"].map((r) => (
+                        <button
+                          key={r}
+                          onClick={() => {
+                            setAuditRoleFilter(r);
+                            setIsAuditFilterOpen(false);
+                          }}
+                          className={`w-full text-left px-3 py-2 text-xs font-medium hover:bg-slate-50 transition-colors flex items-center justify-between ${
+                            auditRoleFilter === r ? 'text-teal-700 bg-teal-50/60 font-semibold' : 'text-slate-700'
+                          }`}
+                        >
+                          <span>{r === 'all' ? 'All Roles' : r}</span>
+                          {auditRoleFilter === r && <CheckCircle2 className="w-3.5 h-3.5 text-teal-600" />}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-100">
+                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">USER</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">ROLE</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">ACTION</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">DETAILS</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">TIMESTAMP</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {firmAuditLogs
+                    .filter((log) => {
+                      if (auditRoleFilter !== "all" && log.role !== auditRoleFilter) return false;
+                      if (auditSearchTerm.trim()) {
+                        const q = auditSearchTerm.toLowerCase();
+                        const matchUser = log.user.toLowerCase().includes(q) || log.email.toLowerCase().includes(q);
+                        const matchAction = log.action.toLowerCase().includes(q);
+                        const matchDetails = log.details.toLowerCase().includes(q);
+                        if (!matchUser && !matchAction && !matchDetails) return false;
+                      }
+                      return true;
+                    })
+                    .map((log) => (
+                      <tr key={log.id} className="hover:bg-slate-50/50 transition-colors">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex flex-col">
+                            <span className="text-sm font-bold text-slate-900">{log.user}</span>
+                            <span className="text-[11px] text-slate-500 mt-0.5">{log.email}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center gap-2 text-sm text-slate-600">
+                            <Hexagon className={`w-4 h-4 ${log.role === 'Attorney' ? 'text-emerald-500' : 'text-slate-400'}`} />
+                            {log.role}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-2 py-1 bg-slate-100 text-slate-700 text-[10px] font-bold rounded">
+                            {log.action}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-sm text-slate-600">{log.details}</span>
+                        </td>
+                        <td className="px-6 py-4 text-right whitespace-nowrap">
+                          <div className="flex items-center justify-end gap-1.5 text-sm text-slate-500">
+                            <Calendar className="w-4 h-4" />
+                            <span>{log.timestamp}</span>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
             </div>
           </div>
         )}

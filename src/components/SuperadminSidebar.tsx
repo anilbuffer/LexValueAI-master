@@ -13,8 +13,7 @@ import {
   ChevronRight,
   LogOut,
   Scale,
-  FileText,
-  ClipboardList
+  FileText
 } from "lucide-react";
 import { logoutUser } from "@/app/actions/auth";
 
@@ -50,7 +49,6 @@ export default function SuperadminSidebar({ user }: SuperadminSidebarProps) {
     { name: "Firms", href: "/superadmin/firms", icon: Building2 },
     { name: "Billings", href: "/superadmin/billing", icon: CreditCard },
     { name: "Reports", href: "/superadmin/reports", icon: FileText },
-    { name: "Audit Log", href: "/superadmin/audit-log", icon: ClipboardList },
     { name: "Settings", href: "/superadmin/settings", icon: Settings },
   ];
 

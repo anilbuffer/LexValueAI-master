@@ -1,14 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import {
-  Building2, Clock, CheckCircle2, XCircle, DollarSign, Activity, Users, Scale, FileText,
-  ChevronRight, Award, Server, Briefcase, AlertCircle
+  Building2, CheckCircle2, XCircle, DollarSign, Activity, Users, FileText,
+  ChevronRight, Award, Server
 } from "lucide-react";
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 
 // --- MOCK DATA ---
@@ -27,11 +25,6 @@ const activityData = [
   { name: 'Dec', firms: 0, revenue: 0 },
 ];
 
-const distributionData = [
-  { name: 'Enterprise', value: 8, color: '#0ea5e9' },
-  { name: 'Professional', value: 7, color: '#10b981' },
-  { name: 'Starter', value: 4, color: '#f59e0b' },
-];
 
 const topFirms = [
   { id: 1, initials: "SA", name: "Smith & Associates", plan: "Enterprise", metric: "342 Users" },
@@ -246,100 +239,51 @@ export default function SuperadminDashboard() {
 
       </div>
 
-      {/* Bottom Section: Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-        {/* Platform Growth Activity */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <h3 className="font-semibold text-slate-900">Platform Growth Trends</h3>
-              <p className="text-[11px] text-slate-500 mt-1">Track firm onboarding and MRR growth over time.</p>
-            </div>
-            <div className="flex gap-4 text-[10px] font-medium">
-              <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-blue-500"></div> Active Firms</div>
-              <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-emerald-500"></div> MRR ($k)</div>
-            </div>
+      {/* Bottom Section: Platform Growth Trends (Full Width) */}
+      <div className="w-full bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div>
+            <h3 className="font-semibold text-slate-900 text-lg">Platform Growth Trends</h3>
+            <p className="text-xs text-slate-500 mt-1">Track firm onboarding and MRR growth over time across all tenants.</p>
           </div>
-
-          <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={activityData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorFirms" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748b' }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748b' }} />
-                <Tooltip
-                  contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                  itemStyle={{ fontSize: '12px', fontWeight: 500 }}
-                  labelStyle={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}
-                />
-                <CartesianGrid vertical={false} stroke="#f1f5f9" strokeDasharray="3 3" />
-                <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorRevenue)" />
-                <Area type="monotone" dataKey="firms" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorFirms)" />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="flex items-center gap-4 text-xs font-medium">
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+              <span className="text-slate-600 font-medium">Active Firms</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+              <span className="text-slate-600 font-medium">MRR ($k)</span>
+            </div>
           </div>
         </div>
 
-        {/* Firm Plan Distribution */}
-        <div className="lg:col-span-1 bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-          <div className="mb-2">
-            <h3 className="font-semibold text-slate-900">Firm Plan Distribution</h3>
-            <p className="text-[11px] text-slate-500 mt-1">Volume of tenant firms by subscription tier.</p>
-          </div>
-
-          <div className="h-56 w-full relative flex justify-center items-center">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={distributionData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                  stroke="none"
-                >
-                  {distributionData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  itemStyle={{ fontSize: '12px', fontWeight: 600, color: '#0f172a' }}
-                  contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-            {/* Center Text */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-3xl font-bold text-slate-900">19</span>
-              <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Firms</span>
-            </div>
-          </div>
-
-          <div className="space-y-3 mt-4">
-            {distributionData.map(item => (
-              <div key={item.name} className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }}></div>
-                  <span className="font-medium text-slate-700">{item.name}</span>
-                </div>
-                <span className="font-bold text-slate-900">{item.value}</span>
-              </div>
-            ))}
-          </div>
+        <div className="h-72 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={activityData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="colorFirms" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748b' }} dy={10} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748b' }} />
+              <Tooltip
+                contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                itemStyle={{ fontSize: '12px', fontWeight: 500 }}
+                labelStyle={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}
+              />
+              <CartesianGrid vertical={false} stroke="#f1f5f9" strokeDasharray="3 3" />
+              <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorRevenue)" />
+              <Area type="monotone" dataKey="firms" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorFirms)" />
+            </AreaChart>
+          </ResponsiveContainer>
         </div>
-
       </div>
     </div>
   );
