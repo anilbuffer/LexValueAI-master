@@ -9,7 +9,6 @@ import {
   Award,
   MessageSquare,
   Star,
-  RefreshCw,
   Clock,
   CheckCircle2,
   Bug,
@@ -234,9 +233,12 @@ export default function SuperadminDashboard() {
                         <Clock className="w-3 h-3 text-slate-400" />
                         {item.time}
                       </span>
-                      <button className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-teal-800 bg-teal-50 hover:bg-teal-100 border border-teal-200/70 rounded-lg transition-colors shadow-2xs">
-                        <RefreshCw className="w-3.5 h-3.5 text-teal-700" /> Retry / Log
-                      </button>
+                      <Link
+                        href="/superadmin/audit-log"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-teal-800 bg-teal-50 hover:bg-teal-100 border border-teal-200/70 rounded-lg transition-colors shadow-2xs"
+                      >
+                        <FileText className="w-3.5 h-3.5 text-teal-700" /> View Log
+                      </Link>
                     </div>
                   </div>
                 </div>
