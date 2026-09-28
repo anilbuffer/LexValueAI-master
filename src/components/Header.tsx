@@ -280,8 +280,10 @@ export default function Header({ role, user }: { role: string, user: { firstName
       {/* Right: Quick Actions */}
       <div className="flex-1 flex items-center justify-end gap-3">
 
-        {/* Give Feedback / Report Bug Button for Firm Users */}
-        <GiveFeedbackModal buttonVariant="header" />
+        {/* Give Feedback / Report Bug Button for Firm Users (Hidden in Superadmin) */}
+        {role !== "SUPERADMIN" && !pathname?.startsWith("/superadmin") && (
+          <GiveFeedbackModal buttonVariant="header" />
+        )}
 
         {/* Fullscreen Option */}
         <button
