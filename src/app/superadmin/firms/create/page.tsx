@@ -35,7 +35,7 @@ export default function CreateFirmPage() {
   };
 
   return (
-    <div className="p-6 w-full">
+    <div className="p-6 md:p-8 space-y-6 bg-slate-50/50 min-h-screen w-full font-sans">
       <div className="mb-8">
         <button 
           onClick={() => router.back()}
@@ -49,12 +49,12 @@ export default function CreateFirmPage() {
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Personal Profile Section */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 relative overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 sm:p-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none opacity-60"></div>
           
           <div className="flex items-center gap-4 mb-8 relative">
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center shrink-0 border border-slate-200">
-              <User className="w-6 h-6 text-slate-600" />
+            <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shrink-0 border border-blue-100">
+              <User className="w-5 h-5" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-slate-900">Personal Profile</h2>
@@ -158,12 +158,12 @@ export default function CreateFirmPage() {
         </div>
 
         {/* Firm Information Section */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 relative overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 sm:p-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none opacity-60"></div>
           
           <div className="flex items-center gap-4 mb-8 relative">
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center shrink-0 border border-slate-200">
-              <Building2 className="w-6 h-6 text-slate-600" />
+            <div className="w-10 h-10 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center shrink-0 border border-teal-100">
+              <Building2 className="w-5 h-5" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-slate-900">Firm Information</h2>

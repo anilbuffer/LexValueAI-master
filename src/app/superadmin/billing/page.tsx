@@ -51,7 +51,7 @@ export default function BillingPage() {
   };
 
   return (
-    <div className="p-6 space-y-8 min-h-screen bg-slate-50/30 w-full">
+    <div className="p-6 md:p-8 space-y-6 bg-slate-50/50 min-h-screen w-full font-sans">
       {/* Toast Notification */}
       {billingToast && (
         <div className="fixed top-6 right-6 z-[9999] flex items-center gap-2 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-800 text-sm animate-in fade-in slide-in-from-top-2">
@@ -62,62 +62,74 @@ export default function BillingPage() {
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Global Billing & Subscriptions</h1>
-          <p className="text-slate-500 mt-2">Manage all tenant subscriptions and revenue metrics.</p>
+          <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Global Billing & Subscriptions</h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">Manage all tenant subscriptions and revenue metrics.</p>
         </div>
         <button
           onClick={() => { setModalTitle("Global Pricing Plans"); setIsModalOpen(true); }}
-          className="flex items-center gap-2 px-5 py-2.5 bg-[#0f766e] hover:bg-[#0d655e] text-white rounded-lg font-semibold transition-colors shadow-sm"
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#124b4b] hover:bg-[#0d3636] text-white rounded-xl text-xs font-bold transition-all shadow-sm"
         >
           <Settings className="w-4 h-4" /> Global Pricing Plans
         </button>
       </div>
 
-      {/* Metrics Cards */}
+      {/* Metrics Cards (Exact Shared Style) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-teal-200 transition-colors">
-          <div className="flex justify-between items-start mb-4">
-            <div className="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center text-teal-600">
-              <Banknote className="w-5 h-5" />
+        
+        {/* Card 1: Monthly Recurring Revenue */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-slate-300 transition-all">
+          <Banknote className="absolute -bottom-4 -right-2 w-28 h-28 text-teal-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
+          <div className="flex justify-between items-start relative z-10">
+            <div>
+              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Monthly Recurring Revenue</p>
+              <h3 className="text-3xl font-black text-slate-900 mt-2 tracking-tight">$24,500<span className="text-lg text-slate-400 font-semibold">.00</span></h3>
             </div>
-            <span className="flex items-center gap-1 text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">
-              <ArrowUpRight className="w-3 h-3" /> +12.5%
-            </span>
+            <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center border border-teal-100 shrink-0">
+              <Banknote className="w-5 h-5 text-teal-600" />
+            </div>
           </div>
-          <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Monthly Recurring Revenue</p>
-          <div className="flex items-baseline gap-2 mt-2">
-            <p className="text-4xl font-bold text-slate-900">$24,500<span className="text-xl text-slate-400 font-medium">.00</span></p>
+          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
+            <span className="text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">+12.5% this month</span>
+            <span className="text-slate-500 font-medium text-[11px]">Expected: $26,100</span>
           </div>
-          <p className="text-sm text-slate-500 mt-2">Expected next month: <span className="font-semibold text-slate-700">$26,100.00</span></p>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-teal-200 transition-colors">
-          <div className="flex justify-between items-start mb-4">
-            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-              <ShieldCheck className="w-5 h-5" />
+        {/* Card 2: Active Subscriptions */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-slate-300 transition-all">
+          <ShieldCheck className="absolute -bottom-4 -right-2 w-28 h-28 text-blue-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
+          <div className="flex justify-between items-start relative z-10">
+            <div>
+              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Active Subscriptions</p>
+              <h3 className="text-3xl font-black text-slate-900 mt-2 tracking-tight">142</h3>
             </div>
-            <span className="flex items-center gap-1 text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">
-              <ArrowUpRight className="w-3 h-3" /> +3 New
-            </span>
+            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100 shrink-0">
+              <ShieldCheck className="w-5 h-5 text-blue-600" />
+            </div>
           </div>
-          <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Active Subscriptions</p>
-          <p className="text-4xl font-bold text-slate-900 mt-2">142</p>
-          <p className="text-sm text-slate-500 mt-2">Across <span className="font-semibold text-slate-700">3</span> pricing tiers</p>
+          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
+            <span className="text-blue-700 font-bold bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100">+3 New firms</span>
+            <span className="text-slate-500 font-medium text-[11px]">Across 3 tiers</span>
+          </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-amber-200 transition-colors">
-          <div className="flex justify-between items-start mb-4">
-            <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
-              <AlertCircle className="w-5 h-5" />
+        {/* Card 3: Pending Invoices */}
+        <div className="bg-white rounded-2xl border border-rose-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-rose-300 transition-all">
+          <AlertCircle className="absolute -bottom-4 -right-2 w-28 h-28 text-rose-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
+          <div className="flex justify-between items-start relative z-10">
+            <div>
+              <p className="text-[11px] font-bold text-rose-600 uppercase tracking-wider">Pending Invoices</p>
+              <h3 className="text-3xl font-black text-slate-900 mt-2 tracking-tight">8</h3>
             </div>
-            <span className="flex items-center gap-1 text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-md">
-              Action Needed
-            </span>
+            <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center border border-rose-100 shrink-0">
+              <AlertCircle className="w-5 h-5 text-rose-600" />
+            </div>
           </div>
-          <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Pending Invoices</p>
-          <p className="text-4xl font-bold text-slate-900 mt-2">8</p>
-          <p className="text-sm text-slate-500 mt-2">Totalling <span className="font-semibold text-amber-600">$3,450.00</span> in arrears</p>
+          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
+            <span className="text-rose-700 font-bold bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-100">$3,450.00 Overdue</span>
+            <span className="text-slate-500 font-medium text-[11px]">Requires action</span>
+          </div>
         </div>
+
       </div>
 
       {/* Subscription Management */}

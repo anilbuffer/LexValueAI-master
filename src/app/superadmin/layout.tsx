@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import SuperadminSidebar from "@/components/SuperadminSidebar"
 import Header from "@/components/Header"
 import IdleTimeoutProvider from "@/components/IdleTimeoutProvider"
+import FirstLoginModal from "@/components/FirstLoginModal"
 
 export default async function SuperadminLayout({
   children,
@@ -13,12 +14,11 @@ export default async function SuperadminLayout({
   if (!session) redirect('/login')
 
   // Prevent non-superadmin access (SUPERADMIN must be defined in auth roles, default redirect otherwise)
-  // For now, if role is not SUPERADMIN we could redirect to / but let's assume session.role === 'SUPERADMIN' 
-  // is going to be set up.
   if (session.role !== 'SUPERADMIN') redirect('/')
 
   return (
     <IdleTimeoutProvider timeoutInMinutes={30}>
+      <FirstLoginModal />
       <div className="min-h-screen bg-slate-100 flex font-sans">
         <div className="sticky top-0 h-screen shrink-0 z-50">
           <SuperadminSidebar
@@ -37,3 +37,4 @@ export default async function SuperadminLayout({
     </IdleTimeoutProvider>
   )
 }
+

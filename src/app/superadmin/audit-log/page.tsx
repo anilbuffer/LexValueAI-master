@@ -634,7 +634,7 @@ export default function SuperadminAuditLogPage() {
   };
 
   return (
-    <div className="p-6 space-y-6 w-full max-w-[1600px] mx-auto min-h-screen">
+    <div className="p-6 md:p-8 space-y-6 bg-slate-50/50 min-h-screen w-full font-sans">
       {/* Toast Notification */}
       {exportNotice && (
         <div className="fixed top-6 right-6 z-[9999] flex items-center gap-2 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-800 text-sm animate-in fade-in slide-in-from-top-2">
@@ -681,79 +681,83 @@ export default function SuperadminAuditLogPage() {
         </div>
       </div>
 
-      {/* KPI Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1 */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm relative overflow-hidden">
-          <div className="flex justify-between items-start">
+      {/* KPI Stats Cards (Exact Shared Style) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Card 1: Total Events */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-slate-300 transition-all">
+          <Activity className="absolute -bottom-4 -right-2 w-28 h-28 text-blue-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
+          <div className="flex justify-between items-start relative z-10">
             <div>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Events (24h)</p>
-              <h3 className="text-2xl font-bold text-slate-900 mt-1">3,482</h3>
+              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Events (24h)</p>
+              <h3 className="text-3xl font-black text-slate-900 mt-2 tracking-tight">3,482</h3>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-teal-50 flex items-center justify-center text-teal-600">
-              <Activity className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100 shrink-0">
+              <Activity className="w-5 h-5 text-blue-600" />
             </div>
           </div>
-          <p className="text-xs text-slate-500 mt-3 flex items-center gap-1.5">
-            <span className="font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">+14.2%</span>
-            <span>vs previous period</span>
-          </p>
+          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
+            <span className="text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">+14.2% activity</span>
+            <span className="text-slate-500 font-medium text-[11px]">vs previous 24h</span>
+          </div>
         </div>
 
-        {/* Card 2 */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm relative overflow-hidden">
-          <div className="flex justify-between items-start">
+        {/* Card 2: HIPAA & PHI Accesses */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-slate-300 transition-all">
+          <ShieldCheck className="absolute -bottom-4 -right-2 w-28 h-28 text-emerald-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
+          <div className="flex justify-between items-start relative z-10">
             <div>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">HIPAA & PHI Accesses</p>
-              <h3 className="text-2xl font-bold text-slate-900 mt-1">724</h3>
+              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">HIPAA & PHI Accesses</p>
+              <h3 className="text-3xl font-black text-slate-900 mt-2 tracking-tight">724</h3>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
-              <ShieldCheck className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center border border-emerald-100 shrink-0">
+              <ShieldCheck className="w-5 h-5 text-emerald-600" />
             </div>
           </div>
-          <p className="text-xs text-slate-500 mt-3 flex items-center gap-1.5">
-            <span className="font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">100% Verified</span>
-            <span>Zero PHI leaks</span>
-          </p>
+          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
+            <span className="text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">100% Verified</span>
+            <span className="text-slate-500 font-medium text-[11px]">Zero PHI leaks</span>
+          </div>
         </div>
 
-        {/* Card 3 */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm relative overflow-hidden">
-          <div className="flex justify-between items-start">
+        {/* Card 3: Auth & Sessions */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-slate-300 transition-all">
+          <Key className="absolute -bottom-4 -right-2 w-28 h-28 text-indigo-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
+          <div className="flex justify-between items-start relative z-10">
             <div>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Auth & Sessions</p>
-              <h3 className="text-2xl font-bold text-slate-900 mt-1">1,890</h3>
+              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Auth & Sessions</p>
+              <h3 className="text-3xl font-black text-slate-900 mt-2 tracking-tight">1,890</h3>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
-              <Key className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100 shrink-0">
+              <Key className="w-5 h-5 text-indigo-600" />
             </div>
           </div>
-          <p className="text-xs text-slate-500 mt-3 flex items-center gap-1.5">
-            <span className="font-semibold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">99.8% 2FA</span>
-            <span>Hardware & TOTP</span>
-          </p>
+          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
+            <span className="text-indigo-700 font-bold bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100">99.8% 2FA</span>
+            <span className="text-slate-500 font-medium text-[11px]">Hardware & TOTP</span>
+          </div>
         </div>
 
-        {/* Card 4 */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm relative overflow-hidden">
-          <div className="flex justify-between items-start">
+        {/* Card 4: Security Alerts */}
+        <div className="bg-white rounded-2xl border border-rose-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-rose-300 transition-all">
+          <ShieldAlert className="absolute -bottom-4 -right-2 w-28 h-28 text-rose-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
+          <div className="flex justify-between items-start relative z-10">
             <div>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Security Alerts</p>
-              <h3 className="text-2xl font-bold text-slate-900 mt-1">1</h3>
+              <p className="text-[11px] font-bold text-rose-600 uppercase tracking-wider">Security Alerts</p>
+              <h3 className="text-3xl font-black text-slate-900 mt-2 tracking-tight">1</h3>
             </div>
-            <div className="w-10 h-10 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600">
-              <ShieldAlert className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center border border-rose-100 shrink-0">
+              <ShieldAlert className="w-5 h-5 text-rose-600" />
             </div>
           </div>
-          <p className="text-xs text-slate-500 mt-3 flex items-center gap-1.5">
-            <span className="font-semibold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">1 Blocked IP</span>
-            <span>Auto-quarantined</span>
-          </p>
+          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
+            <span className="text-rose-700 font-bold bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-100">1 Blocked IP</span>
+            <span className="text-slate-500 font-medium text-[11px]">Auto-quarantined</span>
+          </div>
         </div>
       </div>
 
       {/* Main Filter & Search Control Bar */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-3">
+      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-3">
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
           {/* Search Box */}
           <div className="relative flex-1">
@@ -892,7 +896,7 @@ export default function SuperadminAuditLogPage() {
       </div>
 
       {/* Main Audit Log Table Card */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden flex flex-col">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[1000px]">
             <thead>

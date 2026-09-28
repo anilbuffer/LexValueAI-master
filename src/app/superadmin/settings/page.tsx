@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Save, User, Globe, ShieldCheck, Clock, Lock, CheckCircle2, Database, AlertTriangle } from "lucide-react";
+import { Save, User, Globe, ShieldCheck, Clock, Lock, CheckCircle2, Database, AlertTriangle, KeyRound, Eye, EyeOff, ShieldAlert } from "lucide-react";
 
 export default function SuperadminSettingsPage() {
   const [formData, setFormData] = useState({
@@ -29,12 +29,34 @@ export default function SuperadminSettingsPage() {
     maintenanceMode: false
   });
 
+  // Password Change State
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [showPasswordChars, setShowPasswordChars] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+
   const [isSaving, setIsSaving] = useState(false);
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 3500);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handlePasswordChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPasswordData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSave = (e: React.FormEvent) => {
@@ -42,25 +64,51 @@ export default function SuperadminSettingsPage() {
     setIsSaving(true);
     setTimeout(() => {
       setIsSaving(false);
-      setShowSuccessToast(true);
-      setTimeout(() => setShowSuccessToast(false), 3000);
+      showToast("Platform settings saved successfully.");
     }, 600);
   };
 
+  const handleChangePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError(null);
+
+    if (!passwordData.currentPassword) {
+      setPasswordError("Please enter your current password.");
+      return;
+    }
+
+    if (passwordData.newPassword.length < 8) {
+      setPasswordError("New password must be at least 8 characters long.");
+      return;
+    }
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setPasswordError("New password and confirm password do not match.");
+      return;
+    }
+
+    setIsChangingPassword(true);
+    setTimeout(() => {
+      setIsChangingPassword(false);
+      setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      showToast("Password updated successfully.");
+    }, 700);
+  };
+
   return (
-    <div className="p-6 md:p-8 space-y-6 min-h-screen bg-slate-50/30 w-full max-w-5xl mx-auto">
+    <div className="p-6 md:p-8 space-y-6 bg-slate-50/50 min-h-screen w-full font-sans">
       {/* Toast Notification */}
-      {showSuccessToast && (
+      {toastMessage && (
         <div className="fixed top-6 right-6 z-[9999] flex items-center gap-2 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-800 text-sm animate-in fade-in slide-in-from-top-2">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          <span>Platform settings saved successfully.</span>
+          <span>{toastMessage}</span>
         </div>
       )}
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Superadmin Settings</h1>
+          <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Superadmin Settings</h1>
           <p className="text-slate-500 text-sm mt-1 font-medium">
             Manage global platform identity, master credentials, security rules, and tenant compliance policies.
           </p>
@@ -86,14 +134,14 @@ export default function SuperadminSettingsPage() {
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* 1. Superadmin Profile */}
-        <div className="bg-white rounded-2xl border border-slate-200/70 shadow-sm p-6 relative overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 relative overflow-hidden">
           <div className="flex items-center gap-4 mb-6 border-b border-slate-100 pb-4">
-            <div className="p-3 bg-slate-50 text-slate-700 rounded-xl border border-slate-100">
-              <User className="w-6 h-6 text-slate-600" />
+            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center shrink-0">
+              <User className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-800 leading-tight tracking-tight">Superadmin Profile</h2>
-              <p className="text-sm text-slate-500 mt-1">Master account identity and emergency contact credentials.</p>
+              <h2 className="text-lg font-bold text-slate-900 leading-tight tracking-tight">Superadmin Profile</h2>
+              <p className="text-xs text-slate-500 mt-0.5 font-medium">Master account identity and emergency contact credentials.</p>
             </div>
           </div>
 
@@ -157,15 +205,109 @@ export default function SuperadminSettingsPage() {
           </div>
         </div>
 
-        {/* 2. Platform Identity & Operations */}
-        <div className="bg-white rounded-2xl border border-slate-200/70 shadow-sm p-6 relative overflow-hidden">
+        {/* 2. Change Password Card */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 relative overflow-hidden">
           <div className="flex items-center gap-4 mb-6 border-b border-slate-100 pb-4">
-            <div className="p-3 bg-slate-50 text-slate-700 rounded-xl border border-slate-100">
-              <Globe className="w-6 h-6 text-slate-600" />
+            <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 border border-teal-100 flex items-center justify-center shrink-0">
+              <KeyRound className="w-5 h-5 text-teal-700" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-800 leading-tight tracking-tight">Platform Identity</h2>
-              <p className="text-sm text-slate-500 mt-1">Global branding, legal entity, and operational contact endpoints.</p>
+              <h2 className="text-lg font-bold text-slate-800 leading-tight tracking-tight">Change Password</h2>
+              <p className="text-sm text-slate-500 mt-1">Update your superadmin account security password.</p>
+            </div>
+          </div>
+
+          <div className="space-y-4 max-w-xl">
+            {passwordError && (
+              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2.5 text-xs text-rose-700 font-medium">
+                <ShieldAlert className="w-4 h-4 text-rose-600 shrink-0" />
+                <span>{passwordError}</span>
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-900 block">
+                Current Password <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type={showPasswordChars ? "text" : "password"}
+                name="currentPassword"
+                value={passwordData.currentPassword}
+                onChange={handlePasswordChangeInput}
+                className="block w-full py-2.5 px-4 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent bg-white transition-all text-sm"
+                placeholder="Enter current password"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-900 block">
+                New Password <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type={showPasswordChars ? "text" : "password"}
+                name="newPassword"
+                value={passwordData.newPassword}
+                onChange={handlePasswordChangeInput}
+                className="block w-full py-2.5 px-4 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent bg-white transition-all text-sm"
+                placeholder="Minimum 8 characters"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-900 block">
+                Confirm New Password <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type={showPasswordChars ? "text" : "password"}
+                name="confirmPassword"
+                value={passwordData.confirmPassword}
+                onChange={handlePasswordChangeInput}
+                className="block w-full py-2.5 px-4 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent bg-white transition-all text-sm"
+                placeholder="Re-enter new password"
+              />
+            </div>
+
+            <div className="flex items-center justify-between pt-1">
+              <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-600">
+                <input
+                  type="checkbox"
+                  checked={showPasswordChars}
+                  onChange={(e) => setShowPasswordChars(e.target.checked)}
+                  className="rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                />
+                Show password characters
+              </label>
+
+              <button
+                type="button"
+                onClick={handleChangePasswordSubmit}
+                disabled={isChangingPassword}
+                className="px-4 py-2 bg-[#124b4b] hover:bg-[#0d3636] text-white font-bold text-xs rounded-lg transition-all shadow-sm flex items-center gap-2"
+              >
+                {isChangingPassword ? (
+                  <>
+                    <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-3.5 h-3.5" /> Update Password
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Platform Identity & Operations */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 relative overflow-hidden">
+          <div className="flex items-center gap-4 mb-6 border-b border-slate-100 pb-4">
+            <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 border border-teal-100 flex items-center justify-center shrink-0">
+              <Globe className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 leading-tight tracking-tight">Platform Identity</h2>
+              <p className="text-xs text-slate-500 mt-0.5 font-medium">Global branding, legal entity, and operational contact endpoints.</p>
             </div>
           </div>
 
@@ -244,3 +386,4 @@ export default function SuperadminSettingsPage() {
     </div>
   );
 }
+

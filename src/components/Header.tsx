@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
 import { Bell, Search, Maximize, Minimize, Plus, FileText, History, CheckCircle2, AlertTriangle, XCircle, Clock, Info, Folder, Loader2, User, Shield, CreditCard, Settings, Menu } from "lucide-react"
+import GiveFeedbackModal from "@/components/GiveFeedbackModal"
 
 export default function Header({ role, user }: { role: string, user: { firstName: string, lastName: string } }) {
   const router = useRouter();
@@ -278,6 +279,9 @@ export default function Header({ role, user }: { role: string, user: { firstName
 
       {/* Right: Quick Actions */}
       <div className="flex-1 flex items-center justify-end gap-3">
+
+        {/* Give Feedback / Report Bug Button for Firm Users */}
+        <GiveFeedbackModal buttonVariant="header" />
 
         {/* Fullscreen Option */}
         <button

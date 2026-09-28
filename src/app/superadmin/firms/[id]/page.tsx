@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
   ArrowLeft, Building2, Mail, Phone, MapPin, ShieldCheck, CreditCard, Hexagon, Edit2, Scale, FileText, Handshake,
-  Search, Filter, CheckCircle2, ChevronDown, Trash2, Calendar, Zap, Download, Eye, X, User
+  Search, Filter, CheckCircle2, ChevronDown, Trash2, Calendar, Zap, Download, Eye, X, User, Activity, AlertTriangle, Users
 } from "lucide-react";
 
 const allMockFirmsDetails = [
@@ -131,8 +131,8 @@ export default function FirmDetailPage() {
   const [isAuditFilterOpen, setIsAuditFilterOpen] = useState(false);
 
   return (
-    <div className="p-6 space-y-6 min-h-screen bg-slate-50/30 w-full">
-      <div className="flex items-center gap-4 mb-6">
+    <div className="p-6 md:p-8 space-y-6 bg-slate-50/50 min-h-screen w-full font-sans">
+      <div className="flex items-center gap-4 mb-2">
         <Link href="/superadmin/firms" className="p-2 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
           <ArrowLeft className="w-5 h-5" />
         </Link>
@@ -141,6 +141,63 @@ export default function FirmDetailPage() {
           <p className="text-slate-500 mt-1 flex items-center gap-2">
             Tax ID: {mockFirmDetails.taxId} • <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-teal-50 text-teal-700 border border-teal-200">Active</span>
           </p>
+        </div>
+      </div>
+
+      {/* Operational Metrics Cards (Exact Shared Style from Screenshot) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Card 1: Active Users */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-slate-300 transition-all">
+          <Building2 className="absolute -bottom-4 -right-2 w-28 h-28 text-blue-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
+          <div className="flex justify-between items-start relative z-10">
+            <div>
+              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Active Firm Users</p>
+              <h3 className="text-3xl font-black text-slate-900 mt-2 tracking-tight">12</h3>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100 shrink-0">
+              <Building2 className="w-5 h-5 text-blue-600" />
+            </div>
+          </div>
+          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
+            <span className="text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">12 / 15 seats</span>
+            <span className="text-slate-500 font-medium text-[11px]">{mockFirmDetails.plan} Tier</span>
+          </div>
+        </div>
+
+        {/* Card 2: Total Cases Managed */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-slate-300 transition-all">
+          <FileText className="absolute -bottom-4 -right-2 w-28 h-28 text-teal-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
+          <div className="flex justify-between items-start relative z-10">
+            <div>
+              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Cases Managed</p>
+              <h3 className="text-3xl font-black text-slate-900 mt-2 tracking-tight">48</h3>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center border border-teal-100 shrink-0">
+              <FileText className="w-5 h-5 text-teal-600" />
+            </div>
+          </div>
+          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
+            <span className="text-teal-700 font-bold bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-100">+18% this month</span>
+            <span className="text-slate-500 font-medium text-[11px]">46 completed</span>
+          </div>
+        </div>
+
+        {/* Card 3: Processing Health */}
+        <div className="bg-white rounded-2xl border border-rose-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-rose-300 transition-all">
+          <AlertTriangle className="absolute -bottom-4 -right-2 w-28 h-28 text-rose-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
+          <div className="flex justify-between items-start relative z-10">
+            <div>
+              <p className="text-[11px] font-bold text-rose-600 uppercase tracking-wider">Stuck / Failed Cases</p>
+              <h3 className="text-3xl font-black text-slate-900 mt-2 tracking-tight">0</h3>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center border border-rose-100 shrink-0">
+              <AlertTriangle className="w-5 h-5 text-rose-600" />
+            </div>
+          </div>
+          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
+            <span className="text-rose-700 font-bold bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-100">0 Pipeline Errors</span>
+            <span className="text-slate-500 font-medium text-[11px]">HIPAA compliant</span>
+          </div>
         </div>
       </div>
 
@@ -202,7 +259,7 @@ export default function FirmDetailPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden pb-32">
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden pb-12">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm text-slate-600">
                   <thead className="text-[10.5px] uppercase tracking-wider font-bold text-slate-400 bg-white border-b border-slate-100">
@@ -247,7 +304,7 @@ export default function FirmDetailPage() {
         {/* Overview Tab */}
         {activeTab === "overview" && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 space-y-6">
               <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
                 <Building2 className="w-5 h-5 text-teal-600" /> Firm Information
               </h3>
@@ -276,7 +333,7 @@ export default function FirmDetailPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 space-y-6">
               <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
                 <CreditCard className="w-5 h-5 text-teal-600" /> Subscription & Status
               </h3>
@@ -300,7 +357,7 @@ export default function FirmDetailPage() {
 
         {/* Users & Roles Tab */}
         {activeTab === "users" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
             <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
               <h3 className="text-lg font-semibold text-slate-900">Accounts & Roles</h3>
             </div>
@@ -344,7 +401,7 @@ export default function FirmDetailPage() {
 
         {/* Audit Log Tab */}
         {activeTab === "audit" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
             {/* Header */}
             <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
@@ -477,7 +534,7 @@ export default function FirmDetailPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Enterprise Plan Card */}
-              <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col justify-between">
+              <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 flex flex-col justify-between">
                 <div>
                   <div className="flex justify-between items-start">
                     <div className="flex items-center gap-4">
@@ -516,7 +573,7 @@ export default function FirmDetailPage() {
               </div>
 
               {/* Payment Method Card */}
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col justify-between">
+              <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 flex flex-col justify-between">
                 <div>
                   <h3 className="text-lg font-bold text-[#14233a]">Payment Method</h3>
                   <p className="text-sm text-slate-500">Manage firm's credit cards.</p>
@@ -557,7 +614,7 @@ export default function FirmDetailPage() {
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+              <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm text-slate-600">
                     <thead className="bg-white text-[10.5px] uppercase tracking-wider font-bold text-slate-400 border-b border-slate-100">
