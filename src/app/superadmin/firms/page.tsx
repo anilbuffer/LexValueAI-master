@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
-  Plus, Search, Filter, Eye, Edit2, Trash2, Calendar, ShieldCheck, Mail,
-  Building2, CreditCard, ToggleRight, ToggleLeft, Bell, AlertTriangle, CheckCircle2,
-  Activity, Clock, FileText, Send, X, AlertCircle, RefreshCw, Archive
+  Plus, Eye, Edit2, Trash2,
+  Building2, ToggleRight, ToggleLeft, Bell, AlertTriangle, CheckCircle2,
+  Clock, FileText, X, AlertCircle, Archive
 } from "lucide-react";
 
 export interface TenantFirm {
@@ -22,8 +22,8 @@ export interface TenantFirm {
   inProgressCases: number;
   lastActive: string;
   isInactive: boolean;
-  healthStatus: "Healthy" | "Stuck Docs (2)" | "OCR Timeout (1)" | "Healthy (0 Errors)";
-  healthSeverity: "healthy" | "error" | "warning";
+  healthStatus: "Success" | "Stuck Docs (2)" | "Success(0 Errors)";
+  healthSeverity: "Success" | "error" | "warning";
 }
 
 const initialFirms: TenantFirm[] = [
@@ -41,8 +41,8 @@ const initialFirms: TenantFirm[] = [
     inProgressCases: 14,
     lastActive: "Active 20 mins ago",
     isInactive: false,
-    healthStatus: "Healthy",
-    healthSeverity: "healthy",
+    healthStatus: "Success",
+    healthSeverity: "Success",
   },
   {
     id: "2",
@@ -58,8 +58,8 @@ const initialFirms: TenantFirm[] = [
     inProgressCases: 6,
     lastActive: "Active 1 hour ago",
     isInactive: false,
-    healthStatus: "Healthy (0 Errors)",
-    healthSeverity: "healthy",
+    healthStatus: "Success(0 Errors)",
+    healthSeverity: "Success",
   },
   {
     id: "3",
@@ -92,37 +92,22 @@ const initialFirms: TenantFirm[] = [
     inProgressCases: 0,
     lastActive: "Inactive for 12 days",
     isInactive: true,
-    healthStatus: "OCR Timeout (1)",
-    healthSeverity: "warning",
+    healthStatus: "Success",
+    healthSeverity: "Success",
   },
 ];
 
 export default function FirmsPage() {
   const [firms, setFirms] = useState<TenantFirm[]>(initialFirms);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [planFilter, setPlanFilter] = useState<string>("ALL");
-  const [healthFilter, setHealthFilter] = useState<string>("ALL");
 
   // Notification / Toast state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Modal States
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  // Active item for Edit/Delete
-  const [editingFirm, setEditingFirm] = useState<TenantFirm | null>(null);
+  // Active item for Delete
   const [deletingFirm, setDeletingFirm] = useState<TenantFirm | null>(null);
-
-  // Form Fields State
-  const [formData, setFormData] = useState({
-    name: "",
-    adminName: "",
-    email: "",
-    seatLimit: 10,
-    plan: "Professional" as "Enterprise" | "Professional" | "Starter",
-  });
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -130,6 +115,56 @@ export default function FirmsPage() {
       setToastMessage(null);
     }, 4000);
   };
+
+  useEffect(() => {
+    try {
+      const customFirms = localStorage.getItem("lexvalu_custom_firms");
+      if (customFirms) {
+        const parsed = JSON.parse(customFirms);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setFirms((prev) => {
+            const existingIds = new Set(prev.map((f) => f.id));
+            const newOnes = parsed.filter((f: TenantFirm) => !existingIds.has(f.id));
+            return [...newOnes, ...prev];
+          });
+        }
+      }
+    } catch {
+      // ignore
+    }
+
+    try {
+      const edits = JSON.parse(localStorage.getItem("lexvalu_firms_edits") || "{}");
+      if (Object.keys(edits).length > 0) {
+        setFirms((prev) =>
+          prev.map((f) => {
+            if (edits[f.id]) {
+              return {
+                ...f,
+                name: edits[f.id].name || f.name,
+                adminName: edits[f.id].adminName || f.adminName,
+                email: edits[f.id].email || f.email,
+              };
+            }
+            return f;
+          })
+        );
+      }
+    } catch {
+      // ignore
+    }
+
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.get("created") === "true") {
+        showToast("Tenant firm successfully created.");
+        window.history.replaceState({}, "", "/superadmin/firms");
+      } else if (searchParams.get("updated") === "true") {
+        showToast("Firm details updated successfully.");
+        window.history.replaceState({}, "", "/superadmin/firms");
+      }
+    }
+  }, []);
 
   // Status Toggle Quick Action
   const handleToggleStatus = (id: string) => {
@@ -147,89 +182,7 @@ export default function FirmsPage() {
     );
   };
 
-  // Nudge Action Button handler
-  const handleNudgeFirm = (firm: TenantFirm) => {
-    showToast(
-      `Nudge email sent to ${firm.adminName} (${firm.email}) for ${firm.name}.`
-    );
-  };
 
-  // Open Create Modal
-  const openAddModal = () => {
-    setFormData({
-      name: "",
-      adminName: "",
-      email: "",
-      seatLimit: 10,
-      plan: "Professional",
-    });
-    setIsAddModalOpen(true);
-  };
-
-  // Submit Create Firm
-  const handleCreateFirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.adminName) return;
-
-    const newFirm: TenantFirm = {
-      id: Date.now().toString(),
-      name: formData.name,
-      email: formData.email,
-      adminName: formData.adminName,
-      users: 1,
-      seatLimit: Number(formData.seatLimit) || 10,
-      plan: formData.plan,
-      joinedDate: "Today",
-      status: true,
-      totalCases: 0,
-      inProgressCases: 0,
-      lastActive: "Active just now",
-      isInactive: false,
-      healthStatus: "Healthy",
-      healthSeverity: "healthy",
-    };
-
-    setFirms((prev) => [newFirm, ...prev]);
-    setIsAddModalOpen(false);
-    showToast(`Tenant firm "${newFirm.name}" successfully created.`);
-  };
-
-  // Open Edit Modal
-  const openEditModal = (firm: TenantFirm) => {
-    setEditingFirm(firm);
-    setFormData({
-      name: firm.name,
-      adminName: firm.adminName,
-      email: firm.email,
-      seatLimit: firm.seatLimit,
-      plan: firm.plan,
-    });
-    setIsEditModalOpen(true);
-  };
-
-  // Submit Edit Firm
-  const handleUpdateFirm = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingFirm) return;
-
-    setFirms((prev) =>
-      prev.map((f) =>
-        f.id === editingFirm.id
-          ? {
-              ...f,
-              name: formData.name,
-              adminName: formData.adminName,
-              email: formData.email,
-              seatLimit: Number(formData.seatLimit) || f.seatLimit,
-              plan: formData.plan,
-            }
-          : f
-      )
-    );
-    setIsEditModalOpen(false);
-    setEditingFirm(null);
-    showToast(`Updated firm profile for "${formData.name}".`);
-  };
 
   // Open Delete Modal
   const openDeleteModal = (firm: TenantFirm) => {
@@ -259,22 +212,6 @@ export default function FirmsPage() {
     setDeletingFirm(null);
   };
 
-  // Filtering Logic
-  const filteredFirms = firms.filter((firm) => {
-    const matchesSearch =
-      firm.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      firm.adminName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      firm.email.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesPlan = planFilter === "ALL" || firm.plan === planFilter;
-
-    const matchesHealth =
-      healthFilter === "ALL" ||
-      (healthFilter === "ERROR" && firm.healthSeverity === "error") ||
-      (healthFilter === "HEALTHY" && firm.healthSeverity === "healthy");
-
-    return matchesSearch && matchesPlan && matchesHealth;
-  });
 
   return (
     <div className="p-6 md:p-8 space-y-6 bg-slate-50/50 min-h-screen w-full font-sans">
@@ -293,119 +230,20 @@ export default function FirmsPage() {
       )}
 
       {/* Header Section */}
-      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
             Multi-Firm Management
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Monitor tenant firms, document health, cases volume, and active user limits.
-          </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 w-full xl:w-auto">
-          {/* Search */}
-          <div className="relative flex-1 xl:w-64">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search firm, admin, or email..."
-              className="w-full pl-9 pr-4 py-2.5 text-sm text-slate-700 bg-white border border-slate-200 rounded-lg placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all shadow-sm"
-            />
-          </div>
-
-          {/* Plan Filter */}
-          <select
-            value={planFilter}
-            onChange={(e) => setPlanFilter(e.target.value)}
-            className="px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-teal-500"
-          >
-            <option value="ALL">All Plans</option>
-            <option value="Enterprise">Enterprise</option>
-            <option value="Professional">Professional</option>
-            <option value="Starter">Starter</option>
-          </select>
-
-          {/* Health Filter */}
-          <select
-            value={healthFilter}
-            onChange={(e) => setHealthFilter(e.target.value)}
-            className="px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 shadow-sm focus:outline-none focus:border-teal-500"
-          >
-            <option value="ALL">All Health</option>
-            <option value="HEALTHY">Healthy Only</option>
-            <option value="ERROR">Stuck / Errors</option>
-          </select>
-
-          {/* Add Firm Button */}
-          <button
-            onClick={openAddModal}
-            className="flex items-center gap-2 bg-[#124b4b] hover:bg-[#0d3636] text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm"
-          >
-            <Plus className="w-4 h-4" /> Add Firm
-          </button>
-        </div>
-      </div>
-
-      {/* Operational Metrics Cards (3 Cards Grid - Exact Shared Style) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        {/* Card 1: Active Firms Today */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-slate-300 transition-all">
-          <Activity className="absolute -bottom-4 -right-2 w-28 h-28 text-blue-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
-          <div className="flex justify-between items-start relative z-10">
-            <div>
-              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Active Firms Today</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-2 tracking-tight">14</h3>
-            </div>
-            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100 shrink-0">
-              <Building2 className="w-5 h-5 text-blue-600" />
-            </div>
-          </div>
-          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
-            <span className="text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">+2 vs yesterday</span>
-            <span className="text-slate-500 font-medium text-[11px]">19 total registered</span>
-          </div>
-        </div>
-
-        {/* Card 2: Cases Uploaded Today */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-slate-300 transition-all">
-          <FileText className="absolute -bottom-4 -right-2 w-28 h-28 text-teal-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
-          <div className="flex justify-between items-start relative z-10">
-            <div>
-              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Cases Uploaded Today</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-2 tracking-tight">1,284</h3>
-            </div>
-            <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center border border-teal-100 shrink-0">
-              <FileText className="w-5 h-5 text-teal-600" />
-            </div>
-          </div>
-          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
-            <span className="text-teal-700 font-bold bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-100">+18% this week</span>
-            <span className="text-slate-500 font-medium text-[11px]">1,277 processed</span>
-          </div>
-        </div>
-
-        {/* Card 3: Total Stuck Cases */}
-        <div className="bg-white rounded-2xl border border-rose-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-rose-300 transition-all">
-          <AlertTriangle className="absolute -bottom-4 -right-2 w-28 h-28 text-rose-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
-          <div className="flex justify-between items-start relative z-10">
-            <div>
-              <p className="text-[11px] font-bold text-rose-600 uppercase tracking-wider">Total Stuck Cases</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-2 tracking-tight">7</h3>
-            </div>
-            <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center border border-rose-100 shrink-0">
-              <AlertTriangle className="w-5 h-5 text-rose-600" />
-            </div>
-          </div>
-          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
-            <span className="text-rose-700 font-bold bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-100">2 High Severity</span>
-            <span className="text-slate-500 font-medium text-[11px]">Requires investigation</span>
-          </div>
-        </div>
-
+        {/* Add Firm Button */}
+        <Link
+          href="/superadmin/firms/create"
+          className="flex items-center gap-2 bg-[#124b4b] hover:bg-[#0d3636] text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm shrink-0"
+        >
+          <Plus className="w-4 h-4" /> Add Firm
+        </Link>
       </div>
 
       {/* Table Section */}
@@ -415,7 +253,6 @@ export default function FirmsPage() {
             <thead className="text-[10.5px] uppercase tracking-wider font-bold text-slate-400 border-b border-slate-200 bg-slate-50/50">
               <tr>
                 <th className="px-5 py-4 whitespace-nowrap">Firm & Admin</th>
-                <th className="px-4 py-4 whitespace-nowrap">Subscription & Seats</th>
                 <th className="px-4 py-4 whitespace-nowrap">Cases Volume</th>
                 <th className="px-4 py-4 whitespace-nowrap">Last Active</th>
                 <th className="px-4 py-4 whitespace-nowrap">Health Status</th>
@@ -424,14 +261,14 @@ export default function FirmsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 bg-white">
-              {filteredFirms.length === 0 ? (
+              {firms.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-10 text-center text-slate-400 text-sm">
-                    No tenant firms match your search or filter criteria.
+                  <td colSpan={6} className="px-6 py-10 text-center text-slate-400 text-sm">
+                    No tenant firms registered yet.
                   </td>
                 </tr>
               ) : (
-                filteredFirms.map((firm) => (
+                firms.map((firm) => (
                   <tr
                     key={firm.id}
                     className="hover:bg-slate-50/60 transition-colors group"
@@ -450,22 +287,7 @@ export default function FirmsPage() {
                           <span className="font-medium text-slate-700">
                             Admin: {firm.adminName}
                           </span>
-                          <span>•</span>
-                          <span className="text-slate-400">{firm.email}</span>
                         </div>
-                      </div>
-                    </td>
-
-                    {/* Plan & Seats Col */}
-                    <td className="px-4 py-4 whitespace-nowrap">
-                      <div className="flex flex-col">
-                        <span className="inline-flex items-center gap-1 font-bold text-xs text-slate-800">
-                          <CreditCard className="w-3 h-3 text-slate-400" />
-                          {firm.plan}
-                        </span>
-                        <span className="text-[11px] text-slate-500 mt-0.5">
-                          {firm.users} / {firm.seatLimit} Seats
-                        </span>
                       </div>
                     </td>
 
@@ -476,9 +298,9 @@ export default function FirmsPage() {
                           <FileText className="w-3.5 h-3.5 text-teal-600" />
                           {firm.totalCases} Total Cases
                         </span>
-                        <span className="text-[11px] font-semibold text-amber-700 mt-0.5">
+                        {/* <span className="text-[11px] font-semibold text-amber-700 mt-0.5">
                           {firm.inProgressCases} In-Progress
-                        </span>
+                        </span> */}
                       </div>
                     </td>
 
@@ -540,15 +362,6 @@ export default function FirmsPage() {
                     {/* Actions Col */}
                     <td className="px-5 py-4 whitespace-nowrap text-right">
                       <div className="flex items-center justify-end gap-2">
-                        {/* Nudge Button */}
-                        <button
-                          onClick={() => handleNudgeFirm(firm)}
-                          className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-all shadow-xs"
-                          title="Send reminder email to firm admin"
-                        >
-                          <Send className="w-3 h-3 text-amber-600" /> Nudge
-                        </button>
-
                         {/* View Profile */}
                         <Link
                           href={`/superadmin/firms/${firm.id}`}
@@ -559,13 +372,13 @@ export default function FirmsPage() {
                         </Link>
 
                         {/* Edit Button */}
-                        <button
-                          onClick={() => openEditModal(firm)}
-                          className="p-1.5 text-slate-600 hover:text-blue-700 hover:bg-blue-50 border border-slate-200 rounded-lg transition-colors"
+                        <Link
+                          href={`/superadmin/firms/${firm.id}/edit`}
+                          className="p-1.5 text-slate-600 hover:text-blue-700 hover:bg-blue-50 border border-slate-200 rounded-lg transition-colors inline-flex items-center justify-center"
                           title="Edit Firm Details"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
-                        </button>
+                        </Link>
 
                         {/* Delete/Deactivate Button */}
                         <button
@@ -588,7 +401,7 @@ export default function FirmsPage() {
       {/* Pagination Footer */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 mt-2 px-2">
         <div>
-          Showing {filteredFirms.length} of {firms.length} registered tenant firms
+          Showing {firms.length} registered tenant firms
         </div>
         <div className="flex items-center gap-1">
           <button className="w-8 h-8 flex items-center justify-center rounded border border-slate-200 hover:bg-slate-50 text-slate-400">
@@ -603,252 +416,7 @@ export default function FirmsPage() {
         </div>
       </div>
 
-      {/* --- CREATE FIRM MODAL --- */}
-      {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95">
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-              <h3 className="font-bold text-slate-900 text-lg flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-teal-700" /> Add New Tenant Firm
-              </h3>
-              <button
-                onClick={() => setIsAddModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
 
-            <form onSubmit={handleCreateFirm} className="p-6 space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Firm Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Miller & Partners"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Admin Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Harvey Specter"
-                  value={formData.adminName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, adminName: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Admin Email *
-                </label>
-                <input
-                  type="email"
-                  required
-                  placeholder="admin@firm.com"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Seat Limit
-                  </label>
-                  <input
-                    type="number"
-                    min={1}
-                    value={formData.seatLimit}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        seatLimit: parseInt(e.target.value) || 10,
-                      })
-                    }
-                    className="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Subscription Tier
-                  </label>
-                  <select
-                    value={formData.plan}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        plan: e.target.value as any,
-                      })
-                    }
-                    className="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500 bg-white"
-                  >
-                    <option value="Enterprise">Enterprise</option>
-                    <option value="Professional">Professional</option>
-                    <option value="Starter">Starter</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-xs font-bold bg-[#124b4b] hover:bg-[#0d3636] text-white rounded-lg shadow-sm"
-                >
-                  Create Firm
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* --- EDIT FIRM MODAL --- */}
-      {isEditModalOpen && editingFirm && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95">
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-              <h3 className="font-bold text-slate-900 text-lg flex items-center gap-2">
-                <Edit2 className="w-5 h-5 text-blue-600" /> Edit Firm Details
-              </h3>
-              <button
-                onClick={() => setIsEditModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleUpdateFirm} className="p-6 space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Firm Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Admin Name (Contact Person)
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.adminName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, adminName: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Admin Email
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Seat Limit
-                  </label>
-                  <input
-                    type="number"
-                    min={1}
-                    value={formData.seatLimit}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        seatLimit: parseInt(e.target.value) || 10,
-                      })
-                    }
-                    className="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Subscription Tier
-                  </label>
-                  <select
-                    value={formData.plan}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        plan: e.target.value as any,
-                      })
-                    }
-                    className="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 bg-white"
-                  >
-                    <option value="Enterprise">Enterprise</option>
-                    <option value="Professional">Professional</option>
-                    <option value="Starter">Starter</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => setIsEditModalOpen(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm"
-                >
-                  Save Changes
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* --- DELETE / DEACTIVATE MODAL --- */}
       {isDeleteModalOpen && deletingFirm && (

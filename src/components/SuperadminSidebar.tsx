@@ -14,7 +14,8 @@ import {
   LogOut,
   Scale,
   FileText,
-  MessageSquare
+  MessageSquare,
+  Lock
 } from "lucide-react";
 import { logoutUser } from "@/app/actions/auth";
 
@@ -48,9 +49,9 @@ export default function SuperadminSidebar({ user }: SuperadminSidebarProps) {
   const navItems = [
     { name: "Dashboard", href: "/superadmin", icon: LayoutDashboard },
     { name: "Firms", href: "/superadmin/firms", icon: Building2 },
-    { name: "Billings", href: "/superadmin/billing", icon: CreditCard },
-    { name: "Reports", href: "/superadmin/reports", icon: FileText },
-    { name: "Feedback", href: "/superadmin/feedback", icon: MessageSquare },
+    { name: "Billings", href: "/superadmin/billing", icon: CreditCard, isLocked: true },
+    { name: "Reports", href: "/superadmin/reports", icon: FileText, isLocked: true },
+    { name: "Feedback", href: "/superadmin/feedback", icon: MessageSquare, isLocked: true },
     { name: "Settings", href: "/superadmin/settings", icon: Settings },
   ];
 
@@ -95,6 +96,39 @@ export default function SuperadminSidebar({ user }: SuperadminSidebarProps) {
 
       <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
         {navItems.map((item) => {
+          if (item.isLocked) {
+            return (
+              <div key={item.name} className="relative">
+                <div
+                  onMouseEnter={(e) => {
+                    if (!isExpanded) {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      setTooltip({ text: `${item.name} (Locked)`, top: rect.top + rect.height / 2, left: rect.right + 12 });
+                    }
+                  }}
+                  onMouseLeave={() => setTooltip(null)}
+                  className={`flex items-center rounded-lg text-base font-normal opacity-50 cursor-not-allowed select-none transition-all ${
+                    !isExpanded ? 'w-11 h-11 justify-center mx-auto' : 'px-3 h-11 gap-3 w-full'
+                  } text-slate-500 hover:bg-slate-900/40`}
+                  title={`${item.name} (Locked - Next Phase)`}
+                >
+                  <div className="relative flex items-center justify-center">
+                    <item.icon className="w-6 h-6 shrink-0 text-slate-500" />
+                    {!isExpanded && (
+                      <Lock className="w-2.5 h-2.5 text-amber-500 absolute -top-1 -right-1" />
+                    )}
+                  </div>
+                  {isExpanded && (
+                    <>
+                      <span className="truncate text-slate-400">{item.name}</span>
+                      <Lock className="w-3.5 h-3.5 text-slate-500 ml-auto shrink-0" />
+                    </>
+                  )}
+                </div>
+              </div>
+            );
+          }
+
           const isActive = pathname === item.href || (item.href !== '/superadmin' && pathname.startsWith(item.href));
 
           return (

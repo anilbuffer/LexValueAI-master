@@ -5,6 +5,7 @@ import {
   MessageSquare, Search, Filter, Bug, ThumbsUp, HelpCircle, Star, Building2,
   User, Calendar, CheckCircle2, Clock, AlertTriangle, ArrowUpRight, X, Reply, Eye, Sparkles
 } from "lucide-react";
+import LockedModuleOverlay from "@/components/LockedModuleOverlay";
 
 export interface FeedbackSubmission {
   id: string;
@@ -124,14 +125,15 @@ export default function SuperadminFeedbackPage() {
   }, [feedbackList, searchQuery, categoryFilter, statusFilter]);
 
   return (
-    <div className="p-6 md:p-8 space-y-6 bg-slate-50/50 min-h-screen w-full font-sans">
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className="fixed top-6 right-6 z-[9999] flex items-center gap-2 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-800 text-sm animate-in fade-in slide-in-from-top-2">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
+    <div className="relative min-h-screen w-full font-sans">
+      <div className="filter blur-[4px] pointer-events-none select-none opacity-50 p-6 md:p-8 space-y-6 bg-slate-50/50 min-h-screen w-full">
+        {/* Toast Notification */}
+        {toastMessage && (
+          <div className="fixed top-6 right-6 z-[9999] flex items-center gap-2 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-800 text-sm animate-in fade-in slide-in-from-top-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span>{toastMessage}</span>
+          </div>
+        )}
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -477,6 +479,8 @@ export default function SuperadminFeedbackPage() {
           </div>
         </div>
       )}
+      </div>
+      <LockedModuleOverlay title="Incoming Feedback & Bug Reports" />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ShieldCheck, Zap, Building2, CheckCircle2, AlertCircle, Settings, Search, Filter, ArrowUpRight, Banknote, X, Send, Check, Mail } from "lucide-react";
+import LockedModuleOverlay from "@/components/LockedModuleOverlay";
 
 const mockSubscriptions = [
   { id: 1, firm: "Smith & Associates", tier: "Enterprise", price: "$499.00/mo", status: "Active", users: "12/15", nextBilling: "Oct 1, 2026" },
@@ -51,14 +52,15 @@ export default function BillingPage() {
   };
 
   return (
-    <div className="p-6 md:p-8 space-y-6 bg-slate-50/50 min-h-screen w-full font-sans">
-      {/* Toast Notification */}
-      {billingToast && (
-        <div className="fixed top-6 right-6 z-[9999] flex items-center gap-2 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-800 text-sm animate-in fade-in slide-in-from-top-2">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          <span>{billingToast}</span>
-        </div>
-      )}
+    <div className="relative min-h-screen w-full font-sans">
+      <div className="filter blur-[4px] pointer-events-none select-none opacity-50 p-6 md:p-8 space-y-6 bg-slate-50/50 min-h-screen w-full">
+        {/* Toast Notification */}
+        {billingToast && (
+          <div className="fixed top-6 right-6 z-[9999] flex items-center gap-2 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-800 text-sm animate-in fade-in slide-in-from-top-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span>{billingToast}</span>
+          </div>
+        )}
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -75,7 +77,7 @@ export default function BillingPage() {
 
       {/* Metrics Cards (Exact Shared Style) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
+
         {/* Card 1: Monthly Recurring Revenue */}
         <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-slate-300 transition-all">
           <Banknote className="absolute -bottom-4 -right-2 w-28 h-28 text-teal-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
@@ -87,10 +89,6 @@ export default function BillingPage() {
             <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center border border-teal-100 shrink-0">
               <Banknote className="w-5 h-5 text-teal-600" />
             </div>
-          </div>
-          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
-            <span className="text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">+12.5% this month</span>
-            <span className="text-slate-500 font-medium text-[11px]">Expected: $26,100</span>
           </div>
         </div>
 
@@ -106,10 +104,6 @@ export default function BillingPage() {
               <ShieldCheck className="w-5 h-5 text-blue-600" />
             </div>
           </div>
-          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
-            <span className="text-blue-700 font-bold bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100">+3 New firms</span>
-            <span className="text-slate-500 font-medium text-[11px]">Across 3 tiers</span>
-          </div>
         </div>
 
         {/* Card 3: Pending Invoices */}
@@ -123,10 +117,6 @@ export default function BillingPage() {
             <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center border border-rose-100 shrink-0">
               <AlertCircle className="w-5 h-5 text-rose-600" />
             </div>
-          </div>
-          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
-            <span className="text-rose-700 font-bold bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-100">$3,450.00 Overdue</span>
-            <span className="text-slate-500 font-medium text-[11px]">Requires action</span>
           </div>
         </div>
 
@@ -373,6 +363,8 @@ export default function BillingPage() {
           </div>
         </div>
       )}
+      </div>
+      <LockedModuleOverlay title="Global Billing & Subscriptions" />
     </div>
   );
 }

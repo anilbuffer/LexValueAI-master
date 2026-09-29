@@ -1,12 +1,69 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { User, Building2, Save, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
-export default function CreateFirmPage() {
+interface MockFirm {
+  id: string;
+  name: string;
+  adminName: string;
+  email: string;
+  phone: string;
+  address: string;
+  taxId: string;
+  supportEmail: string;
+}
+
+const defaultFirms: Record<string, MockFirm> = {
+  "1": {
+    id: "1",
+    name: "Smith & Associates",
+    adminName: "Harvey Specter",
+    email: "admin@smithassociates.com",
+    phone: "+1 (555) 123-4567",
+    address: "123 Legal Way, Suite 500, New York, NY 10001",
+    taxId: "XX-1234567",
+    supportEmail: "admin@smithassociates.com",
+  },
+  "2": {
+    id: "2",
+    name: "Johnson Legal Group",
+    adminName: "Robert Johnson",
+    email: "admin@johnsonlegal.com",
+    phone: "+1 (555) 234-5678",
+    address: "456 Corporate Blvd, Chicago, IL 60601",
+    taxId: "XX-2345678",
+    supportEmail: "admin@johnsonlegal.com",
+  },
+  "3": {
+    id: "3",
+    name: "Miller & Partners",
+    adminName: "Sarah Miller",
+    email: "admin@millerpartners.com",
+    phone: "+1 (555) 345-6789",
+    address: "789 Justice Ave, Los Angeles, CA 90012",
+    taxId: "XX-3456789",
+    supportEmail: "admin@millerpartners.com",
+  },
+  "4": {
+    id: "4",
+    name: "Davis & Co. Law",
+    adminName: "Michael Davis",
+    email: "admin@daviscolaw.com",
+    phone: "+1 (555) 456-7890",
+    address: "101 Federal Plaza, Suite 800, San Francisco, CA 94102",
+    taxId: "XX-4567890",
+    supportEmail: "admin@daviscolaw.com",
+  },
+};
+
+export default function EditFirmPage() {
+  const params = useParams();
   const router = useRouter();
+  const id = params?.id as string;
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -24,6 +81,75 @@ export default function CreateFirmPage() {
     firmAddress: ""
   });
 
+  useEffect(() => {
+    let firmData: MockFirm | null = null;
+
+    try {
+      const edits = JSON.parse(localStorage.getItem("lexvalu_firms_edits") || "{}");
+      if (edits[id]) {
+        firmData = edits[id];
+      }
+    } catch {
+      // ignore
+    }
+
+    if (!firmData) {
+      try {
+        const customFirms = JSON.parse(localStorage.getItem("lexvalu_custom_firms") || "[]");
+        const found = customFirms.find((f: any) => f.id === id);
+        if (found) {
+          firmData = {
+            id: found.id,
+            name: found.name,
+            adminName: found.adminName,
+            email: found.email,
+            phone: found.phone || "+1 (555) 123-4567",
+            address: found.address || "123 Legal Way, Suite 500, New York, NY 10001",
+            taxId: found.taxId || "XX-1234567",
+            supportEmail: found.supportEmail || found.email,
+          };
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (!firmData && defaultFirms[id]) {
+      firmData = defaultFirms[id];
+    }
+
+    if (!firmData) {
+      firmData = {
+        id,
+        name: "Tenant Firm",
+        adminName: "Firm Admin",
+        email: "admin@firm.com",
+        phone: "+1 (555) 123-4567",
+        address: "123 Legal Way, Suite 500, New York, NY 10001",
+        taxId: "XX-1234567",
+        supportEmail: "admin@firm.com",
+      };
+    }
+
+    const nameParts = (firmData.adminName || "").trim().split(" ");
+    const firstName = nameParts[0] || "";
+    const lastName = nameParts.slice(1).join(" ") || "";
+
+    setFormData({
+      firstName,
+      lastName,
+      email: firmData.email || "",
+      personalPhone: firmData.phone || "+1-555-0199",
+      password: "••••••••",
+      confirmPassword: "••••••••",
+      firmName: firmData.name || "",
+      taxId: firmData.taxId || "XX-1234567",
+      supportEmail: firmData.supportEmail || firmData.email || "",
+      firmPhone: firmData.phone || "+1 (555) 123-4567",
+      firmAddress: firmData.address || "123 Legal Way, Suite 500, New York, NY 10001"
+    });
+  }, [id]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -32,30 +158,37 @@ export default function CreateFirmPage() {
     e.preventDefault();
 
     try {
-      const existing = JSON.parse(localStorage.getItem("lexvalu_custom_firms") || "[]");
-      const newFirm = {
-        id: Date.now().toString(),
-        name: formData.firmName || "New Firm",
-        email: formData.supportEmail || formData.email,
-        adminName: `${formData.firstName} ${formData.lastName}`.trim() || "Admin",
-        users: 1,
-        seatLimit: 10,
-        plan: "Professional" as const,
-        joinedDate: "Today",
-        status: true,
-        totalCases: 0,
-        inProgressCases: 0,
-        lastActive: "Active just now",
-        isInactive: false,
-        healthStatus: "Healthy" as const,
-        healthSeverity: "healthy" as const,
+      const edits = JSON.parse(localStorage.getItem("lexvalu_firms_edits") || "{}");
+      edits[id] = {
+        id,
+        name: formData.firmName,
+        adminName: `${formData.firstName} ${formData.lastName}`.trim(),
+        email: formData.email,
+        phone: formData.firmPhone,
+        address: formData.firmAddress,
+        taxId: formData.taxId,
+        supportEmail: formData.supportEmail,
       };
-      localStorage.setItem("lexvalu_custom_firms", JSON.stringify([newFirm, ...existing]));
+      localStorage.setItem("lexvalu_firms_edits", JSON.stringify(edits));
+
+      const customFirms = JSON.parse(localStorage.getItem("lexvalu_custom_firms") || "[]");
+      const updatedCustomFirms = customFirms.map((f: any) => {
+        if (f.id === id) {
+          return {
+            ...f,
+            name: formData.firmName,
+            adminName: `${formData.firstName} ${formData.lastName}`.trim(),
+            email: formData.supportEmail || formData.email,
+          };
+        }
+        return f;
+      });
+      localStorage.setItem("lexvalu_custom_firms", JSON.stringify(updatedCustomFirms));
     } catch {
       // ignore
     }
 
-    router.push("/superadmin/firms?created=true");
+    router.push("/superadmin/firms?updated=true");
   };
 
   return (
@@ -68,8 +201,8 @@ export default function CreateFirmPage() {
         >
           <ArrowLeft className="w-3.5 h-3.5" /> Back to Firms
         </Link>
-        <h1 className="text-2xl md:text-3xl font-extrabold text-[#111827] tracking-tight">Create New Firm</h1>
-        <p className="text-slate-500 text-sm mt-1">Create a new isolated firm and an admin account for testing purposes.</p>
+        <h1 className="text-2xl md:text-3xl font-extrabold text-[#111827] tracking-tight">Edit Firm Details</h1>
+        <p className="text-slate-500 text-sm mt-1">Update isolated firm details and admin account settings.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -283,7 +416,7 @@ export default function CreateFirmPage() {
             className="flex items-center gap-2 bg-[#124b4b] hover:bg-[#0d3636] text-white px-5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all shadow-sm shrink-0"
           >
             <Save className="w-4 h-4" />
-            Create Firm & Admin
+            Save Changes
           </button>
         </div>
       </form>

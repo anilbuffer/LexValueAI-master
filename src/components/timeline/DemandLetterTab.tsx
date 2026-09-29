@@ -9,7 +9,7 @@ export function DemandLetterTab({ caseData, role }: { caseData: any, role?: stri
   const totalSpecials = bills.reduce((acc, b) => acc + (b.billed || 0), 0);
 
   const [isEditing, setIsEditing] = useState(false)
-  
+
   const [letterContent, setLetterContent] = useState(`Dear Claims Representative,
 
 Please be advised that this office represents ${caseData?.client || 'our client'} in connection with severe and permanent injuries sustained on ${caseData?.dateOfInjury ? new Date(caseData.dateOfInjury).toLocaleDateString() : 'the date of loss'}. This letter, along with the enclosed medical chronology, case flags, narrative summary, and medical bills ledger, constitutes our client's formal demand for settlement.
@@ -23,7 +23,7 @@ The sheer force of the impact caused our client to be thrust violently forward a
 • Superior labral anterior-posterior (SLAP) tear of the right shoulder
 • Medial meniscus tear of the left knee
 
-Prior to this collision, ${caseData?.client || 'our client'} was a healthy individual with no history of neck pain or upper extremity symptoms. Her life has been permanently altered by the defendant's negligence.
+Prior to this collision, ${caseData?.client || 'our client'} was a Successindividual with no history of neck pain or upper extremity symptoms. Her life has been permanently altered by the defendant's negligence.
 
 III. TREATMENT SUMMARY
 Conservative treatment, including physical therapy and pain management, failed to provide relief from the debilitating symptoms. Consequently, our client was forced to undergo multiple invasive surgical procedures to address the injuries sustained in the crash:
@@ -57,21 +57,21 @@ We look forward to your prompt response.`)
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {!isEditing ? (
-            <button 
+            <button
               onClick={() => setIsEditing(true)}
               className="flex items-center gap-2 px-2.5 py-1 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors text-xs font-semibold shadow-sm"
             >
               <Edit3 className="w-3.5 h-3.5" /> Edit
             </button>
           ) : (
-            <button 
+            <button
               onClick={() => { setIsEditing(false); toast.success("Draft saved successfully."); }}
               className="flex items-center gap-2 px-2.5 py-1 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-xs font-semibold shadow-sm"
             >
               <Save className="w-3.5 h-3.5" /> Save
             </button>
           )}
-          <button 
+          <button
             onClick={() => {
               navigator.clipboard.writeText(letterContent);
               toast.success("Copied to clipboard");
@@ -94,14 +94,14 @@ We look forward to your prompt response.`)
               ))}
             </select>
           ) : (role === 'PARALEGAL' || role === 'CASE_MANAGER') ? (
-            <button 
+            <button
               onClick={() => toast.success("Assigned to Attorney")}
               className="flex items-center gap-2 px-2.5 py-1 bg-slate-800 border border-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors text-xs font-semibold shadow-sm"
             >
               <UserCheck className="w-3.5 h-3.5" /> Assign to Attorney
             </button>
           ) : (
-            <button 
+            <button
               onClick={() => toast.success("Demand letter saved")}
               className="flex items-center gap-2 px-2.5 py-1 bg-slate-800 border border-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors text-xs font-semibold shadow-sm"
             >
@@ -113,7 +113,7 @@ We look forward to your prompt response.`)
 
       <div className="p-4 flex-1 overflow-y-auto bg-slate-100/50">
         <div className="max-w-4xl mx-auto border border-slate-200/60 rounded-lg p-6 md:p-8 bg-white shadow-sm font-serif text-sm leading-normal text-slate-800">
-          
+
           <div className="flex items-center gap-2.5 mb-6 pb-4 border-b border-slate-100">
             <div className="w-8 h-8 rounded-lg bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 font-bold text-lg">
               {firm?.name.charAt(0)}
