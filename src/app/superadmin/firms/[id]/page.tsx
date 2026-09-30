@@ -92,7 +92,7 @@ const allMockFirmsDetails: FirmDetails[] = [
     inProgressCases: 2,
     lastActive: "Inactive for 5 days",
     isInactive: true,
-    healthStatus: "Stuck Docs",
+    healthStatus: "Stuck",
     healthSeverity: "error",
   },
   {

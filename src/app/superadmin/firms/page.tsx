@@ -24,7 +24,7 @@ export interface TenantFirm {
   inProgressCases: number;
   lastActive: string;
   isInactive: boolean;
-  healthStatus: "Success" | "Stuck Docs" | "Success";
+  healthStatus: "Success" | "Stuck" | "Success";
   healthSeverity: "Success" | "error" | "warning";
   // Approval metadata
   isApproved?: boolean;
@@ -106,7 +106,7 @@ const initialActiveFirms: TenantFirm[] = [
     inProgressCases: 2,
     lastActive: "Inactive for 5 days",
     isInactive: true,
-    healthStatus: "Stuck Docs",
+    healthStatus: "Stuck",
     healthSeverity: "error",
     isApproved: true,
   },
@@ -1034,7 +1034,6 @@ function FirmsContent() {
                   <th className="px-5 py-4 whitespace-nowrap">Firm Name</th>
                   <th className="px-4 py-4 whitespace-nowrap">Primary Admin</th>
                   <th className="px-4 py-4 whitespace-nowrap">Status</th>
-                  <th className="px-4 py-4 whitespace-nowrap">Admission Stage</th>
                   <th className="px-5 py-4 whitespace-nowrap text-right">Actions</th>
                 </tr>
               </thead>
@@ -1059,9 +1058,6 @@ function FirmsContent() {
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
                           <AlertCircle className="w-3 h-3 text-amber-600" /> Not Approved
                         </span>
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-xs text-slate-500">
-                        {firm.complianceStatus}
                       </td>
                       <td className="px-5 py-4 whitespace-nowrap text-right">
                         <button
@@ -1095,10 +1091,6 @@ function FirmsContent() {
                       <p className="font-semibold text-slate-800">{firm.adminName}</p>
                       <p className="text-slate-400">{firm.email}</p>
                     </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-xs">
-                      <span className="font-bold text-slate-800">{firm.plan}</span>
-                      <span className="text-slate-400 block text-[11px]">{firm.seatLimit} seats</span>
-                    </td>
                     <td className="px-4 py-4 whitespace-nowrap">
                       {firm.status ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
@@ -1109,9 +1101,6 @@ function FirmsContent() {
                           <X className="w-3 h-3 text-rose-600" /> Inactive
                         </span>
                       )}
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-xs text-emerald-700 font-semibold">
-                      Approved & Live
                     </td>
                     <td className="px-5 py-4 whitespace-nowrap text-right">
                       <Link
@@ -1190,35 +1179,6 @@ function FirmsContent() {
                   <p className="text-slate-600 flex items-center gap-1.5">
                     <MapPin className="w-3.5 h-3.5 text-slate-400" /> {selectedPendingFirm.location}
                   </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Verification Checklist */}
-            <div className="p-4 rounded-xl bg-amber-50/50 border border-amber-200/80 space-y-2.5">
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-amber-200">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span className="text-slate-700 font-medium">State Bar Standing Verified</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-amber-200">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span className="text-slate-700 font-medium">Employer Tax ID Matched</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-amber-200">
-                  {selectedPendingFirm.baaSigned ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  ) : (
-                    <Clock className="w-4 h-4 text-amber-600 shrink-0" />
-                  )}
-                  <span className="text-slate-700 font-medium">
-                    {selectedPendingFirm.baaSigned ? "BAA Agreement Executed" : "BAA Pending Superadmin Approval"}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-amber-200">
-                  <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span className="text-slate-700 font-medium">Tenant Isolation Key Ready</span>
                 </div>
               </div>
             </div>
