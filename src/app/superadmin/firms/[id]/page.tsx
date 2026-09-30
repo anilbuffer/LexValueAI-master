@@ -299,23 +299,6 @@ export default function FirmDetailPage() {
                 />
                 {firm.status ? "Active" : "Suspended"}
               </span>
-
-              {/* Health Status Badge (from Firm Listing Table) */}
-              <span
-                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${firm.healthSeverity === "healthy"
-                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                  : firm.healthSeverity === "warning"
-                    ? "bg-amber-50 text-amber-800 border border-amber-200"
-                    : "bg-rose-50 text-rose-700 border border-rose-200 animate-pulse"
-                  }`}
-              >
-                {firm.healthSeverity === "healthy" ? (
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                ) : (
-                  <AlertTriangle className="w-3.5 h-3.5" />
-                )}
-                {firm.healthStatus}
-              </span>
             </div>
 
             <p className="text-slate-500 text-xs md:text-sm mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
