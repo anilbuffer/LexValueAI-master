@@ -664,108 +664,17 @@ function FirmsContent() {
         </Link>
       </div>
 
-      {/* Operational Metric KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* Card 1: Active Firms */}
-        <button
-          onClick={() => setActiveTab("active")}
-          className={`text-left rounded-2xl border p-5 shadow-xs relative overflow-hidden transition-all bg-white group ${activeTab === "active"
-            ? "border-blue-500 ring-2 ring-blue-500/20 bg-blue-50/10 shadow-sm"
-            : "border-slate-200/80 hover:border-slate-300"
-            }`}
-        >
-          <div className="flex justify-between items-start relative z-10">
-            <div>
-              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Active Firms</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-1 tracking-tight">{firms.length}</h3>
-            </div>
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${activeTab === "active" ? "bg-blue-600 text-white border-blue-600" : "bg-blue-50 text-blue-600 border-blue-100"
-              }`}>
-              <Building2 className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center justify-between text-xs relative z-10">
-            <span className="text-slate-500 font-medium text-[11px]">Approved tenant organizations</span>
-            <span className="text-blue-600 font-bold text-[11px] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-              Filter Active &rarr;
-            </span>
-          </div>
-        </button>
-
-        {/* Card 2: Not Approved Firms (Action Required) */}
-        <button
-          onClick={() => setActiveTab("not_approved")}
-          className={`text-left rounded-2xl border p-5 shadow-xs relative overflow-hidden transition-all bg-white group ${activeTab === "not_approved"
-            ? "border-amber-500 ring-2 ring-amber-500/20 bg-amber-50/20 shadow-sm"
-            : "border-amber-200/80 hover:border-amber-300 bg-gradient-to-br from-white to-amber-50/30"
-            }`}
-        >
-          <div className="flex justify-between items-start relative z-10">
-            <div>
-              <div className="flex items-center gap-2">
-                <p className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">Not Approved Firms</p>
-                {notApprovedFirms.length > 0 && (
-                  <span className="px-1.5 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-black rounded-full border border-amber-300 animate-pulse">
-                    Action Req
-                  </span>
-                )}
-              </div>
-              <h3 className="text-3xl font-black text-amber-700 mt-1 tracking-tight">
-                {notApprovedFirms.length}
-              </h3>
-            </div>
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${activeTab === "not_approved" ? "bg-amber-600 text-white border-amber-600" : "bg-amber-50 text-amber-600 border-amber-200"
-              }`}>
-              <ShieldAlert className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center justify-between text-xs relative z-10">
-            <span className="text-amber-700 font-medium text-[11px]">Pending verification queue</span>
-            <span className="text-amber-800 font-bold text-[11px] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-              Review queue &rarr;
-            </span>
-          </div>
-        </button>
-
-        {/* Card 3: Total Registered */}
-        <button
-          onClick={() => setActiveTab("all")}
-          className={`text-left rounded-2xl border p-5 shadow-xs relative overflow-hidden transition-all bg-white group ${activeTab === "all"
-            ? "border-slate-800 ring-2 ring-slate-800/10 bg-slate-50/50 shadow-sm"
-            : "border-slate-200/80 hover:border-slate-300"
-            }`}
-        >
-          <div className="flex justify-between items-start relative z-10">
-            <div>
-              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Registered</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-1 tracking-tight">
-                {firms.length + notApprovedFirms.length}
-              </h3>
-            </div>
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${activeTab === "all" ? "bg-slate-900 text-white border-slate-900" : "bg-slate-100 text-slate-700 border-slate-200"
-              }`}>
-              <FileText className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center justify-between text-xs relative z-10">
-            <span className="text-slate-500 font-medium text-[11px]">All tenant portfolios combined</span>
-            <span className="text-slate-700 font-bold text-[11px] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-              View all &rarr;
-            </span>
-          </div>
-        </button>
-      </div>
-
       {/* Tabs & Controls Bar */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 space-y-4 sm:space-y-0 sm:flex sm:items-center sm:justify-between gap-4">
         {/* Navigation Tabs */}
         <div className="flex items-center gap-2 bg-slate-100/80 p-1.5 rounded-xl">
           <button
             onClick={() => setActiveTab("active")}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === "active"
-              ? "bg-white text-slate-900 shadow-xs border border-slate-200"
-              : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
-              }`}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              activeTab === "active"
+                ? "bg-white text-slate-900 shadow-xs border border-slate-200"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+            }`}
           >
             <Building2 className="w-3.5 h-3.5 text-blue-600" />
             <span>Active Firms</span>
@@ -776,16 +685,18 @@ function FirmsContent() {
 
           <button
             onClick={() => setActiveTab("not_approved")}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === "not_approved"
-              ? "bg-amber-600 text-white shadow-xs"
-              : "text-amber-800 hover:bg-amber-100/60"
-              }`}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              activeTab === "not_approved"
+                ? "bg-amber-600 text-white shadow-xs"
+                : "text-amber-800 hover:bg-amber-100/60"
+            }`}
           >
             <ShieldAlert className="w-3.5 h-3.5" />
             <span>Not Approved Firms</span>
             <span
-              className={`px-1.5 py-0.2 text-[10px] font-black rounded-md ${activeTab === "not_approved" ? "bg-amber-800 text-white" : "bg-amber-100 text-amber-800"
-                }`}
+              className={`px-1.5 py-0.2 text-[10px] font-black rounded-md ${
+                activeTab === "not_approved" ? "bg-amber-800 text-white" : "bg-amber-100 text-amber-800"
+              }`}
             >
               {notApprovedFirms.length}
             </span>
@@ -793,10 +704,11 @@ function FirmsContent() {
 
           <button
             onClick={() => setActiveTab("all")}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === "all"
-              ? "bg-white text-slate-900 shadow-xs border border-slate-200"
-              : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
-              }`}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              activeTab === "all"
+                ? "bg-white text-slate-900 shadow-xs border border-slate-200"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+            }`}
           >
             <span>All ({firms.length + notApprovedFirms.length})</span>
           </button>
@@ -874,7 +786,7 @@ function FirmsContent() {
                 <tbody className="divide-y divide-slate-100 bg-white">
                   {filteredPendingFirms.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="px-6 py-12 text-center text-slate-400 text-sm">
+                      <td colSpan={5} className="px-6 py-12 text-center text-slate-400 text-sm">
                         <div className="flex flex-col items-center justify-center">
                           <CheckCircle2 className="w-8 h-8 text-emerald-500 mb-2 opacity-70" />
                           <p className="font-semibold text-slate-700">No Not Approved Firms Found</p>
@@ -906,7 +818,6 @@ function FirmsContent() {
                             </div>
                           </div>
                         </td>
-
 
                         {/* Practice Area */}
                         <td className="px-4 py-4 whitespace-nowrap">

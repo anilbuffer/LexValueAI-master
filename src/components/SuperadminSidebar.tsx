@@ -75,7 +75,10 @@ export default function SuperadminSidebar({ user }: SuperadminSidebarProps) {
         `}
       >
       <button
-        onClick={() => setIsCollapsed(!isCollapsed)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsCollapsed(!isCollapsed);
+        }}
         className="absolute -right-3.5 top-6 bg-slate-800 border-[3px] border-slate-100 text-slate-300 rounded-full p-0.5 hover:bg-slate-700 hover:text-white transition-all z-30 cursor-pointer max-[767px]:hidden"
       >
         {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -96,10 +99,13 @@ export default function SuperadminSidebar({ user }: SuperadminSidebarProps) {
 
       <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
         {navItems.map((item) => {
+          const isActive = pathname === item.href || (item.href !== '/superadmin' && pathname.startsWith(item.href));
+
           if (item.isLocked) {
             return (
               <div key={item.name} className="relative">
-                <div
+                <Link
+                  href={item.href}
                   onMouseEnter={(e) => {
                     if (!isExpanded) {
                       const rect = e.currentTarget.getBoundingClientRect();
@@ -107,29 +113,31 @@ export default function SuperadminSidebar({ user }: SuperadminSidebarProps) {
                     }
                   }}
                   onMouseLeave={() => setTooltip(null)}
-                  className={`flex items-center rounded-lg text-base font-normal opacity-50 cursor-not-allowed select-none transition-all ${
+                  className={`flex items-center rounded-lg text-base font-normal transition-all ${
                     !isExpanded ? 'w-11 h-11 justify-center mx-auto' : 'px-3 h-11 gap-3 w-full'
-                  } text-slate-500 hover:bg-slate-900/40`}
+                  } ${
+                    isActive
+                      ? 'bg-slate-800/90 text-teal-400 border border-teal-800/50 shadow-sm'
+                      : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
+                  }`}
                   title={`${item.name} (Locked - Next Phase)`}
                 >
                   <div className="relative flex items-center justify-center">
-                    <item.icon className="w-6 h-6 shrink-0 text-slate-500" />
+                    <item.icon className={`w-6 h-6 shrink-0 ${isActive ? 'text-teal-400' : 'text-slate-400'}`} />
                     {!isExpanded && (
-                      <Lock className="w-2.5 h-2.5 text-amber-500 absolute -top-1 -right-1" />
+                      <Lock className="w-2.5 h-2.5 text-slate-400 absolute -top-1 -right-1" />
                     )}
                   </div>
                   {isExpanded && (
                     <>
-                      <span className="truncate text-slate-400">{item.name}</span>
-                      <Lock className="w-3.5 h-3.5 text-slate-500 ml-auto shrink-0" />
+                      <span className="truncate">{item.name}</span>
+                      <Lock className={`w-4 h-4 ml-auto shrink-0 ${isActive ? 'text-teal-400' : 'text-slate-400'}`} />
                     </>
                   )}
-                </div>
+                </Link>
               </div>
             );
           }
-
-          const isActive = pathname === item.href || (item.href !== '/superadmin' && pathname.startsWith(item.href));
 
           return (
             <div key={item.name} className="relative">
