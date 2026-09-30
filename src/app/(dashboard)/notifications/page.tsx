@@ -99,8 +99,26 @@ export default function NotificationsPage() {
   }
 
   const markAsRead = async (id: string) => {
+    try {
+      const mockData = await import('@/lib/mock-data');
+      const item = mockData.mockNotifications.find((n: any) => n.id === id);
+      if (item) item.isRead = true;
+    } catch (e) {
+      console.error(e);
+    }
     setLocalNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
   }
+
+  const getTypeBadgeClass = (type: string) => {
+    const t = (type || '').toUpperCase();
+    if (t.includes('SECURITY')) return 'bg-rose-50 text-rose-700 border border-rose-200/60';
+    if (t.includes('COMPLIANCE')) return 'bg-emerald-50 text-emerald-700 border border-emerald-200/60';
+    if (t.includes('BILLING')) return 'bg-purple-50 text-purple-700 border border-purple-200/60';
+    if (t.includes('ONBOARDING') || t.includes('REGISTRATION')) return 'bg-indigo-50 text-indigo-700 border border-indigo-200/60';
+    if (t.includes('WARNING') || t.includes('ALERT')) return 'bg-amber-50 text-amber-700 border border-amber-200/60';
+    if (t.includes('MAINTENANCE')) return 'bg-blue-50 text-blue-700 border border-blue-200/60';
+    return 'bg-slate-100 text-slate-600 border border-slate-200';
+  };
 
   return (
     <div className="w-full p-2.5 pb-[15px] font-sans relative flex flex-col gap-[15px]">
@@ -109,7 +127,7 @@ export default function NotificationsPage() {
         <div className="flex flex-col min-[992px]:flex-row items-start min-[992px]:items-center justify-between gap-4 min-[992px]:gap-0">
           <div>
             <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Notifications</h1>
-            <p className="text-slate-500 text-sm mt-1 font-medium">Stay updated on your cases and assignments.</p>
+            <p className="text-slate-500 text-sm mt-1 font-medium">Stay updated on system alerts, firm onboarding, and account-level notifications.</p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full min-[992px]:w-auto">
@@ -235,8 +253,8 @@ export default function NotificationsPage() {
                 currentNotifications.map((notif) => (
                   <tr key={notif.id} className={`border-b border-slate-100 last:border-0 hover:bg-slate-50/50 transition-colors group ${!notif.isRead ? 'bg-slate-50/30' : ''}`}>
                     <td className="py-4 px-2">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600">
-                        {notif.type.replace('_', ' ')}
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${getTypeBadgeClass(notif.type)}`}>
+                        {notif.type.replace(/_/g, ' ')}
                       </span>
                     </td>
                     <td className="py-4 px-2">

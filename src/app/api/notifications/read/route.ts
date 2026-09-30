@@ -15,7 +15,7 @@ export async function PUT(request: Request) {
     if (markAll) {
       // Mark all as read for this user
       mockNotifications.forEach(n => {
-        if (n.userId === session.id && !n.isRead) {
+        if ((n.userId === session.id || session.role === 'SUPERADMIN') && !n.isRead) {
           n.isRead = true;
         }
       });
@@ -28,7 +28,7 @@ export async function PUT(request: Request) {
 
     // Verify ownership
     const notification = mockNotifications.find(n => n.id === notificationId)
-    if (!notification || notification.userId !== session.id) {
+    if (!notification || (notification.userId !== session.id && session.role !== 'SUPERADMIN')) {
       return NextResponse.json({ error: 'Notification not found or unauthorized' }, { status: 403 })
     }
 

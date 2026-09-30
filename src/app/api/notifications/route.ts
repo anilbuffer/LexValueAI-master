@@ -23,7 +23,10 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    let filtered = mockNotifications.filter(n => n.firmId === currentUser.firmId && n.userId === currentUser.id)
+    let filtered = mockNotifications.filter(n => {
+      if (currentUser.role === 'SUPERADMIN') return true;
+      return n.firmId === currentUser.firmId && n.userId === currentUser.id;
+    });
 
     if (isReadFilter === 'true') {
       filtered = filtered.filter(n => n.isRead === true)

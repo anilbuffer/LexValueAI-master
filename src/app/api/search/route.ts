@@ -54,7 +54,11 @@ export async function GET(request: Request) {
       }
     }
 
-    let notifications = mockNotifications.filter(n => n.firmId === firmId && n.userId === session.id && n.message.toLowerCase().includes(lowerQuery));
+    let notifications = mockNotifications.filter(n => {
+      const matches = n.message.toLowerCase().includes(lowerQuery);
+      if (role === 'SUPERADMIN') return matches;
+      return n.firmId === firmId && n.userId === session.id && matches;
+    });
 
     let auditLogs: any[] = []
     if (role === 'ADMIN' || role === 'MANAGING_PARTNER') {

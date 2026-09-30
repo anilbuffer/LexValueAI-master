@@ -83,6 +83,9 @@ export default function Header({ role, user }: { role: string, user: { firstName
 
   const markAsRead = async (id: string) => {
     try {
+      const mockData = await import('@/lib/mock-data');
+      const item = mockData.mockNotifications.find((n: any) => n.id === id);
+      if (item) item.isRead = true;
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (e) {
@@ -92,6 +95,8 @@ export default function Header({ role, user }: { role: string, user: { firstName
 
   const markAllAsRead = async () => {
     try {
+      const mockData = await import('@/lib/mock-data');
+      mockData.mockNotifications.forEach((n: any) => { n.isRead = true; });
       setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
       setUnreadCount(0);
     } catch (e) {
@@ -320,12 +325,13 @@ export default function Header({ role, user }: { role: string, user: { firstName
                 notifications.map((notif) => {
                     const getStyle = () => {
                       const msg = notif.message.toLowerCase()
-                      if (msg.includes('delete') || msg.includes('remov')) return { Icon: AlertTriangle, bg: 'bg-rose-50', text: notif.isRead ? 'text-rose-400' : 'text-rose-600' }
-                      if (msg.includes('reject')) return { Icon: XCircle, bg: 'bg-rose-50', text: notif.isRead ? 'text-rose-400' : 'text-rose-600' }
-                      if (msg.includes('approv')) return { Icon: CheckCircle2, bg: 'bg-emerald-50', text: notif.isRead ? 'text-emerald-400' : 'text-emerald-600' }
-                      if (msg.includes('warn') || msg.includes('alert') || msg.includes('missing')) return { Icon: AlertTriangle, bg: 'bg-amber-50', text: notif.isRead ? 'text-amber-400' : 'text-amber-600' }
-                      if (msg.includes('remind') || msg.includes('request')) return { Icon: Clock, bg: 'bg-purple-50', text: notif.isRead ? 'text-purple-400' : 'text-purple-600' }
-                      if (msg.includes('create') || msg.includes('new') || msg.includes('info') || msg.includes('status') || msg.includes('change') || msg.includes('updat')) return { Icon: Info, bg: 'bg-blue-50', text: notif.isRead ? 'text-blue-400' : 'text-blue-600' }
+                      const type = (notif.type || '').toLowerCase()
+                      if (type.includes('security') || msg.includes('security') || msg.includes('permission') || msg.includes('unauthorized') || msg.includes('delete') || msg.includes('remov')) return { Icon: Shield, bg: 'bg-rose-50', text: notif.isRead ? 'text-rose-400' : 'text-rose-600' }
+                      if (type.includes('compliance') || msg.includes('baa') || msg.includes('hipaa') || msg.includes('executed') || msg.includes('approv')) return { Icon: CheckCircle2, bg: 'bg-emerald-50', text: notif.isRead ? 'text-emerald-400' : 'text-emerald-600' }
+                      if (type.includes('billing') || msg.includes('billing') || msg.includes('renewed') || msg.includes('subscription') || msg.includes('invoice')) return { Icon: CreditCard, bg: 'bg-purple-50', text: notif.isRead ? 'text-purple-400' : 'text-purple-600' }
+                      if (type.includes('warning') || type.includes('alert') || msg.includes('warning') || msg.includes('alert') || msg.includes('storage') || msg.includes('quota') || msg.includes('capacity')) return { Icon: AlertTriangle, bg: 'bg-amber-50', text: notif.isRead ? 'text-amber-400' : 'text-amber-600' }
+                      if (type.includes('onboarding') || type.includes('registration') || msg.includes('registration') || msg.includes('pending') || msg.includes('authorization')) return { Icon: Clock, bg: 'bg-indigo-50', text: notif.isRead ? 'text-indigo-400' : 'text-indigo-600' }
+                      if (type.includes('maintenance') || msg.includes('maintenance') || msg.includes('notice') || msg.includes('engine') || msg.includes('update')) return { Icon: Info, bg: 'bg-blue-50', text: notif.isRead ? 'text-blue-400' : 'text-blue-600' }
                       return { Icon: Bell, bg: 'bg-teal-50', text: notif.isRead ? 'text-slate-400' : 'text-teal-600' }
                     }
                   const { Icon, bg, text } = getStyle()

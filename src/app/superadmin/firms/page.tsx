@@ -1165,9 +1165,6 @@ function FirmsContent() {
                       Pending Approval
                     </span>
                   </div>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    Admission application submitted {selectedPendingFirm.submittedAgo} ({selectedPendingFirm.submittedDate})
-                  </p>
                 </div>
               </div>
               <button
@@ -1199,9 +1196,7 @@ function FirmsContent() {
 
             {/* Verification Checklist */}
             <div className="p-4 rounded-xl bg-amber-50/50 border border-amber-200/80 space-y-2.5">
-              <p className="text-[11px] font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-amber-700" /> HIPAA & Compliance Checkpoints
-              </p>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-amber-200">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -1228,15 +1223,7 @@ function FirmsContent() {
               </div>
             </div>
 
-            {/* Application Note */}
-            <div>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Litigation Focus & Purpose</p>
-              <p className="text-xs text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200 leading-relaxed">
-                <strong className="text-slate-900">Practice Area:</strong> {selectedPendingFirm.practiceArea}
-                <br />
-                <strong className="text-slate-900">Application Note:</strong> &ldquo;{selectedPendingFirm.applicationNote}&rdquo;
-              </p>
-            </div>
+
 
             {/* Actions */}
             <div className="flex items-center justify-between border-t border-slate-100 pt-4">
