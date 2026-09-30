@@ -24,7 +24,7 @@ export interface TenantFirm {
   inProgressCases: number;
   lastActive: string;
   isInactive: boolean;
-  healthStatus: "Success" | "Stuck Docs (2)" | "Success(0 Errors)";
+  healthStatus: "Success" | "Stuck Docs" | "Success";
   healthSeverity: "Success" | "error" | "warning";
   // Approval metadata
   isApproved?: boolean;
@@ -88,7 +88,7 @@ const initialActiveFirms: TenantFirm[] = [
     inProgressCases: 6,
     lastActive: "Active 1 hour ago",
     isInactive: false,
-    healthStatus: "Success(0 Errors)",
+    healthStatus: "Success",
     healthSeverity: "Success",
     isApproved: true,
   },
@@ -106,7 +106,7 @@ const initialActiveFirms: TenantFirm[] = [
     inProgressCases: 2,
     lastActive: "Inactive for 5 days",
     isInactive: true,
-    healthStatus: "Stuck Docs (2)",
+    healthStatus: "Stuck Docs",
     healthSeverity: "error",
     isApproved: true,
   },
@@ -160,7 +160,7 @@ const initialActiveFirms: TenantFirm[] = [
     inProgressCases: 5,
     lastActive: "Active 3 hours ago",
     isInactive: false,
-    healthStatus: "Success(0 Errors)",
+    healthStatus: "Success",
     healthSeverity: "Success",
     isApproved: true,
   },
@@ -214,7 +214,7 @@ const initialActiveFirms: TenantFirm[] = [
     inProgressCases: 4,
     lastActive: "Active 4 hours ago",
     isInactive: false,
-    healthStatus: "Success(0 Errors)",
+    healthStatus: "Success",
     healthSeverity: "Success",
     isApproved: true,
   },
@@ -286,7 +286,7 @@ const initialActiveFirms: TenantFirm[] = [
     inProgressCases: 7,
     lastActive: "Active 1 hour ago",
     isInactive: false,
-    healthStatus: "Success(0 Errors)",
+    healthStatus: "Success",
     healthSeverity: "Success",
     isApproved: true,
   },
@@ -557,7 +557,7 @@ function FirmsContent() {
       inProgressCases: 0,
       lastActive: "Just now",
       isInactive: false,
-      healthStatus: "Success(0 Errors)",
+      healthStatus: "Success",
       healthSeverity: "Success",
       isApproved: true,
       phone: firm.phone,
@@ -650,9 +650,6 @@ function FirmsContent() {
           <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
             Multi-Firm Management
           </h1>
-          <p className="text-xs md:text-sm text-slate-500 mt-1 font-medium">
-            Manage tenant law firm organizations, monitor access health, and review admission approvals.
-          </p>
         </div>
 
         {/* Add Firm Button */}
@@ -670,11 +667,10 @@ function FirmsContent() {
         <div className="flex items-center gap-2 bg-slate-100/80 p-1.5 rounded-xl">
           <button
             onClick={() => setActiveTab("active")}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              activeTab === "active"
-                ? "bg-white text-slate-900 shadow-xs border border-slate-200"
-                : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
-            }`}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === "active"
+              ? "bg-white text-slate-900 shadow-xs border border-slate-200"
+              : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+              }`}
           >
             <Building2 className="w-3.5 h-3.5 text-blue-600" />
             <span>Active Firms</span>
@@ -685,18 +681,16 @@ function FirmsContent() {
 
           <button
             onClick={() => setActiveTab("not_approved")}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              activeTab === "not_approved"
-                ? "bg-amber-600 text-white shadow-xs"
-                : "text-amber-800 hover:bg-amber-100/60"
-            }`}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === "not_approved"
+              ? "bg-amber-600 text-white shadow-xs"
+              : "text-amber-800 hover:bg-amber-100/60"
+              }`}
           >
             <ShieldAlert className="w-3.5 h-3.5" />
             <span>Not Approved Firms</span>
             <span
-              className={`px-1.5 py-0.2 text-[10px] font-black rounded-md ${
-                activeTab === "not_approved" ? "bg-amber-800 text-white" : "bg-amber-100 text-amber-800"
-              }`}
+              className={`px-1.5 py-0.2 text-[10px] font-black rounded-md ${activeTab === "not_approved" ? "bg-amber-800 text-white" : "bg-amber-100 text-amber-800"
+                }`}
             >
               {notApprovedFirms.length}
             </span>
@@ -704,11 +698,10 @@ function FirmsContent() {
 
           <button
             onClick={() => setActiveTab("all")}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              activeTab === "all"
-                ? "bg-white text-slate-900 shadow-xs border border-slate-200"
-                : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
-            }`}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === "all"
+              ? "bg-white text-slate-900 shadow-xs border border-slate-200"
+              : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+              }`}
           >
             <span>All ({firms.length + notApprovedFirms.length})</span>
           </button>
@@ -764,9 +757,6 @@ function FirmsContent() {
                 <h3 className="font-bold text-amber-950 text-sm">
                   Pending Admission & Verification Queue ({notApprovedFirms.length})
                 </h3>
-                <p className="text-xs text-amber-800/80">
-                  These law firms have registered or requested access and require superadmin verification and BAA review before activation.
-                </p>
               </div>
             </div>
           </div>
@@ -777,8 +767,6 @@ function FirmsContent() {
                 <thead className="text-[10.5px] uppercase tracking-wider font-bold text-slate-400 border-b border-slate-200 bg-slate-50/50">
                   <tr>
                     <th className="px-5 py-4 whitespace-nowrap">Firm & Applicant</th>
-                    <th className="px-4 py-4 whitespace-nowrap">Practice Area</th>
-                    <th className="px-4 py-4 whitespace-nowrap">Verification & BAA</th>
                     <th className="px-4 py-4 whitespace-nowrap">Submitted</th>
                     <th className="px-5 py-4 whitespace-nowrap text-right">Approval Actions</th>
                   </tr>
@@ -816,31 +804,6 @@ function FirmsContent() {
                             <div className="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
                               <MapPin className="w-3 h-3 text-slate-400" /> {firm.location}
                             </div>
-                          </div>
-                        </td>
-
-                        {/* Practice Area */}
-                        <td className="px-4 py-4 whitespace-nowrap">
-                          <div className="flex flex-col max-w-[200px]">
-                            <span className="font-medium text-slate-800 text-xs truncate" title={firm.practiceArea}>
-                              {firm.practiceArea}
-                            </span>
-                            <span className="text-[11px] text-slate-400 truncate mt-0.5" title={firm.applicationNote}>
-                              {firm.applicationNote}
-                            </span>
-                          </div>
-                        </td>
-
-                        {/* Verification & BAA */}
-                        <td className="px-4 py-4 whitespace-nowrap">
-                          <div className="flex flex-col gap-1">
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200">
-                              <AlertCircle className="w-3.5 h-3.5 text-amber-600" />
-                              {firm.complianceStatus}
-                            </span>
-                            <span className="text-[10.5px] font-semibold text-slate-500 flex items-center gap-1">
-                              Tax ID: <span className="font-mono text-slate-700">{firm.taxId}</span>
-                            </span>
                           </div>
                         </td>
 
@@ -915,7 +878,7 @@ function FirmsContent() {
                   <th className="px-5 py-4 whitespace-nowrap">Firm & Admin</th>
                   <th className="px-4 py-4 whitespace-nowrap">Cases Volume</th>
                   <th className="px-4 py-4 whitespace-nowrap">Last Active</th>
-                  <th className="px-4 py-4 whitespace-nowrap">Health Status</th>
+                  <th className="px-4 py-4 whitespace-nowrap">Activity Status</th>
                   <th className="px-4 py-4 whitespace-nowrap">Status</th>
                   <th className="px-5 py-4 whitespace-nowrap text-right">Quick Actions</th>
                 </tr>
@@ -947,8 +910,6 @@ function FirmsContent() {
                             <span className="font-medium text-slate-700">
                               Admin: {firm.adminName}
                             </span>
-                            <span>&bull;</span>
-                            <span className="text-slate-400">{firm.plan}</span>
                           </div>
                         </div>
                       </td>
@@ -1072,7 +1033,6 @@ function FirmsContent() {
                 <tr>
                   <th className="px-5 py-4 whitespace-nowrap">Firm Name</th>
                   <th className="px-4 py-4 whitespace-nowrap">Primary Admin</th>
-                  <th className="px-4 py-4 whitespace-nowrap">Plan & Seats</th>
                   <th className="px-4 py-4 whitespace-nowrap">Status</th>
                   <th className="px-4 py-4 whitespace-nowrap">Admission Stage</th>
                   <th className="px-5 py-4 whitespace-nowrap text-right">Actions</th>
@@ -1094,10 +1054,6 @@ function FirmsContent() {
                       <td className="px-4 py-4 whitespace-nowrap text-xs">
                         <p className="font-semibold text-slate-800">{firm.adminName}</p>
                         <p className="text-slate-400">{firm.email}</p>
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-xs">
-                        <span className="font-bold text-slate-800">{firm.plan}</span>
-                        <span className="text-slate-400 block text-[11px]">{firm.seatLimit} seats</span>
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap">
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
@@ -1329,7 +1285,7 @@ function FirmsContent() {
             </div>
 
             <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-200">
-              Approving this firm will provision their multi-tenant database workspace, enable user sign-ins for <strong className="text-slate-800">{selectedPendingFirm.adminName}</strong>, and notify the law firm via welcome email.
+              Approving this firm will provision their multi-tenant database workspace.
             </p>
 
             <div className="flex items-center justify-end gap-3 pt-2">

@@ -128,9 +128,6 @@ export default function SuperadminDashboard() {
             <div>
               <div className="flex items-center gap-2">
                 <p className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">Not Approved Firms</p>
-                <span className="px-1.5 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-black rounded-full border border-amber-300 animate-pulse">
-                  Action Req
-                </span>
               </div>
               <h3 className="text-3xl font-black text-amber-700 mt-2 tracking-tight">5</h3>
             </div>
@@ -163,11 +160,6 @@ export default function SuperadminDashboard() {
                 <p className="text-xs text-slate-500 mt-0.5">
                   Processing queue for documents & cases requiring intervention.
                 </p>
-              </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="text-xs font-bold bg-rose-50 text-rose-700 px-3 py-1 rounded-full border border-rose-100">
-                  {stuckCasesQueue.length} Failed Items
-                </span>
               </div>
             </div>
 
@@ -233,12 +225,12 @@ export default function SuperadminDashboard() {
                   <div className="flex items-center gap-3">
                     <div
                       className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${firm.id === 1
-                          ? "bg-indigo-100 text-indigo-700 border border-indigo-200"
-                          : firm.id === 2
-                            ? "bg-blue-100 text-blue-700 border border-blue-200"
-                            : firm.id === 3
-                              ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
-                              : "bg-purple-100 text-purple-700 border border-purple-200"
+                        ? "bg-indigo-100 text-indigo-700 border border-indigo-200"
+                        : firm.id === 2
+                          ? "bg-blue-100 text-blue-700 border border-blue-200"
+                          : firm.id === 3
+                            ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                            : "bg-purple-100 text-purple-700 border border-purple-200"
                         }`}
                     >
                       {firm.initials}
