@@ -50,7 +50,7 @@ const allMockFirmsDetails: FirmDetails[] = [
     inProgressCases: 14,
     lastActive: "Active 20 mins ago",
     isInactive: false,
-    healthStatus: "Success(0 Errors)",
+    healthStatus: "Success",
     healthSeverity: "healthy",
   },
   {
@@ -71,7 +71,7 @@ const allMockFirmsDetails: FirmDetails[] = [
     inProgressCases: 6,
     lastActive: "Active 1 hour ago",
     isInactive: false,
-    healthStatus: "Success(0 Errors)",
+    healthStatus: "Success",
     healthSeverity: "healthy",
   },
   {
@@ -92,7 +92,7 @@ const allMockFirmsDetails: FirmDetails[] = [
     inProgressCases: 2,
     lastActive: "Inactive for 5 days",
     isInactive: true,
-    healthStatus: "Stuck Docs (2)",
+    healthStatus: "Stuck Docs",
     healthSeverity: "error",
   },
   {

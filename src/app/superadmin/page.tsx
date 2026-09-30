@@ -79,21 +79,27 @@ export default function SuperadminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         {/* Card 1: Active Firms */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-slate-300 transition-all">
+        <Link
+          href="/superadmin/firms?status=active"
+          className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-blue-300 hover:shadow-sm transition-all block"
+        >
           <Activity className="absolute -bottom-4 -right-2 w-28 h-28 text-blue-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
           <div className="flex justify-between items-start relative z-10">
             <div>
               <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Active Firms</p>
               <h3 className="text-3xl font-black text-slate-900 mt-2 tracking-tight">14</h3>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100 shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100 shrink-0 group-hover:bg-blue-100/80 transition-colors">
               <Building2 className="w-5 h-5 text-blue-600" />
             </div>
           </div>
           <div className="mt-6 flex items-center justify-between text-xs relative z-10">
             <span className="text-slate-500 font-medium text-[11px]">19 total registered</span>
+            <span className="text-blue-600 font-bold text-[11px] flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
+              View firms <ChevronRight className="w-3.5 h-3.5" />
+            </span>
           </div>
-        </div>
+        </Link>
 
         {/* Card 2: Cases Uploaded */}
         <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-slate-300 transition-all">
@@ -108,25 +114,37 @@ export default function SuperadminDashboard() {
             </div>
           </div>
           <div className="mt-6 flex items-center justify-between text-xs relative z-10">
-            <span className="text-slate-500 font-medium text-[11px]">1,277 processed</span>
+            <span className="text-slate-500 font-medium text-[11px]">1,277 successful </span>
           </div>
         </div>
 
         {/* Card 3: Not Approved Firms */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs relative overflow-hidden group hover:border-slate-300 transition-all">
+        <Link
+          href="/superadmin/firms?status=not_approved"
+          className="bg-white rounded-2xl border border-amber-200/90 p-6 shadow-xs relative overflow-hidden group hover:border-amber-400 hover:shadow-sm transition-all block bg-gradient-to-br from-white to-amber-50/20"
+        >
           <Building2 className="absolute -bottom-4 -right-2 w-28 h-28 text-amber-500/5 -rotate-12 group-hover:scale-105 transition-transform pointer-events-none" />
           <div className="flex justify-between items-start relative z-10">
             <div>
-              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Not Approved Firms</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-2 tracking-tight">5</h3>
+              <div className="flex items-center gap-2">
+                <p className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">Not Approved Firms</p>
+                <span className="px-1.5 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-black rounded-full border border-amber-300 animate-pulse">
+                  Action Req
+                </span>
+              </div>
+              <h3 className="text-3xl font-black text-amber-700 mt-2 tracking-tight">5</h3>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center border border-amber-100 shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center border border-amber-200 shrink-0 group-hover:bg-amber-100 transition-colors">
               <Building2 className="w-5 h-5 text-amber-600" />
             </div>
           </div>
-          <div className="mt-6 flex items-center justify-between text-xs relative z-10 min-h-[16px]">
+          <div className="mt-6 flex items-center justify-between text-xs relative z-10">
+            <span className="text-amber-800 font-medium text-[11px]">Pending verification queue</span>
+            <span className="text-amber-800 font-bold text-[11px] flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
+              Review queue <ChevronRight className="w-3.5 h-3.5" />
+            </span>
           </div>
-        </div>
+        </Link>
 
       </div>
 
@@ -214,15 +232,14 @@ export default function SuperadminDashboard() {
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${
-                        firm.id === 1
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${firm.id === 1
                           ? "bg-indigo-100 text-indigo-700 border border-indigo-200"
                           : firm.id === 2
-                          ? "bg-blue-100 text-blue-700 border border-blue-200"
-                          : firm.id === 3
-                          ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
-                          : "bg-purple-100 text-purple-700 border border-purple-200"
-                      }`}
+                            ? "bg-blue-100 text-blue-700 border border-blue-200"
+                            : firm.id === 3
+                              ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                              : "bg-purple-100 text-purple-700 border border-purple-200"
+                        }`}
                     >
                       {firm.initials}
                     </div>
